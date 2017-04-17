@@ -1,0 +1,24 @@
+{
+  "name": "portal",
+  "version": "1.0.0",
+  "description": "portal web application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valdy89/portal.git"
+  },
+  "keywords": [
+    "portal",
+    "veam",
+    "cloud"
+  ],
+  "author": "Juraj Ba�sista, Milan Valusek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/valdy89/portal/issues"
+  },
+  "homepage": "https://github.com/valdy89/portal#readme"
+}
