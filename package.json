@@ -15,10 +15,16 @@
     "veam",
     "cloud"
   ],
-  "author": "Juraj Ba�sista, Milan Valusek",
+  "author": "Juraj Basista, Milan Valusek",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/valdy89/portal/issues"
   },
-  "homepage": "https://github.com/valdy89/portal#readme"
+  "homepage": "https://github.com/valdy89/portal#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "eslint": "^3.19.0",
+    "express": "^4.15.2",
+    "gulp": "^3.9.1"
+  }
 }
