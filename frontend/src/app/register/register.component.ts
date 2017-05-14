@@ -30,4 +30,18 @@ export class RegisterComponent {
                     this.loading = false;
                 });
     }
+    //
+    // update() {
+    //   this.loading = true;
+    //   this.userService.update(this.model)
+    //     .subscribe(
+    //       data => {
+    //           this.alertService.success('{{ LOGIN.PASSWORD | translate }}',true);
+    //       },
+    //       error =>{
+    //         this.alertService.error(error);
+    //         this.loading = false;
+    //       }
+    //     )
+    // }
 }

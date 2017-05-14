@@ -1,0 +1,37 @@
+{
+  //Pages
+  COMMON:{
+    "CANCEL" : "Zrušit"
+
+  },
+  "LOGIN":{
+      "LOGIN" : "Email",
+      "PASSWORD": "Heslo"
+    },
+  "REGISTRATION"  :{
+      "REGISTER" : "Registrovat",
+      "REGISTATION" : "Registrace"
+
+    },
+
+
+
+
+
+
+    //entities
+//email, firstname, lastname, companyname, street, city, postal, country, identNumber, vatNumber, phone
+    "USER" :{
+      "EMAIL" : "email",
+      "FIRSTNAME" : "jméno",
+      "LASTNAME" : "příjmení",
+      "COMPANYNAME" : "název společnosti",
+      "STREET" : "ulice",
+      "CITY" : "město",
+      "POSTAL" : "PSČ",
+      "COUNTRYID" : "země",
+      "IDENTNUMBER" : "IČO",
+      "VATNUMBER" : "DIČ",
+      "PNOHE" : "telefon"
+    }
+}
