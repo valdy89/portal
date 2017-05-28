@@ -13,26 +13,33 @@ import { routing }        from './app.routing';
 
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, UserService } from './_services/index';
+import { AlertService, AuthenticationService, UserService,TenantService } from './_services/index';
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
+import { TenantComponent } from './tenant/index';
 
+import { NavbarComponent } from './navbar/index';
+import { HeaderbarComponent } from './headerbar/index';
 //translation
 import {TranslateModule, TranslateLoader} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+
 
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: Http) {
     return new TranslateHttpLoader(http, void 0, ".json");
 }
+
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         HttpModule,
         routing,HttpModule,
+        ProgressbarModule.forRoot(),
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -46,14 +53,17 @@ export function HttpLoaderFactory(http: Http) {
         AlertComponent,
         HomeComponent,
         LoginComponent,
-        RegisterComponent
+        RegisterComponent,
+        TenantComponent,
+        NavbarComponent,
+        HeaderbarComponent
     ],
     providers: [
         AuthGuard,
         AlertService,
         AuthenticationService,
         UserService,
-
+        TenantService,
         // providers used to create fake backend
         fakeBackendProvider,
         MockBackend,

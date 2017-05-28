@@ -25,9 +25,11 @@
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
 
             //translate
-    '@ngx-translate/core': 'npm:@ngx-translate/core/bundles/core.umd.js',
-    '@ngx-translate/http-loader': 'npm:@ngx-translate/http-loader/bundles/http-loader.umd.js',
+            '@ngx-translate/core': 'npm:@ngx-translate/core/bundles/core.umd.js',
+            '@ngx-translate/http-loader': 'npm:@ngx-translate/http-loader/bundles/http-loader.umd.js',
 
+            //bootstrapModule
+             '@ngx-bootstrap': 'node_modules/ngx-bootstrap/bundles/ngx-bootstrap.umd.js'
             // other libraries
             'rxjs': 'npm:rxjs'
         },

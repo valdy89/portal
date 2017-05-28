@@ -1,0 +1,27 @@
+<h1>{{'NAVIGATION.TENANT'}}</h1>
+<div class="table-responsive" *ngIf="tenant !== null">
+  <table class="table">
+    <thead>
+ <tr>
+    <th>{{'TENANT.USERNAME'| translate}}</th>
+    <th>{{'TENANT.QUOTA'| translate}}/{{'TENANT.USEDQUOTA'| translate}}</th>
+    <th>{{'TENANT.VM'| translate}}</th>
+ </tr>
+</thead>
+<tbody>
+<tr *ngFor="let tenant of tenants">
+      <td [ngClass]="tenant.enable ? 'succes':'error'">{{tenant.username}}
+      </td>
+      <td >
+
+        <progressbar [max]="tenant.quota" [value]="tenant.usedQuota">
+            <span style="color:white; white-space:nowrap;">{{tenant.usedQuota}} / {{tenant.quota}}</span>
+        </progressbar>
+
+      </td>
+      <td [ngClass]="tenant.enable ? 'succes':'error'">{{tenant.vm}}
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
