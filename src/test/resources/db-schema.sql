@@ -10,7 +10,7 @@ CREATE TABLE users (
   uid varchar(36),
   firstname varchar(100),
   surname varchar(100),
-  vm TINYINT(2),
+  vmCount TINYINT(2),
   quota INTEGER,
   enabled BOOLEAN NOT NULL DEFAULT true
 );

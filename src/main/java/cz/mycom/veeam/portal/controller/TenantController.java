@@ -8,6 +8,8 @@ import cz.mycom.veeam.portal.repository.TenantRepository;
 import cz.mycom.veeam.portal.service.VeeamService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +29,7 @@ public class TenantController {
     private VeeamService veeamService;
 
     @RequestMapping(method = RequestMethod.POST)
+    @Secured("ROLE_SYSTEM")
     public List<Tenant> list() {
         List<Tenant> tenants = tenantRepository.findAll();
         LogonSession logonSession = veeamService.logonSystem();
@@ -35,7 +38,7 @@ public class TenantController {
                 .filter(t -> StringUtils.isNotBlank(t.getUid()))
                 .forEach(t -> {
                     CloudTenant tenant = veeamService.getTenant(t.getUid());
-                    t.setVm(tenant.getVmCount());
+                    t.setVmCount(tenant.getVmCount());
                     CloudTenantResources resources = tenant.getResources();
                     resources.getCloudTenantResources().stream().forEach(r -> {
                         //t.setUsedQuota(t.getUsedQuota() + r.getRepositoryQuota().getUsedQuota());
@@ -46,5 +49,11 @@ public class TenantController {
                 });
         veeamService.logout(logonSession.getSessionId());
         return ret;
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    @Secured("ROLE_SYSTEM")
+    public Tenant update(@RequestBody Tenant tenant) {
+        return tenantRepository.save(tenant);
     }
 }

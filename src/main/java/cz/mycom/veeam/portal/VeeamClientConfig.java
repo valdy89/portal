@@ -45,7 +45,6 @@ public class VeeamClientConfig {
 
         RestTemplate restTemplate = new RestTemplate(requestFactory);
         restTemplate.setMessageConverters(Arrays.asList(new Jaxb2RootElementHttpMessageConverter()));
-       // restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor("MyCom050\\dursik", "HesloDur123"));
         return restTemplate;
     }
 }

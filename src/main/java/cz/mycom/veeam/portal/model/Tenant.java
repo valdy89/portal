@@ -25,7 +25,7 @@ public class Tenant {
     private boolean enabled;
 
     @Column
-    private Integer vm;
+    private Integer vmCount;
 
     @Column
     private long quota = 0;

@@ -94,7 +94,6 @@ public class VeeamService {
         }
     }
 
-    @Retryable(maxAttempts = 5, exclude = HttpClientErrorException.class, backoff = @Backoff(maxDelay = 5000))
     @Secured("ROLE_SYSTEM")
     public List<Repository> getRepositories() {
         try {
@@ -104,6 +103,17 @@ public class VeeamService {
                     .filter(r -> StringUtils.startsWithIgnoreCase(r.getName(), "Scale-out"))
                     .map(r -> veeamRestTemplate.getForObject(r.getHref() + "?format=Entity", Repository.class))
                     .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    @Secured("ROLE_SYSTEM")
+    public List<RepositoryReportFrame.Period> getRepositoryReport() {
+        try {
+            RepositoryReportFrame repositoryReportFrame = veeamRestTemplate.getForObject(getUrl("reports/summary/repository"), RepositoryReportFrame.class);
+            return repositoryReportFrame.getPeriods();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);

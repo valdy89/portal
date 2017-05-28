@@ -4,7 +4,7 @@
 
     <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="Append" value="true"/>
-        <param name="File" value="/var/app/log/veeam-portal.log"/>
+        <param name="File" value="/var/log/tomcat6/mycom-portal.log"/>
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <param name="ImmediateFlush" value="true"/>
         <layout class="org.apache.log4j.PatternLayout">
