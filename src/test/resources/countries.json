@@ -1,0 +1,326 @@
+{
+  "Data": [
+    {
+      "Code": "SK",
+      "Currency": {
+        "Code": "EUR",
+        "Country": "EMU",
+        "Name": "Euro",
+        "Priority": 8,
+        "Symbol": "EUR",
+        "Id": 2
+      },
+      "CurrencyId": 2,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Slovenská republika",
+      "NameEnglish": "the Slovak Republic",
+      "Id": 1
+    },
+    {
+      "Code": "CZ",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Česká republika",
+      "NameEnglish": "the Czech Republic",
+      "Id": 2
+    },
+    {
+      "Code": "AF",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Islámská republika Afghánistán",
+      "NameEnglish": "the Islamic Republic of Afghanistan",
+      "Id": 3
+    },
+    {
+      "Code": "AL",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Albánská republika",
+      "NameEnglish": "the Republic of Albania",
+      "Id": 4
+    },
+    {
+      "Code": "AQ",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Antarktida",
+      "NameEnglish": "Antarctica",
+      "Id": 5
+    },
+    {
+      "Code": "DZ",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Alžírská demokratická a lidová republika",
+      "NameEnglish": "the People's Democratic Republic of Algeria",
+      "Id": 6
+    },
+    {
+      "Code": "AS",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Americká Samoa",
+      "NameEnglish": "American Samoa",
+      "Id": 7
+    },
+    {
+      "Code": "AD",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Andorrské knížectví",
+      "NameEnglish": "the Principality of Andorra",
+      "Id": 8
+    },
+    {
+      "Code": "AO",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Angolská republika",
+      "NameEnglish": "the Republic of Angola",
+      "Id": 9
+    },
+    {
+      "Code": "AG",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Antigua a Barbuda",
+      "NameEnglish": "Antigua and Barbuda",
+      "Id": 10
+    },
+    {
+      "Code": "AZ",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Ázerbájdžánská republika",
+      "NameEnglish": "the Republic of Azerbaijan",
+      "Id": 11
+    },
+    {
+      "Code": "AR",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Argentinská republika",
+      "NameEnglish": "the Argentine Republic",
+      "Id": 12
+    },
+    {
+      "Code": "AU",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Austrálie",
+      "NameEnglish": "Australia",
+      "Id": 13
+    },
+    {
+      "Code": "AT",
+      "Currency": {
+        "Code": "EUR",
+        "Country": "EMU",
+        "Name": "Euro",
+        "Priority": 8,
+        "Symbol": "EUR",
+        "Id": 2
+      },
+      "CurrencyId": 2,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Rakouská republika",
+      "NameEnglish": "the Republic of Austria",
+      "Id": 14
+    },
+    {
+      "Code": "BS",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Bahamské společenství",
+      "NameEnglish": "the Commonwealth of The Bahamas",
+      "Id": 15
+    },
+    {
+      "Code": "BH",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Království Bahrajn",
+      "NameEnglish": "the Kingdom of Bahrain",
+      "Id": 16
+    },
+    {
+      "Code": "BD",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Bangladéšská lidová republika",
+      "NameEnglish": "the People's Republic of Bangladesh",
+      "Id": 17
+    },
+    {
+      "Code": "AM",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Arménská republika",
+      "NameEnglish": "the Republic of Armenia",
+      "Id": 18
+    },
+    {
+      "Code": "BB",
+      "Currency": {
+        "Code": "CZK",
+        "Country": "Česká republika",
+        "Name": "Česká koruna",
+        "Priority": 10,
+        "Symbol": "Kč",
+        "Id": 1
+      },
+      "CurrencyId": 1,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Barbados",
+      "NameEnglish": "Barbados",
+      "Id": 19
+    },
+    {
+      "Code": "BE",
+      "Currency": {
+        "Code": "EUR",
+        "Country": "EMU",
+        "Name": "Euro",
+        "Priority": 8,
+        "Symbol": "EUR",
+        "Id": 2
+      },
+      "CurrencyId": 2,
+      "DateLastChange": "1753-01-01T00:00:00",
+      "Name": "Belgické království",
+      "NameEnglish": "the Kingdom of Belgium",
+      "Id": 20
+    }
+  ],
+  "TotalItems": 251,
+  "TotalPages": 13
+}
