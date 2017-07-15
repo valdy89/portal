@@ -14,7 +14,7 @@ export class AuthenticationService {
       headers.append("Authorization", "Basic " + btoa(username + ":" + password));
       headers.append("Content-Type", "application/x-www-form-urlencoded");
 
-      this.http.get
+      //this.http.get
       // let res = this.http.post('http://192.168.0.102:8080/login', void 0, headers)
       //     .map((response: Response) => {
       //         // login successful if there's a jwt token in the response

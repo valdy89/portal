@@ -28,6 +28,9 @@
             '@ngx-translate/core': 'npm:@ngx-translate/core/bundles/core.umd.js',
             '@ngx-translate/http-loader': 'npm:@ngx-translate/http-loader/bundles/http-loader.umd.js',
 
+            //custom validators
+            'ng2-validation': 'npm:ng2-validation/bundles/ng2-validation.umd.js'
+
             //bootstrapModule
              '@ngx-bootstrap': 'node_modules/ngx-bootstrap/bundles/ngx-bootstrap.umd.js'
             // other libraries

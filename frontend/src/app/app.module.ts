@@ -3,6 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }    from '@angular/forms';
 import { HttpModule, Http} from '@angular/http';
 
+
+import { CustomFormsModule } from 'ng2-validation'
+
 // used to create fake backend
 import { fakeBackendProvider } from './_helpers/index';
 import { MockBackend, MockConnection } from '@angular/http/testing';
@@ -17,14 +20,17 @@ import { AlertService, AuthenticationService, UserService,TenantService } from '
 import { HomeComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
-import { TenantComponent } from './tenant/index';
+import { TenantComponent, TenantFormComponent } from './tenant/index';
+import { ReportComponent } from './report/index';
+import { ServicesComponent } from './services/index';
+
 
 import { NavbarComponent } from './navbar/index';
 import { HeaderbarComponent } from './headerbar/index';
 //translation
 import {TranslateModule, TranslateLoader} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
-import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { ProgressbarModule,DatepickerModule } from 'ngx-bootstrap';
 
 
 
@@ -36,10 +42,11 @@ export function HttpLoaderFactory(http: Http) {
 @NgModule({
     imports: [
         BrowserModule,
-        FormsModule,
+        FormsModule,CustomFormsModule,
         HttpModule,
         routing,HttpModule,
         ProgressbarModule.forRoot(),
+        DatepickerModule.forRoot(),
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -54,9 +61,11 @@ export function HttpLoaderFactory(http: Http) {
         HomeComponent,
         LoginComponent,
         RegisterComponent,
-        TenantComponent,
+        ReportComponent,
+        TenantComponent,  TenantFormComponent,
         NavbarComponent,
-        HeaderbarComponent
+        HeaderbarComponent,
+        ServicesComponent
     ],
     providers: [
         AuthGuard,

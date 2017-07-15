@@ -10,27 +10,26 @@ export class TenantService {
 
     getTenants() {
        return this.http.post('http://192.168.0.102:8080/tenant', '', this.jwt()).map((response: Response) => response.json());
-    // let object = JSON.stringify({"data": [
-    //   {
-    //     "tenant":"hovno",
-    //     "type": "articles",
-    //     "id": "3"
-    //   },{
-    //     "tenant":"hovno",
-    //     "type": "articles",
-    //     "id": "3"
-    //   },{
-    //     "tenant":"hovno",
-    //     "type": "articles",
-    //     "id": "3"
-    //   }
-    // ]});
-
-  //  return object;
     }
     getById(id: number) {
         return this.http.get('/tenant/' + id, this.jwt()).map((response: Response) => response.json());
     }
+
+    create(tenant: Tenant){
+      return this.http.put('http://192.168.0.102:8080/tenant/', JSON.stringify(tenant), this.jwt()).map((response: Response) => response.json());
+    }
+
+    update(tenant: Tenant){
+      return this.http.post('http://192.168.0.102:8080/tenant', JSON.stringify(tenant), this.jwt()).map((response: Response) => response.json());
+    }
+
+    delete(tenant: Tenant){
+      return this.http.post('http://192.168.0.102:8080/tenant', JSON.stringify(tenant), this.jwt()).map((response: Response) => response.json());
+    }
+
+
+
+
     // private helper methods
 
     private jwt() {

@@ -1,7 +1,53 @@
 {
+  "COMMON":{
+    "CANCEL" : "Zrušit",
+    "SAVEACTION": "Uložit",
+    "REQUIRED":"je povinný údaj.",
+    "MUSTBEEMAIL":"Musí mít formát emailové adresy.",
+    "MUSTBENumber":"Musí být celočíselná hodnota."
+  },
   "LOGIN":{
-      "LOGIN" : "Username",
-      "PASSWORD": "Password"
+      "EMAIL" : "Email",
+      "PASSWORD": "Heslo",
+      "LOGIN": "Přihlášení",
+      "LOGINACTION":"Přihlásit",
+      "REGISTER":"Registrovat se"
     },
-"TEST"  :"ceeeeeey"
+  "REGISTRATION"  :{
+      "REGISTER" : "Registrovat",
+      "REGISTRATION" : "Registrace"
+    },
+    "USER" :{
+      "EMAIL" : "email",
+      "FIRSTNAME" : "jméno",
+      "LASTNAME" : "příjmení",
+      "COMPANYNAME" : "název společnosti",
+      "STREET" : "ulice",
+      "CITY" : "město",
+      "POSTAL" : "PSČ",
+      "COUNTRYID" : "země",
+      "IDENTNUMBER" : "IČO",
+      "VATNUMBER" : "DIČ",
+      "PNOHE" : "telefon"
+    },
+    "TENANT":{
+      "USERNAME":"Username",
+      "QUOTA":"Quota",
+      "USEDQUOTA":"Využitá kvóta",
+      "VM":"Virtuálních strojů",
+      "ADD":"Přidat tenant",
+      "FIRSTNAME" : "Jméno",
+      "LASTNAME" : "Příjmení"
+    },
+
+    "NAVIGATION" :{
+      "TENANT":"Tenanty"
+    },
+
+    "ACTION":{
+      "EDIT":"upravit",
+      "DELETE":"smazat",
+      "ADD":"přidat"
+    }
+
 }

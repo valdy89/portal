@@ -1,7 +1,10 @@
 {
   "COMMON":{
-    "CANCEL" : "Zrušit"
-
+    "CANCEL" : "Zrušit",
+    "SAVEACTION": "Uložit",
+    "REQUIRED":"je povinný údaj.",
+    "MUSTBEEMAIL":"Musí mít formát emailové adresy.",
+    "MUSTBENumber":"Musí být celočíselná hodnota."
   },
   "LOGIN":{
       "EMAIL" : "Email",
@@ -10,15 +13,10 @@
       "LOGINACTION":"Přihlásit",
       "REGISTER":"Registrovat se"
     },
-
-
-  "":"",
   "REGISTRATION"  :{
       "REGISTER" : "Registrovat",
       "REGISTRATION" : "Registrace"
-
     },
-
     "USER" :{
       "EMAIL" : "email",
       "FIRSTNAME" : "jméno",
@@ -32,8 +30,35 @@
       "VATNUMBER" : "DIČ",
       "PNOHE" : "telefon"
     },
+    "TENANT":{
+      "USERNAME":"Uživatel",
+      "QUOTA":"Kvóta",
+      "USEDQUOTA":"Využitá kvóta",
+      "VM":"Virtuálních strojů",
+      "ADD":"Přidat tenant",
+      "FIRSTNAME" : "Jméno",
+      "LASTNAME" : "Příjmení"
+    },
 
     "NAVIGATION" :{
-      "TENANT":"Tenanty"
+      "TENANT":"Správa klientů",
+      "SERVICES":"Správa služeb",
+      "REPORT":"Reporty",
+      "HOME": "Úvod"
+    },
+
+    "ACTION":{
+      "EDIT":"upravit",
+      "DELETE":"smazat",
+      "ADD":"přidat"
+    },
+
+    "SERVICES":{
+      "HEADER":"Správa služeb"
+    },
+
+    "REPORT":{
+      "HEADER":"Reporty"
     }
+
 }
