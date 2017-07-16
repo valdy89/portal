@@ -55,9 +55,9 @@ gulp.task('html', ['inject', 'partials'], function () {
     .pipe(assets.restore())
     .pipe($.useref())
     .pipe($.revReplace())
-    //.pipe(htmlFilter)
-    //.pipe($.minifyHtml({empty: true,spare: true,quotes: true,conditionals: true}))
-    //.pipe(htmlFilter.restore())
+    .pipe($.if(!gutil.env.development && !gutil.env.design, htmlFilter))
+    .pipe($.if(!gutil.env.development && !gutil.env.design, $.minifyHtml({empty: true,spare: true,quotes: true,conditionals: true})))
+    .pipe($.if(!gutil.env.development && !gutil.env.design, htmlFilter.restore()))
     .pipe(gulp.dest(path.join(conf.paths.dist, '/')))
     .pipe($.size({title: path.join(conf.paths.dist, '/'), showFiles: true}));
 });
