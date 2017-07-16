@@ -9,7 +9,7 @@
   function MainController($log, $http, $window, $scope, $injector, $rootScope, $location, AuthenticationService, EndpointConfigService) {
     var main = this;
 
-    $log.debug("Main controller");
+    $log.debug("Main controller begin");
 
     if ($location.path() !== '/login') {
       if ($http.defaults.headers.common.Authorization) {

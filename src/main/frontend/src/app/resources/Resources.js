@@ -7,6 +7,9 @@
     })
     .factory('SubtenantResource', function ($log, $rootScope, $resource, EndpointConfigService) {
       return $resource(EndpointConfigService.getUrl('/subtenant'));
+    })
+    .factory('RepositoryResource', function ($log, $rootScope, $resource, EndpointConfigService) {
+      return $resource(EndpointConfigService.getUrl('/repository'));
     });
 
 })();
