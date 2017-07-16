@@ -1,0 +1,314 @@
+@import '../../bower_components/components-font-awesome/less/font-awesome.less';
+
+@font-face {
+  font-family: 'eurostileBol';
+  src: url(../assets/fonts/eurostile-bol-webfont-cz.woff);
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: 'eurostileReg';
+  src: url(../assets/fonts/eurostile-reg-webfont-cz.woff);
+  font-weight: normal;
+}
+
+/**
+ *  Do not remove this comments bellow. It's the markers used by wiredep to inject
+ *  less dependencies when defined in the bower.json of your dependencies
+ */
+// bower:less
+// endbower
+
+/**
+ *  If you want to override some bootstrap variables, you have to change values here.
+ *  The list of variables are listed here bower_components/bootstrap/less/variables.less
+ */
+
+@body-bg: #ffffff;
+@headings-font-family: 'eurostileBol', Arial, sans-serif;
+@headings-font-family-regular: 'eurostileReg', Arial, sans-serif;
+
+@brand-primary: #003F7D;
+@yellow: #fbe400;
+@blue: #0055AA;
+
+
+@navbar-inverse-link-color: #5AADBB;
+@icon-font-path: '../../bower_components/bootstrap/fonts/';
+
+
+// reset border radius
+// @border-radius-base:        0;
+// @border-radius-large:       0;
+// @border-radius-small:       0;
+
+/**
+ *  Do not remove this comments bellow. It's the markers used by gulp-inject to inject
+ *  all your less files automatically
+ */
+// injector
+// endinjector
+.red { color: @btn-danger-bg; }
+.green { color: @btn-success-bg; }
+.yellow { color: @yellow; }
+.blue { color: @blue; }
+.padding-bot-15 { padding-bottom: 15px; }
+
+
+// layout
+// .container {
+//   @media (min-width: @screen-lg-min) {
+//     width: 100%;
+//   }
+// }
+// end layout
+
+// header
+  .navbar {
+    border: 0;
+    background: #fff;
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+
+    .uib-dropdown-menu {
+      .glyphicon, .fa {
+        display: inline-block;
+        width: 38px;
+        text-align: center;
+      }
+
+      a {
+        color: @brand-primary;
+        padding-left: 5px;
+      }
+    }
+
+    .navbar-collapse.collapse { padding-left: 0; }
+  }
+
+  .navbar-nav > li > a {
+    // color: #fff;
+    font-family: @headings-font-family-regular;
+    font-size: 14px;
+  }
+// end header
+
+// reset defaul tables
+  .table-responsive {
+    min-height: 400px;
+  }
+
+  .table > thead > tr {
+    background: #ddd;
+
+    td { padding-top: 0; }
+
+    input[type=checkbox] {
+      margin: 0;
+      vertical-align: middle;
+    }
+  }
+
+  .table > thead > tr > th {
+    border-bottom-width: 1px;
+    font-size: 12px;
+    // font-family: @headings-font-family-regular;
+    // font-size: 12px;
+    // font-weight: 400;
+    vertical-align: top;
+
+    &.checkbox-column {
+      width: 30px;
+    }
+  }
+
+  .table td {
+    font-size: 12px;
+
+    input[type=number],
+    input[type=text] {
+      &:extend(.input-xs);
+
+      height: 24px;
+      font-size: 11px;
+
+      padding: 0 6px;
+    }
+
+    @media (max-width: @screen-lg) {
+      font-size: 11px;
+    }
+  }
+// end reset defaul tables
+
+// panel
+.panel-heading > .dropdown .dropdown-toggle {
+  color: @brand-primary;
+}
+
+// end panel
+
+.panel-heading {
+  font-size: 130%;
+  font-family: @headings-font-family;
+
+  button, ul {
+    font-family: @font-family-sans-serif;
+  }
+}
+
+
+// tab part
+.tab-content {
+  .tab-pane {
+    position: relative;
+
+    > button {
+      position: absolute;
+      top: -44px;
+      right: 0;
+    }
+  }
+}
+
+.nav-tabs {
+  // margin-bottom: 15px;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  background: #ddd;
+}
+
+// form
+.form-group-special {
+  padding-right: 20px;
+
+  input[type=checkbox] {
+    margin-top: 8px;
+  }
+}
+
+.form-horizontal {
+  .modal-body {
+    .form-group {
+      margin: 0 0;
+    }
+  }
+}
+
+.input-group--short {
+  width: 150px;
+
+  &.input-group--has-select {
+
+    .input-group-addon {
+      padding: 0;
+      // border: 0;
+    }
+
+    .ui-select-bootstrap {
+      width: 50px;
+    }
+
+    .btn {
+      border: 0;
+      height: 28px;
+    }
+
+  }
+}
+.select-short {
+  width: 70px;
+}
+
+.input--short {
+  width: 90px;
+}
+// end form
+
+
+.fa-edit, .fa-remove {
+  font-size: 18px;
+}
+
+.fa-edit {
+  position: relative;
+  top: 1px;
+  color: @blue;
+}
+
+.form-control.ui-select-toggle {
+  &:extend(.input-sm);
+  height: 24px;
+  font-size: 11px;
+  line-height: 1;
+
+  .btn {
+    margin-top: -4px;
+  }
+}
+  .ui-select-bootstrap .ui-select-choices-row>a {
+    padding: 3px 7px;
+  }
+
+.fa-remove { color: @btn-danger-bg; }
+
+.fa-check {color: @btn-success-bg; }
+
+.dropdown-menu {
+  font-size: 13px;
+
+  .panel-heading & {
+    left: auto;
+    right: 0;
+  }
+
+  > li {
+    > a {
+      padding-left: 5px;
+      span {
+        display: inline-block;
+        width: 32px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+
+.cg-busy {
+  position: fixed;
+  top: 0;
+  z-index: 9999;
+}
+
+
+ul.ui-select-choices.ui-select-choices-content.ui-select-dropdown.dropdown-menu.ng-scope {
+  font-size: 11px;
+}
+
+th .glyphicon-sort {
+  position: relative;
+  top: 2px;
+  margin-left: 5px;
+}
+
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.dangerLimit {
+  color: red;
+  font-weight: bold;
+}
+
+
+

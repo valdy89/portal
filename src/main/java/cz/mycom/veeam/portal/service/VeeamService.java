@@ -11,11 +11,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
@@ -56,18 +53,23 @@ public class VeeamService {
     public CloudTenant createTenant(CreateCloudTenantSpec cloudTenant) {
         try {
             Task taskType = veeamRestTemplate.postForObject(getUrl("cloud/tenants"), cloudTenant, Task.class);
-            int i = 0;
-            while (!"Finished".equals(taskType.getState())) {
-                Thread.sleep(100);
-                taskType = veeamRestTemplate.getForObject(taskType.getHref(), Task.class);
-                log.debug("TaskType: " + taskType.getState());
-                //FIXME kdyz to vytuhne tak neco udelat
-            }
-            if (!taskType.getResult().isSuccess()) {
-                throw new IllegalStateException(taskType.getResult().getMessage());
-            }
+            taskType = waitForTast(taskType);
             String url = taskType.getLinks().getLinks().stream().filter(l -> "Related".equals(l.getRel())).findFirst().get().getHref();
             return veeamRestTemplate.getForObject(url, CloudTenant.class);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e.getMessage());
+        } catch (HttpStatusCodeException e) {
+            handleException(e);
+        }
+        return null;
+    }
+
+    @Secured("ROLE_SYSTEM")
+    public CloudSubtenant createSubTenant(String tenant, CloudSubtenantCreateSpec subtenantCreateSpec) {
+        try {
+            Task taskType = veeamRestTemplate.postForObject(getUrl("cloud/tenants/" + tenant + "/subtenants"), subtenantCreateSpec, Task.class);
+            waitForTast(taskType);
+            return veeamRestTemplate.getForObject("/cloud/tenants/" + tenant +"/subtenants/" + subtenantCreateSpec.getName(), CloudSubtenant.class);
         } catch (InterruptedException e) {
             throw new RuntimeException(e.getMessage());
         } catch (HttpStatusCodeException e) {
@@ -84,6 +86,16 @@ public class VeeamService {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+
+    public CloudSubtenants getSubtenants(String uid) {
+        try {
+            return veeamRestTemplate.getForObject(getUrl("/cloud/tenants/{uid}/subtenants"), CloudSubtenants.class, uid);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
 
     public CloudTenantResources getTenantResources(String uid) {
         try {
@@ -120,7 +132,7 @@ public class VeeamService {
         }
     }
 
-    public Repository getPrefferedRepostitory() {
+    public Repository getPreferredRepository() {
         List<Repository> repositories = getRepositories();
         if (repositories.isEmpty()) {
             throw new IllegalStateException("None repository found");
@@ -152,7 +164,7 @@ public class VeeamService {
     private LogonSession logonSession(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Basic " + token);
-        ResponseEntity<LogonSession> responseEntity = veeamRestTemplate.exchange(getUrl("sessionMngr/?v=v1_3"), HttpMethod.POST, new HttpEntity<>(headers), LogonSession.class);
+        ResponseEntity<LogonSession> responseEntity = veeamRestTemplate.exchange(getUrl("sessionMngr/?v=latest"), HttpMethod.POST, new HttpEntity<>(headers), LogonSession.class);
         LogonSession logonSession = responseEntity.getBody();
         log.debug("LogonSession: " + logonSession.getSessionId());
         return logonSession;
@@ -169,7 +181,7 @@ public class VeeamService {
         }
     }
 
-    private void handleException(HttpStatusCodeException e)  {
+    private void handleException(HttpStatusCodeException e) {
         log.error(e.getMessage(), e);
         try {
             Error error = (Error) JAXBContext.newInstance(Error.class).createUnmarshaller().unmarshal(new StringReader(e.getResponseBodyAsString()));
@@ -184,5 +196,18 @@ public class VeeamService {
 
     private String getUrl(String path) {
         return veeamApiUrl + path;
+    }
+
+    private Task waitForTast(Task taskType) throws InterruptedException {
+        while (!"Finished".equals(taskType.getState())) {
+            Thread.sleep(100);
+            taskType = veeamRestTemplate.getForObject(taskType.getHref(), Task.class);
+            log.debug("TaskType: " + taskType.getState());
+            //FIXME kdyz to vytuhne tak neco udelat
+        }
+        if (!taskType.getResult().isSuccess()) {
+            throw new IllegalStateException(taskType.getResult().getMessage());
+        }
+        return taskType;
     }
 }

@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic().and()
+                .logout().logoutSuccessUrl("/").and()
                 .csrf().disable()
                 .cors();
     }

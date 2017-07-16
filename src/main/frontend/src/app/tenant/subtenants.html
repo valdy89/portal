@@ -1,0 +1,44 @@
+<div cg-busy="[ctrl.tenants,ctrl.subtenants]"></div>
+<div class="panel panel-primary">
+  <div class="panel-heading clearfix">
+    <div class="title pull-left">Seznam sub-tenantů</div>
+  </div>
+
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th>Tenant</th>
+      <th colspan="4">
+        <ui-select ng-model="ctrl.tenant" ng-required="true" autofocus="true" on-select="ctrl.getItems()" style="width: 400px; min-width: 300px;">
+          <ui-select-match placeholder="Vyber tenanta" allow-clear="false">{{$select.selected.username}}</ui-select-match>
+          <ui-select-choices repeat="tenant.uid as tenant in ctrl.tenants | filter: $select.search">
+            <span ng-bind-html="tenant.username | highlight: $select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+      </th>
+    </tr>
+    <tr>
+      <th>Jméno</th>
+      <th>Alokace GB</th>
+      <th>Využívaná GB</th>
+      <th>Využívaná %</th>
+      <th>Povolen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="subtenant in ctrl.subtenants">
+      <td>{{::subtenant.name}}</td>
+      <td>{{::subtenant.quota/1000 | number:1}}</td>
+      <td>{{::subtenant.usedQuota/1000 | number:1}}</td>
+      <td>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}} %</td>
+      <td>
+        <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
+        <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div ng-show="!ctrl.subtenants || ctrl.subtenants.length==0">
+    Nic nenalezeno.
+  </div>
+</div>

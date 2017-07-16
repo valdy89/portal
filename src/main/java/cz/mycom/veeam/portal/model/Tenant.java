@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author dursik
@@ -24,11 +25,8 @@ public class Tenant {
     @Column
     private boolean enabled;
 
-    @Column
-    private Integer vmCount;
-
-    @Column
-    private long quota = 0;
+    @Column(name = "vm_count")
+    private int vmCount;
 
     @Column
     private String surname;
@@ -36,6 +34,22 @@ public class Tenant {
     @Column
     private String firstname;
 
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreated;
+
+    @Column(name = "subtenant_count")
+    private int subtenantCount;
+
     @Transient
-    private long usedQuota = 0;
+    private long usedQuota;
+
+    @Transient
+    private String name;
+
+    @Transient
+    private String description;
+
+    @Transient
+    private long quota;
 }

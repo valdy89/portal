@@ -1,0 +1,75 @@
+<div cg-busy="[ctrl.tenants]"></div>
+<div class="panel panel-primary">
+  <div class="panel-heading clearfix">
+    <div class="title pull-left">Seznam tenantů</div>
+  </div>
+
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th>Uzivatelské jméno</th>
+      <th>Jméno</th>
+      <th>Zakoupená alokace GB</th>
+      <th>Využívaná velikost GB</th>
+      <th>Využívaná velikost %</th>
+      <th>Počet VM</th>
+      <th>Počet subtenantů</th>
+      <th>Povolen</th>
+      <th>Založen</th>
+      <th>Akce</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="tenant in ctrl.tenants">
+      <td><a href="subtenants?uid={{::tenant.uid}}">{{::tenant.username}}</a></td>
+      <td><label title="{{::tenant.description}}">{{::tenant.name}}</label></td>
+      <td>{{::tenant.quota/1000 | number:1}}</td>
+      <td>{{::tenant.usedQuota/1000 | number:1}}</td>
+      <td>{{::(tenant.usedQuota/tenant.quota)*100 | number:2}} %</td>
+      <td>{{::tenant.vmCount}}</td>
+      <td>{{::tenant.subtenantCount}}</td>
+      <td>
+        <span class="fa fa-check" style="color: green" ng-if="tenant.enabled"></span>
+        <span class="fa fa-remove red" style="color: red" ng-if="!tenant.enabled"></span>
+      </td>
+      <td>{{::tenant.dateCreated | portalDateTime}}</td>
+      <td>
+        <select ng-model="ctrl.actionKey">
+          <option></option>
+          <option ng-show="tenant.enabled" value="disable">zakázát</option>
+          <option ng-show="!tenant.enabled" value="enable">povolit</option>
+          <option value="changePassword">změna hesla</option>
+          <option value="changeQuota">změna velikosti kvóty</option>
+          <option value="rename">přejmenování tenanta</option>
+          <option value="changeCredit">manuální změna kreditů</option>
+          <option value="changeVIP">zařazení do VIP</option>
+          <option value="delete">smazání z portálu</option>
+        </select>
+        <button ng-click="ctrl.action(tenant)"><i class="fa fa-play-circle fa-3" aria-hidden="true"></i></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div ng-show="ctrl.subtenants.length==0">
+    Nic nenalezeno.
+  </div>
+</div>
+
+<script type="text/ng-template" id="rename.html">
+  <form name="ctrl.renameForm" role="form">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <h4 class="modal-title" id="myModalLabel">Přejmenovat uživatele</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group form-group-sm">
+        <label>Nové uživatelské jméno: </label>
+        <input type="text" ng-model="ctrl.tenant.name" required="true">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-success" ng-disabled="!ctrl.renameForm.$valid" ng-click="ctrl.save()">Odeslat</button>
+      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+    </div>
+  </form>
+</script>

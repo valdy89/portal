@@ -19,8 +19,9 @@
     </appender>
 
     <root>
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="stdout"/>
+        <appender-ref ref="FILE"/>
     </root>
 
 </log4j:configuration>

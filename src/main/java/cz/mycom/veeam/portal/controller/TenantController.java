@@ -1,5 +1,6 @@
 package cz.mycom.veeam.portal.controller;
 
+import com.veeam.ent.v1.CloudSubtenants;
 import com.veeam.ent.v1.CloudTenant;
 import com.veeam.ent.v1.CloudTenantResources;
 import com.veeam.ent.v1.LogonSession;
@@ -28,7 +29,7 @@ public class TenantController {
     @Autowired
     private VeeamService veeamService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.GET)
     @Secured("ROLE_SYSTEM")
     public List<Tenant> list() {
         List<Tenant> tenants = tenantRepository.findAll();
@@ -38,15 +39,17 @@ public class TenantController {
                 .filter(t -> StringUtils.isNotBlank(t.getUid()))
                 .forEach(t -> {
                     CloudTenant tenant = veeamService.getTenant(t.getUid());
-                    t.setVmCount(tenant.getVmCount());
+                    //t.setVmCount(tenant.getVmCount());
                     CloudTenantResources resources = tenant.getResources();
                     resources.getCloudTenantResources().stream().forEach(r -> {
-                        //t.setUsedQuota(t.getUsedQuota() + r.getRepositoryQuota().getUsedQuota());
-                        t.setUsedQuota(1000);
+                        t.setUsedQuota(t.getUsedQuota() + r.getRepositoryQuota().getUsedQuota());
                         t.setQuota(t.getQuota() + r.getRepositoryQuota().getQuota());
                     });
+                    t.setName(tenant.getName());
+                    t.setDescription(tenant.getDescription());
                     ret.add(t);
                 });
+
         veeamService.logout(logonSession.getSessionId());
         return ret;
     }
@@ -56,4 +59,10 @@ public class TenantController {
     public Tenant update(@RequestBody Tenant tenant) {
         return tenantRepository.save(tenant);
     }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public Tenant create(@RequestBody Tenant tenant) {
+        return tenantRepository.save(tenant);
+    }
+
 }
