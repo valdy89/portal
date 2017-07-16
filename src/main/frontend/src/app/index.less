@@ -29,6 +29,7 @@
 @headings-font-family-regular: 'eurostileReg', Arial, sans-serif;
 
 @brand-primary: #333333;
+@brand-secondary: #666666;
 @brand-yellow : #ffc51d;
 @yellow: #fbe400;
 @blue: #0055AA;
@@ -37,6 +38,15 @@
 @navbar-inverse-link-color: #5AADBB;
 @icon-font-path: '../../bower_components/bootstrap/fonts/';
 
+
+
+@panel-info-border : @brand-secondary;
+@panel-info-text : #fefefe;
+@panel-info-heading-bg : @brand-secondary;
+
+@panel-primary-border : @brand-primary;
+@panel-primary-text : @brand-yellow;
+@panel-primary-heading-bg:  @brand-primary;
 
 // reset border radius
 // @border-radius-base:        0;
@@ -155,12 +165,6 @@
   button, ul {
     font-family: @font-family-sans-serif;
   }
-}
-.panel-primary > .panel-heading{
-  color: @brand-yellow;
-  background-color: @brand-primary;
-  border-color: @brand-primary;
-
 }
 
 // tab part
@@ -282,6 +286,9 @@
   }
 }
 
+.panel{
+  margin-top:15px;
+}
 
 .cg-busy {
   position: fixed;
