@@ -1,4 +1,4 @@
-@import '../../bower_components/components-font-awesome/less/font-awesome.less';
+@panelimport '../../bower_components/components-font-awesome/less/font-awesome.less';
 
 @font-face {
   font-family: 'eurostileBol';
@@ -28,7 +28,8 @@
 @headings-font-family: 'eurostileBol', Arial, sans-serif;
 @headings-font-family-regular: 'eurostileReg', Arial, sans-serif;
 
-@brand-primary: #003F7D;
+@brand-primary: #333333;
+@brand-yellow : #ffc51d;
 @yellow: #fbe400;
 @blue: #0055AA;
 
@@ -155,7 +156,12 @@
     font-family: @font-family-sans-serif;
   }
 }
+.panel-primary > .panel-heading{
+  color: @brand-yellow;
+  background-color: @brand-primary;
+  border-color: @brand-primary;
 
+}
 
 // tab part
 .tab-content {
@@ -310,5 +316,21 @@ th .glyphicon-sort {
   font-weight: bold;
 }
 
+.btn-mycom {
+    color: @brand-yellow;
+    background-color: @brand-primary;
+    border-color: @brand-yellow;
 
+&:hover,
+ &:focus,
+ &.focus {
+   color: @brand-primary;
+   border-color: @brand-primary;
+   background-color: @brand-yellow;
+   text-decoration: none;
+  }
+ }
 
+ .logo{
+   height:50px;
+ }
