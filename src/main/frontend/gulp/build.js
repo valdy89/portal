@@ -20,7 +20,7 @@ gulp.task('partials', function () {
       quotes: true
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
-      module: 'ipod',
+      module: 'portal',
       root: 'app'
     }))
     .pipe(gulp.dest(conf.paths.tmp + '/partials/'));
@@ -46,7 +46,7 @@ gulp.task('html', ['inject', 'partials'], function () {
     .pipe(jsFilter)
     .pipe($.if(!gutil.env.development && !gutil.env.design, $.replace('\'LOCALHOST\'', '\'REMOTE\'')))
     .pipe($.ngAnnotate())
-    //.pipe($.uglify({preserveComments: $.uglifySaveLicense})).on('error', conf.errorHandler('Uglify'))
+    .pipe($.if(gutil.env.production,$.uglify({preserveComments: $.uglifySaveLicense})).on('error', conf.errorHandler('Uglify')))
     .pipe(jsFilter.restore())
     .pipe(cssFilter)
     .pipe($.replace('../../bower_components/bootstrap/fonts/', '../fonts/'))
@@ -55,9 +55,9 @@ gulp.task('html', ['inject', 'partials'], function () {
     .pipe(assets.restore())
     .pipe($.useref())
     .pipe($.revReplace())
-    .pipe($.if(!gutil.env.development && !gutil.env.design, htmlFilter))
-    .pipe($.if(!gutil.env.development && !gutil.env.design, $.minifyHtml({empty: true,spare: true,quotes: true,conditionals: true})))
-    .pipe($.if(!gutil.env.development && !gutil.env.design, htmlFilter.restore()))
+    .pipe(htmlFilter)
+    .pipe($.if(gutil.env.production, $.minifyHtml({empty: true,spare: true,quotes: true,conditionals: true})))
+    .pipe(htmlFilter.restore())
     .pipe(gulp.dest(path.join(conf.paths.dist, '/')))
     .pipe($.size({title: path.join(conf.paths.dist, '/'), showFiles: true}));
 });

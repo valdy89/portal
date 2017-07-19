@@ -43,7 +43,7 @@
     service.logout = function () {
       $log.debug('logout');
       clearCredential();
-      $http.get(EndpointConfigService.getUrl('/logout'));
+      $http.get(EndpointConfigService.getAppUrl('/logout'));
     };
 
     function clearCredential() {

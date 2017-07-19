@@ -47,7 +47,7 @@
 
     main.logout = function () {
       AuthenticationService.logout();
-      //$window.location.reload();
+      $window.location.reload();
     };
   }
 

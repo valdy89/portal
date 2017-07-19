@@ -23,8 +23,8 @@
     <tr ng-repeat="tenant in ctrl.tenants">
       <td><a href="subtenants?uid={{::tenant.uid}}">{{::tenant.username}}</a></td>
       <td><label title="{{::tenant.description}}">{{::tenant.name}}</label></td>
-      <td>{{::tenant.quota/1000 | number:1}}</td>
-      <td>{{::tenant.usedQuota/1000 | number:1}}</td>
+      <td>{{::tenant.quota/1024 | number:1}}</td>
+      <td>{{::tenant.usedQuota/1024 | number:1}}</td>
       <td>{{::(tenant.usedQuota/tenant.quota)*100 | number:2}} %</td>
       <td>{{::tenant.vmCount}}</td>
       <td>{{::tenant.subtenantCount}}</td>

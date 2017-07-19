@@ -28,8 +28,8 @@
     <tbody>
     <tr ng-repeat="subtenant in ctrl.subtenants">
       <td>{{::subtenant.name}}</td>
-      <td>{{::subtenant.quota/1000 | number:1}}</td>
-      <td>{{::subtenant.usedQuota/1000 | number:1}}</td>
+      <td>{{::subtenant.quota/1024 | number:1}}</td>
+      <td>{{::subtenant.usedQuota/1024 | number:1}}</td>
       <td>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}} %</td>
       <td>
         <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
