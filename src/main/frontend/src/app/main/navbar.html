@@ -10,7 +10,13 @@
         <li><a href="index.html"><span class="fa fa-home"></span>&nbsp;Dashboard</a></li>
         <li><a href="tenants"><span class="fa fa-user"></span>&nbsp;Seznam tenantů</a></li>
         <li><a href="subtenants"><span class="fa fa-users"></span>&nbsp;Seznam sub-tenantů</a></li>
-        <li><a href="history"><span class="fa fa-history"></span>&nbsp;Historie</a></li>
+        <li uib-dropdown>
+          <a role="button" uib-dropdown-toggle>Historie&nbsp;<b class="caret"></b></a>
+          <ul class="uib-dropdown-menu">
+            <li><a href="repositoryHistory"><span class="glyphicon glyphicon-cd"></span>Repository</a></li>
+            <li><a href="tenantHistory"><span class="glyphicon glyphicon-user"></span>Tenantů</a></li>
+          </ul>
+        </li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">

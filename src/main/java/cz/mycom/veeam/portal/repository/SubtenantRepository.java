@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * @author dursik
  */
-public interface TenantRepository extends JpaRepository<Tenant, Integer> {
-    List<Tenant> findByRepositoryUid(String uid);
-    Tenant findBySubtenantsEquals(Subtenant subtenant);
+public interface SubtenantRepository extends JpaRepository<Subtenant, String> {
+    List<Subtenant> findByTenant_Id(int tenantId);
 }

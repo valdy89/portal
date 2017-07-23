@@ -16,7 +16,7 @@
       $routeProvider
         .when('/', {
           templateUrl: 'app/dashboard/dashboard.html',
-          controller: 'DashboardController as ctrl',
+          controller: 'DashboardController as ctrl'
         })
         .when('/login', {
           templateUrl: 'app/login/login.html',
@@ -29,6 +29,14 @@
         .when('/subtenants', {
           templateUrl: 'app/tenant/subtenants.html',
           controller: 'SubtenantsController as ctrl'
+        })
+        .when('/repositoryHistory', {
+          templateUrl: 'app/history/repositoryHistory.html',
+          controller: 'RepositoryHistoryController as ctrl'
+        })
+        .when('/tenantHistory', {
+          templateUrl: 'app/history/tenantHistory.html',
+          controller: 'TenantHistoryController as ctrl'
         })
         .otherwise({
           redirectTo: '/'

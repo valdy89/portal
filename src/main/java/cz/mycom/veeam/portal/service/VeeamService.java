@@ -65,17 +65,50 @@ public class VeeamService {
     }
 
     @Secured("ROLE_SYSTEM")
-    public CloudSubtenant createSubTenant(String tenant, CloudSubtenantCreateSpec subtenantCreateSpec) {
+    public void saveTenant(String uid, CloudTenant tenant) {
         try {
-            Task taskType = veeamRestTemplate.postForObject(getUrl("cloud/tenants/" + tenant + "/subtenants"), subtenantCreateSpec, Task.class);
+            ResponseEntity<Task> taskType = veeamRestTemplate.exchange(getUrl("cloud/tenants/{tenantUid}"), HttpMethod.PUT, new HttpEntity<CloudTenant>(tenant), Task.class, uid);
+            waitForTast(taskType.getBody());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e.getMessage());
+        } catch (HttpStatusCodeException e) {
+            handleException(e);
+        }
+    }
+
+    @Secured("ROLE_SYSTEM")
+    public CloudSubtenant createSubtenant(String tenantUid, CloudSubtenantCreateSpec subtenantCreateSpec) {
+        try {
+            Task taskType = veeamRestTemplate.postForObject(getUrl("cloud/tenants/" + tenantUid + "/subtenants"), subtenantCreateSpec, Task.class);
             waitForTast(taskType);
-            return veeamRestTemplate.getForObject("/cloud/tenants/" + tenant +"/subtenants/" + subtenantCreateSpec.getName(), CloudSubtenant.class);
+            return veeamRestTemplate.getForObject("/cloud/tenants/" + tenantUid +"/subtenants/" + subtenantCreateSpec.getName(), CloudSubtenant.class);
         } catch (InterruptedException e) {
             throw new RuntimeException(e.getMessage());
         } catch (HttpStatusCodeException e) {
             handleException(e);
         }
         return null;
+    }
+
+    @Secured("ROLE_SYSTEM")
+    public void saveSubtenant(String tenantUid, String subtenantUid, CloudSubtenant subtenant) {
+        try {
+            ResponseEntity<Task> taskType = veeamRestTemplate.exchange(getUrl("cloud/tenants/{tenantUid}/subtenants/{subtenantUid}"), HttpMethod.PUT, new HttpEntity<CloudSubtenant>(subtenant), Task.class, tenantUid, subtenantUid);
+            waitForTast(taskType.getBody());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e.getMessage());
+        } catch (HttpStatusCodeException e) {
+            handleException(e);
+        }
+    }
+
+    public CloudSubtenant getSubtenant(String tenantUid, String subtenantUid) {
+        try {
+            return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{tenantUid}/subtenants/{subtenantUid}"), CloudSubtenant.class, tenantUid, subtenantUid);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     public CloudTenant getTenant(String uid) {
@@ -99,7 +132,7 @@ public class VeeamService {
 
     public CloudTenantResources getTenantResources(String uid) {
         try {
-            return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{ID}/resources"), CloudTenantResources.class, uid);
+            return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{uid}/resources"), CloudTenantResources.class, uid);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -125,7 +158,9 @@ public class VeeamService {
     public List<RepositoryReportFrame.Period> getRepositoryReport() {
         try {
             RepositoryReportFrame repositoryReportFrame = veeamRestTemplate.getForObject(getUrl("reports/summary/repository"), RepositoryReportFrame.class);
-            return repositoryReportFrame.getPeriods();
+            return repositoryReportFrame.getPeriods().stream()
+                    .filter(r -> StringUtils.startsWithIgnoreCase(r.getName(), "Scale-out"))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -156,7 +191,7 @@ public class VeeamService {
     public LogonSession logonSystem() {
         try {
             return logonSession(Base64.encodeBase64String((veeamApiUser + ":" + keyStoreService.readData("veeam.api.password")).getBytes("UTF-8")));
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -168,6 +203,10 @@ public class VeeamService {
         LogonSession logonSession = responseEntity.getBody();
         log.debug("LogonSession: " + logonSession.getSessionId());
         return logonSession;
+    }
+
+    public void logout(LogonSession logonSession) {
+        logout(logonSession.getSessionId());
     }
 
     public void logout(String sessionId) {

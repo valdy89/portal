@@ -26,7 +26,7 @@
             <tbody>
             <tr ng-repeat="repository in ctrl.repositories">
               <td>{{::repository.name}}</a></td>
-              <td>{{::repository.quota | number:2}}</td>
+              <td>{{::repository.purchasedSpace | number:2}}</td>
               <td>{{::repository.backupSize | number:2}}</td>
               <td>{{::(1 - repository.freeSpace/repository.capacity)*100 | number:2}} %</td>
               <td>{{::repository.capacity | number:2}}</td>

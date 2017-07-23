@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author dursik
@@ -12,44 +14,50 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
+@Table(name = "tenants")
 public class Tenant {
 
     @Id
     @Column
+    private int id;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(unique = true, nullable = false)
     private String username;
 
     @Column
     private String uid;
 
     @Column
+    private String repositoryUid;
+
+    @Column
+    private Integer vmCount;
+
+    @Column
+    private Integer creditCount;
+
+    @Column
+    private Long quota;
+
+    @Column
+    private Long usedQuota;
+
+    @Column
+    private boolean vip;
+
+    @Column
     private boolean enabled;
 
-    @Column(name = "vm_count")
-    private int vmCount;
-
-    @Column
-    private String surname;
-
-    @Column
-    private String firstname;
-
-    @Column
+    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
 
-    @Column(name = "subtenant_count")
-    private int subtenantCount;
+    @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE)
+    private List<Subtenant> subtenants = new ArrayList<>();
 
     @Transient
-    private long usedQuota;
-
-    @Transient
-    private String name;
-
-    @Transient
-    private String description;
-
-    @Transient
-    private long quota;
+    private String password;
 }

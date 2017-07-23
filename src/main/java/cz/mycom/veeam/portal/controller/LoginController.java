@@ -1,7 +1,9 @@
 package cz.mycom.veeam.portal.controller;
 
 import cz.mycom.veeam.portal.model.Tenant;
+import cz.mycom.veeam.portal.model.User;
 import cz.mycom.veeam.portal.repository.TenantRepository;
+import cz.mycom.veeam.portal.repository.UserRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -17,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/login")
 public class LoginController {
     @Autowired
-    private TenantRepository tenantRepository;
+    private UserRepository userRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public AuthResponse login() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Tenant tenant = tenantRepository.getOne(authentication.getName());
-        return new AuthResponse(tenant);
+        User user = userRepository.getOne(authentication.getName());
+        return new AuthResponse(user);
     }
 
     @Data
@@ -32,10 +34,10 @@ public class LoginController {
         String surname;
         String username;
 
-        public AuthResponse(Tenant tenant) {
-            this.firstname = tenant.getFirstname();
-            this.surname = tenant.getSurname();
-            this.username = tenant.getUsername();
+        public AuthResponse(User user) {
+            this.firstname = user.getFirstname();
+            this.surname = user.getSurname();
+            this.username = user.getUsername();
         }
     }
 }

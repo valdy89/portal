@@ -33,7 +33,16 @@ public class VeeamServiceTest {
     public void tenants() throws Exception {
         LogonSession logonSession = veeamService.logonSystem();
         EntityReferences tenants = veeamService.tenants();
-        tenants.getReves().stream().forEach(t -> log.debug("Tenant: " + t.getName()));
+        tenants.getReves().stream()
+                .forEach(t -> log.debug("Tenant: " + t.getName() + ", " + t.getUID()));
+        veeamService.logout(logonSession.getSessionId());
+    }
+
+    @Test
+    @WithMockUser(roles={"SYSTEM"})
+    public void subtenants() throws Exception {
+        LogonSession logonSession = veeamService.logonSystem();
+        veeamService.getSubtenants("358c6e3a-f55a-4b79-9b39-8608a1908b30");
         veeamService.logout(logonSession.getSessionId());
     }
 

@@ -11,7 +11,8 @@
       'ui.select',
       'ui.bootstrap',
       'base64',
-      'cgBusy'
+      'cgBusy',
+      'chart.js'
     ]);
 
 

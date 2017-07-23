@@ -1,44 +1,105 @@
-<div cg-busy="[ctrl.tenants,ctrl.subtenants]"></div>
+<div cg-busy="[ctrl.tenants,ctrl.subtenants,ctrl.promise]"></div>
 <div class="panel panel-primary">
   <div class="panel-heading clearfix">
     <div class="title pull-left">Seznam sub-tenantů</div>
   </div>
 
-  <table class="table table-striped table-hover">
-    <thead>
-    <tr>
-      <th>Tenant</th>
-      <th colspan="4">
-        <ui-select ng-model="ctrl.tenant" ng-required="true" autofocus="true" on-select="ctrl.getItems()" style="width: 400px; min-width: 300px;">
-          <ui-select-match placeholder="Vyber tenanta" allow-clear="false">{{$select.selected.username}}</ui-select-match>
-          <ui-select-choices repeat="tenant.uid as tenant in ctrl.tenants | filter: $select.search">
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-3">
+        <ui-select ng-model="ctrl.selected" on-select="ctrl.getItems()" style="width: 400px; min-width: 300px;">
+          <ui-select-match placeholder="Zvolte tenanta">{{$select.selected.username}}</ui-select-match>
+          <ui-select-choices repeat="tenant.username as tenant in ctrl.tenants | filter: $select.search">
             <span ng-bind-html="tenant.username | highlight: $select.search"></span>
           </ui-select-choices>
         </ui-select>
-      </th>
-    </tr>
-    <tr>
-      <th>Jméno</th>
-      <th>Alokace GB</th>
-      <th>Využívaná GB</th>
-      <th>Využívaná %</th>
-      <th>Povolen</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="subtenant in ctrl.subtenants">
-      <td>{{::subtenant.name}}</td>
-      <td>{{::subtenant.quota/1024 | number:1}}</td>
-      <td>{{::subtenant.usedQuota/1024 | number:1}}</td>
-      <td>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}} %</td>
-      <td>
-        <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
-        <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <div ng-show="!ctrl.subtenants || ctrl.subtenants.length==0">
-    Nic nenalezeno.
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="panel panel-default">
+            <table class="table table-striped table-hover">
+              <thead>
+              <tr>
+                <th>Jméno</th>
+                <th>Alokace GB</th>
+                <th>Využívaná GB</th>
+                <th>Využívaná %</th>
+                <th>Povolen</th>
+                <th>Založen</th>
+                <th>Akce</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="subtenant in ctrl.subtenants">
+                <td>{{::subtenant.username}}</td>
+                <td>{{::subtenant.quota/1024 | number:1}}</td>
+                <td>{{::subtenant.usedQuota/1024 | number:1}}</td>
+                <td>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}}%</td>
+                <td>
+                  <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
+                  <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
+                </td>
+                <td>{{::subtenant.dateCreated | portalDateTime}}</td>
+                <td>
+                  <select ng-model="ctrl.actionKey">
+                    <option></option>
+                    <option ng-show="subtenant.enabled" value="disable">zakázát</option>
+                    <option ng-show="!subtenant.enabled" value="enable">povolit</option>
+                    <option value="changePassword">změna hesla</option>
+                    <option value="changeQuota">změna velikosti kvóty</option>
+                  </select>
+                  <button ng-click="ctrl.action(subtenant)"><i class="fa fa-play-circle fa-3" aria-hidden="true"></i></button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <div ng-show="!ctrl.subtenants || ctrl.subtenants.length==0">
+              Nic nenalezeno.
+            </div>
+          </div>
+        </div>
+    </div>
   </div>
 </div>
+
+<script type="text/ng-template" id="subtenantChangeQuota.html">
+  <div cg-busy="[ctrl.promise]"></div>
+  <form name="ctrl.changeQuotaForm" role="form">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <h4 class="modal-title">Změna velikosti kvóty</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group form-group-sm">
+        <label>Nová velikost kvóty v GB: </label>
+        <input type="number" ng-model="ctrl.quota" required="true">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-mycom" ng-disabled="!ctrl.changeQuotaForm.$valid" ng-click="ctrl.save()">Uložit</button>
+      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+    </div>
+  </form>
+</script>
+
+<script type="text/ng-template" id="subtenantChangePassword.html">
+  <div cg-busy="[ctrl.promise]"></div>
+  <form name="ctrl.changePasswordForm" role="form">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <h4 class="modal-title">Změna hesla</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group form-group-sm">
+        <label>Nové heslo: </label>
+        <input type="text" ng-model="ctrl.subtenant.password" required="true">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-mycom" ng-disabled="!ctrl.changePasswordForm.$valid" ng-click="ctrl.save()">Uložit</button>
+      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+    </div>
+  </form>
+</script>
