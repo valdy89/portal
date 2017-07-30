@@ -1,0 +1,28 @@
+<nav class="navbar">
+  <div class="container-fluid">
+
+    <div class="collapse navbar-collapse">
+      <div class="nav navbar-nav">
+          <img src="assets/logo.png" class="logo"/>
+      </div>
+      <ul class="nav navbar-nav">
+        <li><a href="index.html"><span class="fa fa-home"></span>&nbsp;Dashboard</a></li>
+        <li><a href="history"><span class="fa fa-history"></span>&nbsp;Historie</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li uib-dropdown>
+          <a role="button" uib-dropdown-toggle>{{::main.userData.username}}&nbsp;<b class="caret"></b></a>
+          <ul class="uib-dropdown-menu">
+            <li><a href="" ng-click="main.logout()"><span class="fa fa-key"></span>Odhlásit</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</nav>
+
+<div class="container-fluid">
+  <uib-alert ng-repeat="alert in main.alerts" type="{{alert.type}}" close="main.closeAlert($index)">{{alert.msg}}</uib-alert>
+</div>

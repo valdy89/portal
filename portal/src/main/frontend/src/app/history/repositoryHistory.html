@@ -1,0 +1,20 @@
+<div cg-busy="[ctrl.tenants,ctrl.subtenants,ctrl.promise]"></div>
+<div class="panel panel-primary">
+  <div class="panel-heading clearfix">
+    <div class="title pull-left">Historie repository</div>
+  </div>
+
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-2">
+        <p class="input-group">
+          <input type="text" placeholder="Datum" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="ctrl.fromDate" is-open="ctrl.openedFrom" datepicker-options="ctrl.fromOptions" ng-required="true"
+                 show-button-bar="false"/>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="ctrl.openFrom()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

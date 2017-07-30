@@ -1,0 +1,207 @@
+<div cg-busy="ctrl.tenant"></div>
+<div class="panel panel-primary" ng-show="ctrl.userData">
+  <div class="panel-heading clearfix">
+    <div class="title pull-left">Dashboard</div>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="panel panel-info">
+          <div class="panel-heading clearfix">
+            <div class="title pull-left">Uložiště</div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-6"><label>Jméno uživatele</label></div>
+              <div class="col-sm-6">{{ctrl.tenant.username}}</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6"><label>Zakoupená alokace</label></div>
+              <div class="col-sm-6">{{ctrl.tenant.quota/1024 | number:1}} GB</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6"><label>Využívaná velikost</label></div>
+              <div class="col-sm-6">{{ctrl.tenant.usedQuota/1024 | number:1}} GB - {{(ctrl.tenant.usedQuota/ctrl.tenant.quota)*100 | number:2}} %</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6"><label>Počet VM</label></div>
+              <div class="col-sm-6">{{ctrl.tenant.vmCount}}</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6"><label>Počet Server</label></div>
+              <div class="col-sm-6">{{ctrl.tenant.serverCount}}</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6"><label>Počet Workstation</label></div>
+              <div class="col-sm-6">{{ctrl.tenant.workstationCount}}</div>
+            </div>
+            <div class="row" ng-show="ctrl.tenant.uid">
+              <div class="col-sm-4 col-sm-offset-4">
+                <input type="button" ng-click="ctrl.changeQuota()" class="form-control btn btn-mycom" value="Změnit zakoupenou alokaci">
+              </div>
+              <div class="col-sm-4">
+                <input type="button" ng-click="ctrl.changeTenantPassword()" class="form-control btn btn-mycom" value="Změnit heslo do úložiště">
+              </div>
+            </div>
+            <div class="row" ng-show="!ctrl.tenant.uid">
+              <div class="col-sm-4 col-sm-offset-8">
+                <input type="button" ng-click="ctrl.createTenant()" class="form-control btn btn-mycom" value="Založit tenanta">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="panel panel-info">
+          <div class="panel-heading clearfix">
+            <div class="title pull-left">Kredity</div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-6"><label>Počet volných kreditů</label></div>
+              <div class="col-sm-6">{{ctrl.tenant.user.credit}}</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6"><label>Kredity vydrží do</label></div>
+              <div class="col-sm-6">{{(ctrl.tenant.creditDate | portalDate)}}</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4 col-sm-offset-8">
+                <input type="button" ng-click="ctrl.buyCredit()" class="form-control btn btn-mycom" value="Koupit kredit">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12" ng-show="ctrl.tenant.subtenants.length > 0">
+        <div class="panel panel-info">
+          <div class="panel-heading clearfix">
+            <div class="title pull-left">Subtenanti</div>
+          </div>
+
+          <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+              <th>Jméno</th>
+              <th>Alokace GB</th>
+              <th>Využívaná GB</th>
+              <th>Využívaná %</th>
+              <th>Povolen</th>
+              <th>Založen</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="subtenant in ctrl.tenant.subtenants">
+              <td>{{::subtenant.username}}</td>
+              <td>{{::subtenant.quota/1024 | number:1}}</td>
+              <td>{{::subtenant.usedQuota/1024 | number:1}}</td>
+              <td>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}}%</td>
+              <td>
+                <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
+                <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
+              </td>
+              <td>{{::subtenant.dateCreated | portalDateTime}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="buyCredit.html">
+  <div cg-busy="[ctrl.promise]"></div>
+  <form name="ctrl.buyCreditForm" role="form">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <h4 class="modal-title">Koupit kredit</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group form-group-sm">
+        <label>Počet kreditů: </label>
+        <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculate()" step="100" class="form-control" required="true" min="1000">
+      </div>
+      <div class="form-group form-group-sm">
+        <label>Cena: </label>
+        <input type="number" ng-model="ctrl.price" class="form-control" required="true" readonly="readonly">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-mycom" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Zaplatit</button>
+      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+    </div>
+  </form>
+</script>
+
+<script type="text/ng-template" id="changeQuota.html">
+  <div cg-busy="[ctrl.promise]"></div>
+  <form name="ctrl.changeQuotaForm" role="form">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <h4 class="modal-title">Změna velikosti kvóty</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group form-group-sm">
+        <label>Nová velikost kvóty v GB: </label>
+        <input type="number" ng-model="ctrl.quota" class="form-control"  step="10" required="true" min="10">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-mycom" ng-disabled="!ctrl.changeQuotaForm.$valid" ng-click="ctrl.save()">Změnit</button>
+      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+    </div>
+  </form>
+</script>
+
+<script type="text/ng-template" id="createTenant.html">
+  <div cg-busy="[ctrl.promise]"></div>
+  <form name="ctrl.createTenantForm" role="form">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <h4 class="modal-title">Založit tenanta</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group form-group-sm">
+        <label>Velikost kvóty v GB: </label>
+        <input type="number" ng-model="ctrl.quota" class="form-control" step="10" required="true" min="10">
+      </div>
+      <div class="form-group">
+        <label>Heslo *</label>
+        <input type="password" ng-model="ctrl.password" class="form-control" ng-required="true">
+      </div>
+      <div class="form-group">
+        <label>Potvrdit heslo *</label>
+        <input type="password" ng-model="ctrl.confirmPassword" class="form-control" ng-required="true">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-mycom" ng-disabled="ctrl.password !== ctrl.confirmPassword || !ctrl.createTenantForm.$valid" ng-click="ctrl.save()">Založit</button>
+      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+    </div>
+  </form>
+</script>
+
+<script type="text/ng-template" id="changeTenantPassword.html">
+  <div cg-busy="[ctrl.promise]"></div>
+  <form name="ctrl.changeTenantPasswordForm" role="form">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <h4 class="modal-title">Změna hesla tenanta</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Heslo *</label>
+        <input type="password" ng-model="ctrl.password" class="form-control" ng-required="true">
+      </div>
+      <div class="form-group">
+        <label>Potvrdit heslo *</label>
+        <input type="password" ng-model="ctrl.confirmPassword" class="form-control" ng-required="true">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-mycom" ng-disabled="ctrl.password !== ctrl.confirmPassword || !ctrl.changeTenantPasswordForm.$valid" ng-click="ctrl.save()">Změnit</button>
+      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+    </div>
+  </form>
+</script>
