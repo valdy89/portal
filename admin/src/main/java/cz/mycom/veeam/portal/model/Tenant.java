@@ -19,10 +19,7 @@ public class Tenant {
 
     @Id
     @Column
-    private int id;
-
-    @Column(unique = true, nullable = false)
-    private String email;
+    private int userId;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -34,22 +31,26 @@ public class Tenant {
     private String repositoryUid;
 
     @Column
-    private Integer vmCount;
+    private int vmCount;
 
     @Column
-    private Integer creditCount;
+    private int serverCount;
 
     @Column
-    private Long quota;
+    private int workstationCount;
 
     @Column
-    private Long usedQuota;
+    private int quota;
 
     @Column
-    private boolean vip;
+    private int usedQuota;
 
     @Column
     private boolean enabled;
+
+    @OneToOne
+    @JoinColumn(name="userId")
+    private User user;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -60,4 +61,7 @@ public class Tenant {
 
     @Transient
     private String password;
+
+    @Transient
+    private Date creditDate;
 }

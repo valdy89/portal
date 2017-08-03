@@ -29,8 +29,9 @@
     };
 
     ctrl.action = function (tenant) {
-      $log.debug(ctrl.actionKey + " " + tenant);
-      if (ctrl.actionKey === 'changePassword') {
+      var actionKey = ctrl.actionKey[tenant.userId];
+      $log.debug(actionKey + " " + tenant);
+      if (actionKey === 'changePassword') {
         var modalInstance = $uibModal.open({
           animation: false,
           templateUrl: 'tenantChangePassword.html',
@@ -45,7 +46,7 @@
         modalInstance.result.then(function () {
           ctrl.getItems();
         });
-      } else if (ctrl.actionKey === 'changeQuota') {
+      } else if (actionKey === 'changeQuota') {
         var modalInstance = $uibModal.open({
           animation: false,
           templateUrl: 'tenantChangeQuota.html',
@@ -60,7 +61,7 @@
         modalInstance.result.then(function () {
           ctrl.getItems();
         });
-      } else if (ctrl.actionKey === 'changeCredit') {
+      } else if (actionKey === 'changeCredit') {
         var modalInstance = $uibModal.open({
           animation: false,
           templateUrl: 'tenantChangeCredit.html',
@@ -75,7 +76,7 @@
         modalInstance.result.then(function () {
           ctrl.getItems();
         });
-      } else if (ctrl.actionKey === 'enable') {
+      } else if (actionKey === 'enable') {
         tenant.enabled = true;
         ctrl.promise = TenantResource.save(tenant).$promise;
         ctrl.promise.then(function (response) {
@@ -83,7 +84,7 @@
         }, function (response) {
           alert(response.data.message);
         });
-      } else if (ctrl.actionKey === 'disable') {
+      } else if (actionKey === 'disable') {
         tenant.enabled = false;
         ctrl.promise = TenantResource.save(tenant).$promise;
         ctrl.promise.then(function (response) {
@@ -91,7 +92,7 @@
         }, function (response) {
           alert(response.data.message);
         });
-      } else if (ctrl.actionKey === 'addVip') {
+      } else if (actionKey === 'addVip') {
         tenant.vip = true;
         ctrl.promise = TenantResource.save(tenant).$promise;
         ctrl.promise.then(function (response) {
@@ -99,7 +100,7 @@
         }, function (response) {
           alert(response.data.message);
         });
-      } else if (ctrl.actionKey === 'removeVip') {
+      } else if (actionKey === 'removeVip') {
         tenant.vip = false;
         ctrl.promise = TenantResource.save(tenant).$promise;
         ctrl.promise.then(function (response) {
@@ -107,7 +108,7 @@
         }, function (response) {
           alert(response.data.message);
         });
-      } else if (ctrl.actionKey === 'delete') {
+      } else if (actionKey === 'delete') {
         ctrl.promise = TenantResource.delete({id: tenant.id}).$promise;
         ctrl.promise.then(function (response) {
           ctrl.getItems();
@@ -172,7 +173,7 @@
   function SubtenantsController($log, $uibModal, $routeParams, SubtenantResource, TenantResource) {
     var ctrl = this;
 
-    ctrl.selected = $routeParams.username;
+    ctrl.selected = $routeParams.id;
     ctrl.tenants = TenantResource.query();
     ctrl.tenants.$promise.then(
       function () {
@@ -185,13 +186,7 @@
 
     ctrl.getItems = function () {
       if (ctrl.selected) {
-        var tenantId = 0;
-        angular.forEach(ctrl.tenants, function(value) {
-          if (value.username === ctrl.selected) {
-            tenantId = value.id;
-          }
-        });
-        ctrl.subtenants = SubtenantResource.query({tenantId: tenantId});
+        ctrl.subtenants = SubtenantResource.query({userId: ctrl.selected});
         ctrl.subtenants.$promise.then(
           function () {
           },
@@ -208,6 +203,7 @@
           animation: false,
           templateUrl: 'subtenantChangeQuota.html',
           controller: 'SubChangeQuotaController as ctrl',
+          size: 'sm',
           resolve: {
             subtenant: function () {
               return subtenant;
@@ -223,6 +219,7 @@
           animation: false,
           templateUrl: 'subtenantChangePassword.html',
           controller: 'SubChangePasswordController as ctrl',
+          size: 'sm',
           resolve: {
             subtenant: function () {
               return subtenant;

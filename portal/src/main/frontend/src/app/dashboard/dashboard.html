@@ -118,13 +118,16 @@
       <h4 class="modal-title">Koupit kredit</h4>
     </div>
     <div class="modal-body">
-      <div class="form-group form-group-sm">
+      <div class="form-group form-group-sm" style="width: 150px">
         <label>Počet kreditů: </label>
         <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculate()" step="100" class="form-control" required="true" min="1000">
       </div>
-      <div class="form-group form-group-sm">
-        <label>Cena: </label>
-        <input type="number" ng-model="ctrl.price" class="form-control" required="true" readonly="readonly">
+      <div class="form-group form-group-sm" style="width: 150px">
+        <label>Cena:</label>
+        <div class="input-group">
+          <input type="number" class="form-control" ng-model="ctrl.price" required="true" readonly="readonly">
+          <span class="input-group-addon">Kč</span>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -144,7 +147,7 @@
     <div class="modal-body">
       <div class="form-group form-group-sm">
         <label>Nová velikost kvóty v GB: </label>
-        <input type="number" ng-model="ctrl.quota" class="form-control"  step="10" required="true" min="10">
+        <input type="number" ng-model="ctrl.quota" class="form-control" step="10" required="true" min="10">
       </div>
     </div>
     <div class="modal-footer">

@@ -48,17 +48,17 @@ public class RepositoryController {
                 String uid = StringUtils.substringAfterLast(r.getUID(),":");
                 List<Tenant> tenants = tenantRepository.findByRepositoryUid(uid);
                 repository.setTenantCount(tenants.size());
-                int vmCount = 0;
+                int vmCount = 0, serverCount =  0,workstationCount  = 0;
                 long purchasedSpace = 0;
                 for (Tenant tenant : tenants) {
-                    if (tenant.getVmCount()!=null) {
-                        vmCount += tenant.getVmCount();
-                    }
-                    if (tenant.getQuota()!=null) {
-                        purchasedSpace += tenant.getQuota();
-                    }
+                    vmCount += tenant.getVmCount();
+                    serverCount += tenant.getServerCount();
+                    workstationCount += tenant.getWorkstationCount();
+                    purchasedSpace += tenant.getQuota();
                 }
                 repository.setVmCount(vmCount);
+                repository.setServerCount(serverCount);
+                repository.setWorkstationCount(workstationCount);
                 repository.setPurchasedSpace(purchasedSpace / 1024);
                 ret.add(repository);
             });
@@ -80,6 +80,8 @@ public class RepositoryController {
         private double backupSize;
         private long purchasedSpace;
         private int vmCount;
+        private int serverCount;
+        private int workstationCount;
         private int tenantCount;
 
     }

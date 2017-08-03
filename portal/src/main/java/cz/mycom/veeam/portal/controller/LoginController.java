@@ -2,6 +2,7 @@ package cz.mycom.veeam.portal.controller;
 
 import cz.mycom.veeam.portal.model.User;
 import cz.mycom.veeam.portal.repository.UserRepository;
+import cz.mycom.veeam.portal.service.MailService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
@@ -13,18 +14,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.Properties;
 
 /**
  * @author dursik
@@ -37,6 +32,8 @@ public class LoginController {
     private UserRepository userRepository;
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private MailService mailService;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -65,11 +62,8 @@ public class LoginController {
             User user = userRepository.findByUsername(authRequest.getUsername());
             String password = RandomStringUtils.randomAlphanumeric(10);
             user.setEnabled(false);
-            try {
-                sendMail("Zapomenuté heslo", user.getUsername(), password);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            String text = "https://portal.dursik.eu/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + password).getBytes("UTF-8"));
+            mailService.sendMail(user.getUsername(), "Zapomenuté heslo", text);
             user.setPassword(passwordEncoder.encode(password));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -109,48 +103,11 @@ public class LoginController {
                 .build();
         ((JdbcUserDetailsManager) userDetailsService).createUser(userDetails);
         try {
-            sendMail("Potvrzení registrace", user.getUsername(), user.getPassword());
+            String text = "https://portal.dursik.eu/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + user.getPassword()).getBytes("UTF-8"));
+            mailService.sendMail(user.getUsername(), "Potvrzení registrace", text);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        user.setPassword(userDetails.getPassword());
-        user.setDateCreated(new Date());
-        userRepository.save(user);
-    }
-
-    private void sendMail(String subject, String email, String tempPasswd) throws Exception {
-
-        final String username = "veeam.portal@gmail.com";
-        final String password = "iddqd_2017";
-
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-
-        Session session = Session.getInstance(props,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
-
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("veeam.portal@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse("dursik@gmail.com"));
-            message.setSubject(subject);
-            String text = "<a href='https://portal.dursik.eu/verify?code=" + Base64.encodeBase64URLSafeString((email + ":" + tempPasswd).getBytes("UTF-8")) + "'>Ověřit</a>";
-            log.debug(text);
-            message.setText(text);
-
-            //Transport.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     @Data

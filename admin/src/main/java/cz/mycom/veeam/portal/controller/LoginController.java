@@ -24,7 +24,7 @@ public class LoginController {
     @RequestMapping(method = RequestMethod.GET)
     public AuthResponse login() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.getOne(authentication.getName());
+        User user = userRepository.findByUsername(authentication.getName());
         return new AuthResponse(user);
     }
 

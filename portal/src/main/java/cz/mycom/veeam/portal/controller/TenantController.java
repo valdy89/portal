@@ -55,6 +55,7 @@ public class TenantController {
         Tenant tenant = user.getTenant();
         if (tenant == null) {
             tenant = new Tenant();
+            tenant.setUser(user);
         }
         int credit = user.getCredit();
         Calendar cal = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);

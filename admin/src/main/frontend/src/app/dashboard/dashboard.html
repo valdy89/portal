@@ -20,6 +20,8 @@
               <th>Využívaná velikost %</th>
               <th>Celková velikost GB</th>
               <th>Počet VM</th>
+              <th>Počet Server</th>
+              <th>Počet Workstation</th>
               <th>Počet tenantů</th>
             </tr>
             </thead>
@@ -31,6 +33,8 @@
               <td>{{::(1 - repository.freeSpace/repository.capacity)*100 | number:2}} %</td>
               <td>{{::repository.capacity | number:2}}</td>
               <td>{{::repository.vmCount}}</td>
+              <td>{{::repository.serverCount}}</td>
+              <td>{{::repository.workstationCount}}</td>
               <td>{{::repository.tenantCount}}</td>
             </tr>
             </tbody>

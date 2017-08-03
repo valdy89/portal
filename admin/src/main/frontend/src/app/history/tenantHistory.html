@@ -5,16 +5,25 @@
   </div>
 
   <div class="panel-body">
-    <div class="row">
-      <div class="col-sm-3">
-        <ui-select ng-model="ctrl.selected" on-select="ctrl.getItems()" style="width: 400px; min-width: 300px;">
-          <ui-select-match placeholder="Zvolte tenanta">{{$select.selected.username}}</ui-select-match>
-          <ui-select-choices repeat="tenant.username as tenant in ctrl.tenants | filter: $select.search">
-            <span ng-bind-html="tenant.username | highlight: $select.search"></span>
-          </ui-select-choices>
-        </ui-select>
-      </div>
-    </div>
+
+      <form class="form-inline">
+        <div class="form-group">
+          <label>Tenant:</label>
+          <select ng-model="ctrl.selected" class="form-control" style="min-width: 300px">
+            <option ng-repeat="tenant in ctrl.tenants" value="{{tenant.userId}}">{{tenant.username}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Datum od:</label>
+          <input type="date" min="2015-08-02" max="2017-08-02" placeholder="Datum" class="form-control"  ng-model="ctrl.fromDate"  ng-required="true"/>
+        </div>
+        <div class="form-group">
+          <label>Datum do:</label>
+          <input type="date" min="2015-08-02" max="2017-08-02" placeholder="Datum" class="form-control"  ng-model="ctrl.toDate"  ng-required="true"/>
+        </div>
+        <button type="submit" class="btn btn-mycom">Odeslat</button>
+      </form>
+
 
     <div class="row">
       <div class="col-sm-6">
@@ -30,7 +39,7 @@
         <div class="panel panel-default">
           <div class="panel-heading">Kredit</div>
           <div class="panel-body">
-            <canvas class="chart chart-bar" chart-data="ctrl.creditData" chart-labels="ctrl.creditLabels" chart-series="ctrl.creditSeries" chart-options="ctrl.options"
+            <canvas class="chart chart-line" chart-data="ctrl.creditData" chart-labels="ctrl.creditLabels" chart-series="ctrl.creditSeries" chart-options="ctrl.options"
                     width="523" height="261" style="display: block; width: 523px; height: 261px;"></canvas>
           </div>
         </div>

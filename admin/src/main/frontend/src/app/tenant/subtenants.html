@@ -6,13 +6,13 @@
 
   <div class="panel-body">
     <div class="row">
-      <div class="col-sm-3">
-        <ui-select ng-model="ctrl.selected" on-select="ctrl.getItems()" style="width: 400px; min-width: 300px;">
-          <ui-select-match placeholder="Zvolte tenanta">{{$select.selected.username}}</ui-select-match>
-          <ui-select-choices repeat="tenant.username as tenant in ctrl.tenants | filter: $select.search">
-            <span ng-bind-html="tenant.username | highlight: $select.search"></span>
-          </ui-select-choices>
-        </ui-select>
+      <div class="col-sm-12">
+      <div class="form-inline">
+      <label>Tenant</label>
+        <select ng-model="ctrl.selected" class="form-control input-sm" ng-change="ctrl.getItems()" style="min-width: 300px">
+          <option ng-repeat="tenant in ctrl.tenants" value="{{tenant.userId}}">{{tenant.username}}</option>
+        </select>
+      </div>
       </div>
     </div>
 
@@ -43,14 +43,16 @@
                 </td>
                 <td>{{::subtenant.dateCreated | portalDateTime}}</td>
                 <td>
-                  <select ng-model="ctrl.actionKey">
+                  <div class="form-inline input-group-sm">
+                  <select class="form-control" ng-model="ctrl.actionKey">
                     <option></option>
                     <option ng-show="subtenant.enabled" value="disable">zakázát</option>
                     <option ng-show="!subtenant.enabled" value="enable">povolit</option>
                     <option value="changePassword">změna hesla</option>
                     <option value="changeQuota">změna velikosti kvóty</option>
                   </select>
-                  <button ng-click="ctrl.action(subtenant)"><i class="fa fa-play-circle fa-3" aria-hidden="true"></i></button>
+                  <button class="form-control input-sm btn-mycom" ng-click="ctrl.action(subtenant)"><i class="fa fa-play-circle fa-3" aria-hidden="true"></i></button>
+                  </div>
                 </td>
               </tr>
               </tbody>
@@ -74,7 +76,7 @@
     <div class="modal-body">
       <div class="form-group form-group-sm">
         <label>Nová velikost kvóty v GB: </label>
-        <input type="number" ng-model="ctrl.quota" required="true">
+        <input type="number" class="form-control" style="width: 100px" ng-model="ctrl.quota" required="true">
       </div>
     </div>
     <div class="modal-footer">
@@ -92,9 +94,9 @@
       <h4 class="modal-title">Změna hesla</h4>
     </div>
     <div class="modal-body">
-      <div class="form-group form-group-sm">
+      <div class="form-group">
         <label>Nové heslo: </label>
-        <input type="text" ng-model="ctrl.subtenant.password" required="true">
+        <input type="text"  class="form-control" ng-model="ctrl.subtenant.password" required="true">
       </div>
     </div>
     <div class="modal-footer">
