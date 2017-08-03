@@ -36,24 +36,13 @@
                   <input type="password" ng-model="ctrl.password" ng-required="true" class="md-no-float">
                 </md-input-container>
 
-               <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-                  <div layout="row">
-                    <md-button type="submit" class="md-raised md-accent" ng-disabled="!ctrl.formLogin.$valid">Přihlásit se</md-button>
-                  </div>
-                  <div layout="row">
+                <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                  <md-button type="submit" class="md-raised md-accent" ng-disabled="!ctrl.formLogin.$valid">Přihlásit se</md-button>
+                </section>
+                <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
                   <a href="" ng-click="ctrl.forgotPassword()" class="forgot-password">Zapomenuté heslo?</a>
-                </div>
                 </section>
 
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="text-center">
-                        <a href="" ng-click="ctrl.forgotPassword()" class="forgot-password">Zapomenuté heslo?</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </form>
 
               <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form" ng-show="ctrl.activeForm == 'register'">
@@ -88,7 +77,7 @@
   <form name="ctrl.forgotPasswordForm" role="form">
     <div class="modal-header">
       <md-button type="button" class="close" ng-click="ctrl.cancel()">×</button>
-      <h4 class="modal-title">Zapomenuté heslo</h4>
+        <h4 class="modal-title">Zapomenuté heslo</h4>
     </div>
     <div class="modal-body">
       <md-input-container class="md-block form-group" flex-gt-sm>
