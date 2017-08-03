@@ -6,6 +6,7 @@ import com.veeam.ent.v1.CloudTenantResources;
 import com.veeam.ent.v1.LogonSession;
 import cz.mycom.veeam.portal.model.Subtenant;
 import cz.mycom.veeam.portal.model.Tenant;
+import cz.mycom.veeam.portal.model.User;
 import cz.mycom.veeam.portal.repository.SubtenantRepository;
 import cz.mycom.veeam.portal.repository.TenantRepository;
 import cz.mycom.veeam.portal.service.VeeamService;
@@ -55,7 +56,7 @@ public class TenantController {
             if (cloudTenantResources != null
                     && !CollectionUtils.isEmpty(cloudTenantResources.getCloudTenantResources())) {
                 CloudTenantResource cloudTenantResource = cloudTenantResources.getCloudTenantResources().get(0);
-                cloudTenantResource.getRepositoryQuota().setQuota(tenant.getQuota());
+                cloudTenantResource.getRepositoryQuota().setQuota((long) tenant.getQuota());
             }
             veeamService.saveTenant(tenant.getUid(), cloudTenant);
             tenantRepository.save(tenant);
@@ -80,7 +81,7 @@ public class TenantController {
             veeamService.logout(logonSession);
         }
         if (cloudTenant == null) {
-            ((JdbcUserDetailsManager) userDetailsService).deleteUser(tenant.getEmail());
+            ((JdbcUserDetailsManager) userDetailsService).deleteUser(tenant.getUser().getUsername());
         } else {
             throw new RuntimeException("Tenant musí být nejdříve smazán z Veeam Backup");
         }

@@ -3,7 +3,6 @@ package cz.mycom.veeam.portal.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -38,7 +37,7 @@ public class Subtenant {
     private Date dateCreated;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "tenant_id", foreignKey = @ForeignKey(name = "sub_tenants_tenants_id_fk"), updatable = false)
+    @JoinColumn(name = "userId", foreignKey = @ForeignKey(name = "sub_tenants_tenant_fk"), updatable = false)
     @JsonIgnore
     private Tenant tenant;
 

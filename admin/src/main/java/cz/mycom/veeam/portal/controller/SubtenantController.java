@@ -31,8 +31,8 @@ public class SubtenantController {
 
     @RequestMapping(method = RequestMethod.GET)
     @Secured("ROLE_SYSTEM")
-    public List<Subtenant> list(@RequestParam(required = true) int tenantId) {
-        return subtenantRepository.findByTenant_Id(tenantId);
+    public List<Subtenant> list(@RequestParam(required = true) int userId) {
+        return subtenantRepository.findByTenant_UserId(userId);
     }
 
     @RequestMapping(method = RequestMethod.POST)

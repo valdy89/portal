@@ -8,24 +8,18 @@
     .controller('TenantHistoryController', TenantHistoryController);
 
   /** @ngInject */
-  function RepositoryHistoryController($log) {
+  function RepositoryHistoryController($log, RepositoryResource) {
     var ctrl = this;
 
-    ctrl.fromOptions = {
-      startingDay: 1
-    };
+    ctrl.repositories = RepositoryResource.query();
 
-    ctrl.toOptions = {
-      startingDay: 1
-    };
-
-    ctrl.openFrom = function () {
-      ctrl.openedFrom = true;
-    };
-
-    ctrl.openTo = function () {
-      ctrl.openedTo = true;
-    };
+    ctrl.repositories.$promise.then(
+      function () {
+        //$log.debug(ctrl.tenants);
+      },
+      function (error) {
+        alert(error.data.message);
+      });
   }
 
   /** @ngInject */
@@ -43,12 +37,14 @@
       });
 
     ctrl.repositoryLabels = ['1.1.2017', '1.2.2017', '1.3.2017', '1.4.2017', '1.6.2017', '1.7.2017', '23.7.2017'];
-    ctrl.repositorySeries = ['Skutečná velikost GB', 'Zakoupená alokace GB', 'Počet VM'];
+    ctrl.repositorySeries = ['Skutečná velikost GB', 'Zakoupená alokace GB', 'Počet VM', 'Počet Server', 'Počet Workstation'];
 
     ctrl.repositoryData = [
       [1, 3, 2, 3, 4, 4, 4],
       [3, 3, 4, 4, 6, 6, 6],
-      [1, 1, 1, 2, 2, 2, 3]
+      [1, 1, 1, 2, 2, 2, 3],
+      [2, 1, 3, 1, 1, 0, 3],
+      [0, 0, 0, 1, 1, 1, 1]
     ];
 
     ctrl.creditLabels = ['1.1.2017', '1.2.2017', '1.3.2017', '1.4.2017', '1.6.2017', '1.7.2017', '23.7.2017'];

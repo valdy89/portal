@@ -1,12 +1,11 @@
 package cz.mycom.veeam.portal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author dursik
@@ -18,6 +17,9 @@ import javax.persistence.Table;
 public class User {
     @Id
     @Column
+    private int id;
+
+    @Column(unique = true)
     private String username;
 
     @Column
@@ -30,7 +32,10 @@ public class User {
     private String mobile;
 
     @Column
-    private String companyname;
+    private String postalCode;
+
+    @Column
+    private String companyName;
 
     @Column
     private String address;
@@ -46,4 +51,27 @@ public class User {
 
     @Column
     private String dic;
+
+    @Column
+    private boolean vip;
+
+    @Column
+    private int credit;
+
+    @Column
+    @JsonIgnore
+    private boolean enabled;
+
+    @Column
+    @JsonIgnore
+    private String password;
+
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonIgnore
+    private Date dateCreated;
+
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private Tenant tenant;
 }

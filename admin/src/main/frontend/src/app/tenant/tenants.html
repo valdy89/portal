@@ -14,6 +14,8 @@
           <th>Využívaná velikost GB</th>
           <th>Využívaná velikost %</th>
           <th>Počet VM</th>
+          <th>Počet Server</th>
+          <th>Počet Workstation</th>
           <th>Počet subtenantů</th>
           <th>Povolen</th>
           <th>VIP</th>
@@ -23,11 +25,13 @@
         </thead>
         <tbody>
         <tr ng-repeat="tenant in ctrl.tenants">
-          <td><a href="subtenants?username={{::tenant.username}}">{{::tenant.username}}</a></td>
+          <td><a href="subtenants?id={{::tenant.userId}}">{{::tenant.username}}</a></td>
           <td>{{::tenant.quota/1024 | number:1}}</td>
           <td>{{::tenant.usedQuota/1024 | number:1}}</td>
           <td>{{::(tenant.usedQuota/tenant.quota)*100 | number:2}}%</td>
           <td>{{::tenant.vmCount}}</td>
+          <td>{{::tenant.serverCount}}</td>
+          <td>{{::tenant.workstationCount}}</td>
           <td>{{::tenant.subtenants.length}}</td>
           <td>
             <span class="fa fa-check" style="color: green" ng-if="tenant.enabled"></span>
@@ -39,7 +43,8 @@
           </td>
           <td>{{::tenant.dateCreated | portalDateTime}}</td>
           <td>
-            <select ng-model="ctrl.actionKey">
+            <div class="form-inline input-group-sm">
+            <select ng-model="ctrl.actionKey[tenant.userId]" class="form-control input-sm">
               <option></option>
               <option ng-show="tenant.enabled" value="disable">zakázát</option>
               <option ng-show="!tenant.enabled" value="enable">povolit</option>
@@ -50,7 +55,8 @@
               <option ng-show="tenant.vip" value="removeVip">vyřadit z VIP</option>
               <option value="delete">smazat z portálu</option>
             </select>
-            <button ng-click="ctrl.action(tenant)"><i class="fa fa-play-circle fa-3" aria-hidden="true"></i></button>
+            <button class="form-control input-sm btn-mycom" ng-click="ctrl.action(tenant)"><i class="fa fa-play-circle fa-3" aria-hidden="true"></i></button>
+            </div>
           </td>
         </tr>
         </tbody>

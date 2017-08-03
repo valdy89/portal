@@ -121,4 +121,8 @@ public final class KeyStoreService {
         }
         log.debug("Key store successfully saved.");
     }
+
+    public static void main(String[] args) {
+
+    }
 }
