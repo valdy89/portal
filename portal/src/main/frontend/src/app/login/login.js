@@ -13,7 +13,7 @@
   /** @ngInject */
   function LoginController($log, $cookies, $http, $base64, $rootScope, $location, $uibModal, EndpointConfigService) {
     var ctrl = this;
-
+    ctrl.activeForm = 'login';
     ctrl.panelLogin = 'active';
     ctrl.panelRegister = '';
     ctrl.user = {country: 'CZ'};
@@ -58,7 +58,8 @@
       });
     };
 
-    ctrl.panelChange = function () {
+    ctrl.panelChange = function (page) {
+      ctrl.activeForm = page;
       if (ctrl.panelRegister === 'active') {
         ctrl.panelLogin = 'active';
         ctrl.panelRegister = '';

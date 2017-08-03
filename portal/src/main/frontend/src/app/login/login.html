@@ -12,15 +12,11 @@
           </div>
           <div class="row">
             <div>
-              <md-nav-bar md-selected-nav-item="existing" nav-bar-aria-label="navigation links">
-                <md-nav-item md-nav-click="ctrl.panelChange()" name="existing">Existujíci uživate</md-nav-item>
-                <md-nav-item md-nav-click="ctrl.panelChange()" name="registration">Registrace nového uživatele</md-nav-item>
-
+              <md-nav-bar md-selected-nav-item="ctrl.activeForm" nav-bar-aria-label="navigation links">
+                <md-nav-item md-nav-click="ctrl.panelChange('login')" name="login">Existujíci uživate</md-nav-item>
+                <md-nav-item md-nav-click="ctrl.panelChange('register')" name="register">Registrace nového uživatele</md-nav-item>
               </md-nav-bar>
-
             </div>
-
-
           </div>
 
         </div>
@@ -28,7 +24,7 @@
           <div class="row">
             <div class="col-lg-12">
 
-              <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form" ng-show="ctrl.panelLogin == 'active'">
+              <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form" ng-show="ctrl.activeForm == 'login'">
 
                 <md-input-container class="md-block form-group" flex-gt-sm>
                   <label>Uživatelské jméno</label>
@@ -40,11 +36,14 @@
                   <input type="password" ng-model="ctrl.password" ng-required="true" class="md-no-float">
                 </md-input-container>
 
-                <div class="row">
-                  <div class="col-sm-6 col-sm-offset-3">
-                    <input type="submit" class="form-control btn btn-mycom" ng-disabled="!ctrl.formLogin.$valid" value="Přihlásit se">
+               <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                  <div layout="row">
+                    <md-button type="submit" class="md-raised md-accent" ng-disabled="!ctrl.formLogin.$valid">Přihlásit se</md-button>
                   </div>
+                  <div layout="row">
+                  <a href="" ng-click="ctrl.forgotPassword()" class="forgot-password">Zapomenuté heslo?</a>
                 </div>
+                </section>
 
                 <div class="form-group">
                   <div class="row">
@@ -57,10 +56,10 @@
                 </div>
               </form>
 
-              <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form" ng-show="ctrl.panelRegister == 'active'">
+              <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form" ng-show="ctrl.activeForm == 'register'">
                 <div class="modal-body">
                   <md-input-container class="md-block form-group" flex-gt-sm>
-                    <label>Email *</label>
+                    <label>Email</label>
                     <input type="email" ng-model="ctrl.user.username" class="form-control" ng-required="true">
                   </md-input-container>
                 </div>
@@ -88,7 +87,7 @@
   <div cg-busy="[ctrl.promise]"></div>
   <form name="ctrl.forgotPasswordForm" role="form">
     <div class="modal-header">
-      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <md-button type="button" class="close" ng-click="ctrl.cancel()">×</button>
       <h4 class="modal-title">Zapomenuté heslo</h4>
     </div>
     <div class="modal-body">

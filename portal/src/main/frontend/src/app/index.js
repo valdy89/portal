@@ -18,8 +18,8 @@
       'ngMaterial'
     ]).config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default')
-    .primaryPalette('orange')
-    .accentPalette('grey');
+    .primaryPalette('grey')
+    .accentPalette('amber');
 });
 
 
