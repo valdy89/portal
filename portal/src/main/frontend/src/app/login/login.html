@@ -2,43 +2,50 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
-      <div class="panel panel-login">
+      <div class="panel no-border">
         <div class="panel-heading">
           <div class="row">
             <div class="col-xs-12">
-              <img src="assets/logo.png"/>
+              <img src="assets/logo.png" />
               <h2 style="font-weight: bold;">Veeam Portal</h2>
             </div>
           </div>
           <div class="row">
-            <div class="col-xs-6">
-              <a href="" ng-click="ctrl.panelChange()" ng-class="ctrl.panelLogin">Existujíci uživatel</a>
+            <div>
+              <md-nav-bar md-selected-nav-item="existing" nav-bar-aria-label="navigation links">
+                <md-nav-item md-nav-click="ctrl.panelChange()" name="existing">Existujíci uživate</md-nav-item>
+                <md-nav-item md-nav-click="ctrl.panelChange()" name="registration">Registrace nového uživatele</md-nav-item>
+
+              </md-nav-bar>
+
             </div>
-            <div class="col-xs-6">
-              <a href="" ng-click="ctrl.panelChange()" ng-class="ctrl.panelRegister">Registrace nového uživatele</a>
-            </div>
+
+
           </div>
-          <hr size="1">
+
         </div>
-        <div class="panel-body">
+        <div>
           <div class="row">
             <div class="col-lg-12">
+
               <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form" ng-show="ctrl.panelLogin == 'active'">
-                <div class="form-group">
-                  <label>Uživatelské jméno *</label>
-                  <input type="email" ng-model="ctrl.username" class="form-control" placeholder="tvuj@email.cz" ng-required="true">
-                </div>
-                <div class="form-group">
-                  <label>Heslo *</label>
-                  <input type="password" ng-model="ctrl.password" class="form-control" ng-required="true">
-                </div>
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-sm-6 col-sm-offset-3">
-                      <input type="submit" class="form-control btn btn-mycom" ng-disabled="!ctrl.formLogin.$valid" value="Přihlásit se">
-                    </div>
+
+                <md-input-container class="md-block form-group" flex-gt-sm>
+                  <label>Uživatelské jméno</label>
+                  <input type="email" ng-model="ctrl.username" placeholder="tvuj@email.cz" ng-required="true">
+                </md-input-container>
+
+                <md-input-container class="md-block form-group" flex-gt-sm>
+                  <label>Heslo</label>
+                  <input type="password" ng-model="ctrl.password" ng-required="true" class="md-no-float">
+                </md-input-container>
+
+                <div class="row">
+                  <div class="col-sm-6 col-sm-offset-3">
+                    <input type="submit" class="form-control btn btn-mycom" ng-disabled="!ctrl.formLogin.$valid" value="Přihlásit se">
                   </div>
                 </div>
+
                 <div class="form-group">
                   <div class="row">
                     <div class="col-lg-12">
@@ -49,49 +56,15 @@
                   </div>
                 </div>
               </form>
+
               <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form" ng-show="ctrl.panelRegister == 'active'">
-                <div class="form-group col-sm-12">
-                  <label>Email *</label>
-                  <input type="email" ng-model="ctrl.user.username" class="form-control" ng-required="true">
+                <div class="modal-body">
+                  <md-input-container class="md-block form-group" flex-gt-sm>
+                    <label>Email *</label>
+                    <input type="email" ng-model="ctrl.user.username" class="form-control" ng-required="true">
+                  </md-input-container>
                 </div>
-                <div class="form-group col-sm-6">
-                  <label>Jméno *</label>
-                  <input type="text" ng-model="ctrl.user.firstname" class="form-control" ng-required="true">
-                </div>
-                <div class="form-group col-sm-6">
-                  <label>Příjmení *</label>
-                  <input type="text" ng-model="ctrl.user.surname" class="form-control" ng-required="true">
-                </div>
-                <div class="form-group col-sm-9">
-                  <label>Adresa *</label>
-                  <input type="text" ng-model="ctrl.user.address" class="form-control" ng-required="true">
-                </div>
-                <div class="form-group col-sm-3">
-                  <label>PSČ *</label>
-                  <input type="text" ng-model="ctrl.user.postalCode" class="form-control" ng-required="true">
-                </div>
-                <div class="form-group col-sm-6">
-                  <label>Obec *</label>
-                  <input type="text" ng-model="ctrl.user.city" class="form-control" ng-required="true">
-                </div>
-                <div class="form-group col-sm-6">
-                  <label>Stát *</label>
-                  <select class="form-control" ng-model="ctrl.user.country" ng-required="true">
-                    <option value="CZ">Česká republika</option>
-                  </select>
-                </div>
-                <div class="form-group col-sm-12">
-                  <label>Název společnosti</label>
-                  <input type="text" ng-model="ctrl.user.companyName" class="form-control"/>
-                </div>
-                <div class="form-group col-sm-6">
-                  <label>IČO</label>
-                  <input type="text" ng-model="ctrl.user.dic" class="form-control">
-                </div>
-                <div class="form-group col-sm-6">
-                  <label>DIČ</label>
-                  <input type="text" ng-model="ctrl.user.ico" class="form-control">
-                </div>
+
                 <div class="form-group col-sm-12">
                   <div vc-recaptcha key="'6Lcg1yoUAAAAAGenfhvyKUiE0sB8dU28b-L623s_'" lang="cs"></div>
                 </div>
@@ -119,10 +92,10 @@
       <h4 class="modal-title">Zapomenuté heslo</h4>
     </div>
     <div class="modal-body">
-      <div class="form-group">
+      <md-input-container class="md-block form-group" flex-gt-sm>
         <label>Uživatelské jméno *</label>
         <input type="email" ng-model="ctrl.username" class="form-control" placeholder="tvuj@email.cz" ng-required="true">
-      </div>
+      </md-input-container>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-mycom" ng-disabled="!ctrl.forgotPasswordForm.$valid" ng-click="ctrl.save()">Odeslat</button>

@@ -14,8 +14,13 @@
       'cgBusy',
       'chart.js',
       'vcRecaptcha',
-      'ngIdle'
-    ]);
+      'ngIdle',
+      'ngMaterial'
+    ]).config(function($mdThemingProvider) {
+  $mdThemingProvider.theme('default')
+    .primaryPalette('orange')
+    .accentPalette('grey');
+});
 
 
   portalModule.run(runBlock);
