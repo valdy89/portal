@@ -1,28 +1,30 @@
-<nav class="navbar">
-  <div class="container-fluid">
-
-    <div class="collapse navbar-collapse">
-      <div class="nav navbar-nav">
-          <img src="assets/logo.png" class="logo"/>
-      </div>
-      <ul class="nav navbar-nav">
-        <li><a href="index.html"><span class="fa fa-home"></span>&nbsp;Dashboard</a></li>
-        <li><a href="history"><span class="fa fa-history"></span>&nbsp;Historie</a></li>
-      </ul>
-
-      <ul class="nav navbar-nav navbar-right">
-        <li uib-dropdown>
-          <a role="button" uib-dropdown-toggle>{{::main.userData.username}}&nbsp;<b class="caret"></b></a>
-          <ul class="uib-dropdown-menu">
-            <li><a href="" ng-click="main.logout()"><span class="fa fa-key"></span>Odhlásit</a></li>
-          </ul>
-        </li>
-      </ul>
+<md-toolbar class="md-menu-toolbar">
+  <div layout="row"  layout-align="center center">
+    <div>
+      <img src="assets/logo.png" class="logo" />
     </div>
+    <md-menu-bar >
+      <div>
+      <md-menu>
+        <button ><a href="index.html"><span class="fa fa-home"></span>&nbsp;Dashboard</a></button>
+      </md-menu>
+      <md-menu>
+        <button><a href="history"><span class="fa fa-history"></span>&nbsp;Historie</a></button>
+      </md-menu>
+    </div>
+    </md-menu-bar>
+
+    <md-menu-bar  class="md-toolbar-tools" flex>
+      <md-menu>
+        <button ng-click="$mdMenu.open()">{{::main.userData.username}}</button>
+        <md-menu-content>
+          <md-menu-item>
+            <md-button ng-click="main.logout()">Odhlásit se</md-button>
+          </md-menu-item>
+
+        </md-menu-content>
+      </md-menu>
+    </md-menu-bar>
   </div>
-
-</nav>
-
-<div class="container-fluid">
-  <uib-alert ng-repeat="alert in main.alerts" type="{{alert.type}}" close="main.closeAlert($index)">{{alert.msg}}</uib-alert>
-</div>
+   <md-divider></md-divider>
+</md-toolbar>
