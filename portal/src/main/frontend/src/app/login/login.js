@@ -60,13 +60,6 @@
 
     ctrl.panelChange = function (page) {
       ctrl.activeForm = page;
-      if (ctrl.panelRegister === 'active') {
-        ctrl.panelLogin = 'active';
-        ctrl.panelRegister = '';
-      } else {
-        ctrl.panelLogin = '';
-        ctrl.panelRegister = 'active';
-      }
     };
 
     ctrl.forgotPassword = function () {
