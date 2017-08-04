@@ -22,7 +22,6 @@
         </div>
         <div>
           <div class="row">
-            <div class="col-lg-12">
 
               <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form" ng-show="ctrl.activeForm == 'login'">
 
@@ -49,7 +48,7 @@
                 <div class="modal-body">
                   <md-input-container class="md-block form-group" flex-gt-sm>
                     <label>Email</label>
-                    <input type="email" ng-model="ctrl.user.username" class="form-control" ng-required="true">
+                    <input type="email" ng-model="ctrl.user.username" class="form-control" placeholder="tvuj@email.cz" ng-required="true">
                   </md-input-container>
                 </div>
 
@@ -64,7 +63,7 @@
                   </div>
                 </div>
               </form>
-            </div>
+
           </div>
         </div>
       </div>
@@ -81,7 +80,7 @@
     </div>
     <div class="modal-body">
       <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>Uživatelské jméno *</label>
+        <label>Uživatelské jméno</label>
         <input type="email" ng-model="ctrl.username" class="form-control" placeholder="tvuj@email.cz" ng-required="true">
       </md-input-container>
     </div>
