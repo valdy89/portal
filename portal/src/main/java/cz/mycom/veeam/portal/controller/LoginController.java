@@ -1,13 +1,20 @@
 package cz.mycom.veeam.portal.controller;
 
+import com.veeam.ent.v1.*;
+import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.User;
+import cz.mycom.veeam.portal.repository.TenantRepository;
 import cz.mycom.veeam.portal.repository.UserRepository;
 import cz.mycom.veeam.portal.service.MailService;
+import cz.mycom.veeam.portal.service.VeeamService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.conn.util.InetAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author dursik
@@ -34,6 +46,10 @@ public class LoginController {
     private UserDetailsService userDetailsService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private VeeamService veeamService;
+    @Autowired
+    private TenantRepository tenantRepository;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -57,12 +73,12 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
-    public void forgotPassword(@RequestBody AuthRequest authRequest) {
+    public void forgotPassword(@RequestBody AuthRequest authRequest, HttpServletRequest request) {
         try {
             User user = userRepository.findByUsername(authRequest.getUsername());
             String password = RandomStringUtils.randomAlphanumeric(10);
             user.setEnabled(false);
-            String text = "https://portal.dursik.eu/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + password).getBytes("UTF-8"));
+            String text = "https://" + request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + password).getBytes("UTF-8"));
             mailService.sendMail(user.getUsername(), "Zapomenuté heslo", text);
             user.setPassword(passwordEncoder.encode(password));
         } catch (Exception e) {
@@ -83,6 +99,42 @@ public class LoginController {
             }
             user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
             user.setEnabled(true);
+
+            if (user.getTenant() == null) {
+
+                LogonSession logonSession = veeamService.logonSystem();
+                try {
+                    List<String> descriptionList = new ArrayList<>();
+                    descriptionList.add("Email: " + user.getUsername());
+                    descriptionList.add("Portal automatically created user - " + DateFormatUtils.format(new Date(), "dd.MM.yyyy HH:mm:ss"));
+
+                    Tenant tenant = new Tenant();
+                    tenant.setUserId(user.getId());
+                    tenant.setDateCreated(new Date());
+                    tenant.setEnabled(true);
+
+                    String name = StringUtils.substringBefore(username, "@");
+                    name += RandomStringUtils.randomNumeric(5);
+
+                    tenant.setUsername(name);
+
+                    CreateCloudTenantSpec cloudTenant = new CreateCloudTenantSpec();
+                    cloudTenant.setName(name);
+                    cloudTenant.setDescription(StringUtils.join(descriptionList, IOUtils.LINE_SEPARATOR_WINDOWS));
+
+                    cloudTenant.setPassword(password);
+                    cloudTenant.setEnabled(true);
+                    cloudTenant.setThrottlingEnabled(false);
+                    cloudTenant.setMaxConcurrentTasks(5);
+                    cloudTenant.setBackupServerUid(veeamService.getBackupServerUUID());
+
+                    CloudTenant saveTenant = veeamService.createTenant(cloudTenant);
+                    tenant.setUid(StringUtils.substringAfterLast(saveTenant.getUID(), ":"));
+                    tenantRepository.save(tenant);
+                } catch (Exception e) {
+                    veeamService.logout(logonSession);
+                }
+            }
             return new AuthResponse(user);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -91,7 +143,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public void register(@RequestBody User user) {
+    public void register(@RequestBody User user, HttpServletRequest request) {
         if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new RuntimeException("Uživatelské jméno již existuje");
         }
@@ -103,7 +155,7 @@ public class LoginController {
                 .build();
         ((JdbcUserDetailsManager) userDetailsService).createUser(userDetails);
         try {
-            String text = "https://portal.dursik.eu/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + user.getPassword()).getBytes("UTF-8"));
+            String text = "https://" +request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + user.getPassword()).getBytes("UTF-8"));
             mailService.sendMail(user.getUsername(), "Potvrzení registrace", text);
         } catch (Exception e) {
             throw new RuntimeException(e);

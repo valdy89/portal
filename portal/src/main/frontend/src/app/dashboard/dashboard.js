@@ -23,11 +23,18 @@
       ctrl.tenant.$promise.then(
         function () {
           $log.debug(ctrl.tenant);
+
+          ctrl.repositoryData = [((ctrl.tenant.quota - ctrl.tenant.usedQuota - 1) / 1024).toFixed(1), (ctrl.tenant.usedQuota / 1024).toFixed(1)];
         },
         function (error) {
           alert(error.data.message);
         });
     }
+
+    ctrl.repositoryLabels = ['Volný prostor', 'Využívany prostor'];
+    ctrl.options = {
+      legend: {display: true}
+    };
 
     ctrl.changeQuota = function () {
       var modalInstance = $uibModal.open({
@@ -90,8 +97,12 @@
     ctrl.credit = 1000;
     ctrl.price = ctrl.credit / 10 * 3;
 
-    ctrl.recalculate = function () {
-      ctrl.price = ctrl.credit / 10 * 3;
+    ctrl.recalculatePrice = function () {
+      ctrl.price = Math.ceil(ctrl.credit / 10 * 3);
+    };
+
+    ctrl.recalculateCredit = function () {
+      ctrl.credit = Math.floor(ctrl.price / 3 * 10);
     };
 
     ctrl.save = function () {

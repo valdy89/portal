@@ -8,71 +8,123 @@
       <div class="col-sm-6">
         <div class="panel panel-info">
           <div class="panel-heading clearfix">
-            <div class="title pull-left">Uložiště</div>
+            <div class="title pull-left">Aktuální využití</div>
           </div>
           <div class="panel-body">
             <div class="row">
-              <div class="col-sm-6"><label>Jméno uživatele</label></div>
-              <div class="col-sm-6">{{ctrl.tenant.username}}</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6"><label>Zakoupená alokace</label></div>
-              <div class="col-sm-6">{{ctrl.tenant.quota/1024 | number:1}} GB</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6"><label>Využívaná velikost</label></div>
-              <div class="col-sm-6">{{ctrl.tenant.usedQuota/1024 | number:1}} GB - {{(ctrl.tenant.usedQuota/ctrl.tenant.quota)*100 | number:2}} %</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6"><label>Počet VM</label></div>
-              <div class="col-sm-6">{{ctrl.tenant.vmCount}}</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6"><label>Počet Server</label></div>
-              <div class="col-sm-6">{{ctrl.tenant.serverCount}}</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6"><label>Počet Workstation</label></div>
-              <div class="col-sm-6">{{ctrl.tenant.workstationCount}}</div>
-            </div>
-            <div class="row" ng-show="ctrl.tenant.uid">
-              <div class="col-sm-4 col-sm-offset-4">
-                <input type="button" ng-click="ctrl.changeQuota()" class="form-control btn btn-mycom" value="Změnit zakoupenou alokaci">
+              <div class="col-sm-5">
+                <canvas class="chart chart-doughnut" chart-data="ctrl.repositoryData" chart-labels="ctrl.repositoryLabels" chart-options="ctrl.options"></canvas>
               </div>
-              <div class="col-sm-4">
-                <input type="button" ng-click="ctrl.changeTenantPassword()" class="form-control btn btn-mycom" value="Změnit heslo do úložiště">
-              </div>
-            </div>
-            <div class="row" ng-show="!ctrl.tenant.uid">
-              <div class="col-sm-4 col-sm-offset-8">
-                <input type="button" ng-click="ctrl.createTenant()" class="form-control btn btn-mycom" value="Založit tenanta">
+              <div class="col-sm-6">
+                <div class="row">
+                  <div class="col-sm-6"><label>Využívaná velikost</label></div>
+                  <div class="col-sm-6">{{ctrl.tenant.usedQuota/1024 | number:1}} GB - {{(ctrl.tenant.usedQuota/ctrl.tenant.quota)*100 | number:2}} %</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6"><label>Počet VM</label></div>
+                  <div class="col-sm-6">{{ctrl.tenant.vmCount}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6"><label>Počet Server</label></div>
+                  <div class="col-sm-6">{{ctrl.tenant.serverCount}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6"><label>Počet Workstation</label></div>
+                  <div class="col-sm-6">{{ctrl.tenant.workstationCount}}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="col-sm-6">
-        <div class="panel panel-info">
-          <div class="panel-heading clearfix">
-            <div class="title pull-left">Kredity</div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="panel panel-info">
+              <div class="panel-heading clearfix">
+                <div class="title pull-left">Nastavení účtu</div>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-6"><label>Jméno uživatele</label></div>
+                  <div class="col-sm-6">{{ctrl.tenant.username}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6"><label>Zakoupená alokace</label></div>
+                  <div class="col-sm-6">{{ctrl.tenant.quota/1024 | number:1}} GB</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6"><label>Počet volných kreditů</label></div>
+                  <div class="col-sm-6">{{ctrl.tenant.user.credit}}</div>
+                </div>
+                <div class="row" ng-show="ctrl.tenant.user.credit <= 0">
+                  <div class="col-sm-12"><span class="alert-danger">Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.</span></div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6"><label>Odhad vyčerpání kreditů</label></div>
+                  <div class="col-sm-6">{{(ctrl.tenant.creditDate | portalDate)}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-sm-offset-4" ng-show="ctrl.tenant.repositoryUid">
+                    <input type="button" ng-click="ctrl.changeQuota()" class="form-control btn btn-mycom" value="Změnit zakoupenou alokaci">
+                  </div>
+                  <div class="col-sm-4 col-sm-offset-4" ng-show="!ctrl.tenant.repositoryUid && ctrl.tenant.user.credit > 0">
+                    <input type="button" ng-click="ctrl.createTenant()" class="form-control btn btn-mycom" value="Vytořit zálohovací prostor">
+                  </div>
+                  <div class="col-sm-4">
+                    <input type="button" ng-click="ctrl.buyCredit()" class="form-control btn btn-mycom" value="Koupit kredit">
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="panel-body">
-            <div class="row">
-              <div class="col-sm-6"><label>Počet volných kreditů</label></div>
-              <div class="col-sm-6">{{ctrl.tenant.user.credit}}</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6"><label>Kredity vydrží do</label></div>
-              <div class="col-sm-6">{{(ctrl.tenant.creditDate | portalDate)}}</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-4 col-sm-offset-8">
-                <input type="button" ng-click="ctrl.buyCredit()" class="form-control btn btn-mycom" value="Koupit kredit">
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="panel panel-info">
+              <div class="panel-heading clearfix">
+                <div class="title pull-left">Ceník</div>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-3">1000 kreditů</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;300 Kč</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3">10GB / den</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;1 kredit</div>
+                  <div class="col-sm-1"></div>
+                  <div class="col-sm-3">1GB / den</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;cca 0,03 Kč</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3">1x VM / měsíc</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;590 kreditů</div>
+                  <div class="col-sm-1"></div>
+                  <div class="col-sm-3">1x VM / měsíc</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;cca 175 Kč</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3">1x Workstation / měsíc</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;330 kreditů</div>
+                  <div class="col-sm-1"></div>
+                  <div class="col-sm-3">1x Workstation / měsíc</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;cca 110 Kč</div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-3">1x Server / měsíc</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;690 kreditů</div>
+                  <div class="col-sm-1"></div>
+                  <div class="col-sm-3">1x Server / měsíc</div>
+                  <div class="col-sm-2">&nbsp;=&nbsp;cca 230 Kč</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="row">
       <div class="col-sm-12" ng-show="ctrl.tenant.subtenants.length > 0">
         <div class="panel panel-info">
           <div class="panel-heading clearfix">
@@ -120,12 +172,12 @@
     <div class="modal-body">
       <div class="form-group form-group-sm" style="width: 150px">
         <label>Počet kreditů: </label>
-        <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculate()" step="100" class="form-control" required="true" min="1000">
+        <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculatePrice()" class="form-control" required="true">
       </div>
       <div class="form-group form-group-sm" style="width: 150px">
         <label>Cena:</label>
         <div class="input-group">
-          <input type="number" class="form-control" ng-model="ctrl.price" required="true" readonly="readonly">
+          <input type="number" class="form-control" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
           <span class="input-group-addon">Kč</span>
         </div>
       </div>
