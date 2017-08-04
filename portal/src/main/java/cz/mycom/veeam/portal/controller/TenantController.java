@@ -4,8 +4,10 @@ import com.veeam.ent.v1.*;
 import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.TenantHistory;
 import cz.mycom.veeam.portal.model.User;
-import cz.mycom.veeam.portal.model.UserHistory;
-import cz.mycom.veeam.portal.repository.*;
+import cz.mycom.veeam.portal.repository.ConfigRepository;
+import cz.mycom.veeam.portal.repository.TenantHistoryRepository;
+import cz.mycom.veeam.portal.repository.TenantRepository;
+import cz.mycom.veeam.portal.repository.UserRepository;
 import cz.mycom.veeam.portal.service.VeeamService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +43,6 @@ public class TenantController {
     private UserRepository userRepository;
     @Autowired
     private TenantHistoryRepository tenantHistoryRepository;
-    @Autowired
-    private UserHistoryRepository userHistoryRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public Tenant get(Principal principal) {
@@ -52,7 +52,7 @@ public class TenantController {
             tenant = new Tenant();
             tenant.setUser(user);
         }
-        int credit = user.getCredit();
+        int credit = tenant.getCredit();
         Calendar cal = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);
         int month = cal.get(Calendar.MONTH);
         int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
@@ -90,11 +90,11 @@ public class TenantController {
     public Tenant save(Principal principal, @RequestBody Change change) {
         User user = userRepository.findByUsername(principal.getName());
         Tenant tenant = user.getTenant();
+        TenantHistory tenantHistory = null;
         if (change.getCredit() != null) {
-            UserHistory userHistory = new UserHistory(user, principal.getName());
-            int credit = user.getCredit() + change.getCredit();
-            user.setCredit(credit);
-            userHistoryRepository.save(userHistory);
+            int credit = tenant.getCredit() + change.getCredit();
+            tenant.setCredit(credit);
+            tenantHistory = new TenantHistory(tenant, principal.getName());
         } else {
             LogonSession logonSession = veeamService.logonSystem();
             try {
@@ -147,23 +147,37 @@ public class TenantController {
 
                 if (change.getQuota() != null && tenant.getQuota() != change.getQuota()) {
                     int diff = change.getQuota() - tenant.getQuota();
-                    TenantHistory tenantHistory = new TenantHistory(tenant, principal.getName());
-                    tenantHistoryRepository.save(tenantHistory);
                     tenant.setQuota(change.getQuota());
 
-                    int credit = user.getCredit();
-                    //kdyz je vic tak ho zkasni
-                    if (diff > 0) {
+                    Integer todayMax = tenantHistoryRepository.getTodayMaxQuota(tenant.getUid());
+                    if (diff > 0 && (todayMax == null || todayMax < tenant.getQuota())) {
+                        int credit = tenant.getCredit();
+                        //kdyz je vic tak ho zkasni
                         int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
                         credit -= Math.ceil(((float) diff / 1024 / 10) * priceQuota);
+
+                        if (credit != tenant.getCredit()) {
+                            tenant.setCredit(credit);
+                        }
                     }
-                    if (credit != user.getCredit()) {
-                        UserHistory userHistory = new UserHistory(user, principal.getName());
-                        userHistoryRepository.save(userHistory);
-                        user.setCredit(credit);
-                    }
+                    tenantHistory = new TenantHistory(tenant, principal.getName());
                 }
 
+            } finally {
+                veeamService.logout(logonSession);
+            }
+        }
+
+        if (tenantRepository != null) {
+            tenantHistoryRepository.save(tenantHistory);
+        }
+        //kdyz nemam credity tak zakazat
+        if (tenant.getCredit() < 0) {
+            LogonSession logonSession = veeamService.logonSystem();
+            try {
+                CloudTenant cloudTenant = veeamService.getTenant(tenant.getUid());
+                cloudTenant.setEnabled(false);
+                veeamService.saveTenant(tenant.getUid(), cloudTenant);
             } finally {
                 veeamService.logout(logonSession);
             }

@@ -38,7 +38,7 @@ public class Subtenant {
     private Date dateCreated;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "userId", foreignKey = @ForeignKey(name = "sub_tenants_tenant_fk"), updatable = false)
+    @JoinColumn(name = "tenantUid", foreignKey = @ForeignKey(name = "sub_tenants_tenant_fk"), updatable = false)
     @JsonIgnore
     private Tenant tenant;
 

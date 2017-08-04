@@ -38,7 +38,7 @@ public class User {
     private String companyName;
 
     @Column
-    private String address;
+    private String street;
 
     @Column
     private String city;
@@ -54,9 +54,6 @@ public class User {
 
     @Column
     private boolean vip;
-
-    @Column
-    private int credit;
 
     @Column
     @JsonIgnore

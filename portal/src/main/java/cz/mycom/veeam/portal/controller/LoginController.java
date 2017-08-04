@@ -109,7 +109,7 @@ public class LoginController {
                     descriptionList.add("Portal automatically created user - " + DateFormatUtils.format(new Date(), "dd.MM.yyyy HH:mm:ss"));
 
                     Tenant tenant = new Tenant();
-                    tenant.setUserId(user.getId());
+                    tenant.setUser(user);
                     tenant.setDateCreated(new Date());
                     tenant.setEnabled(true);
 

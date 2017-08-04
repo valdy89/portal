@@ -1,19 +1,18 @@
 <div cg-busy="[ctrl.promise]"></div>
 <div class="container">
   <div class="row">
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-sm-6 col-sm-offset-3">
       <div class="panel no-border">
         <div class="panel-heading">
           <div class="row">
-            <div class="col-xs-12">
-              <img src="assets/logo.png" />
-              <h2 style="font-weight: bold;">Veeam Portal</h2>
+            <div class="col-sm-6 col-sm-offset-2">
+              <img src="assets/logo.png"/>
             </div>
           </div>
           <div class="row">
             <div>
               <md-nav-bar md-selected-nav-item="ctrl.activeForm" nav-bar-aria-label="navigation links">
-                <md-nav-item md-nav-click="ctrl.panelChange('login')" name="login">Existujíci uživate</md-nav-item>
+                <md-nav-item md-nav-click="ctrl.panelChange('login')" name="login">Existujíci uživatel</md-nav-item>
                 <md-nav-item md-nav-click="ctrl.panelChange('register')" name="register">Registrace nového uživatele</md-nav-item>
               </md-nav-bar>
             </div>
@@ -22,8 +21,8 @@
         </div>
         <div>
           <div class="row">
-
-              <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form" ng-show="ctrl.activeForm == 'login'">
+            <div class="col-sm-12" ng-show="ctrl.activeForm === 'login'">
+              <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form">
 
                 <md-input-container class="md-block form-group" flex-gt-sm>
                   <label>Uživatelské jméno</label>
@@ -36,34 +35,35 @@
                 </md-input-container>
 
                 <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-                  <md-button type="submit" class="md-raised md-accent" ng-disabled="!ctrl.formLogin.$valid">Přihlásit se</md-button>
+                  <md-button type="submit" class="md-raised md-accent btn-login" ng-disabled="!ctrl.formLogin.$valid">Přihlásit se</md-button>
                 </section>
                 <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
                   <a href="" ng-click="ctrl.forgotPassword()" class="forgot-password">Zapomenuté heslo?</a>
                 </section>
-
               </form>
+            </div>
+            <div class="col-sm-12" ng-hide="ctrl.activeForm === 'login'">
+              <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form">
 
-              <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form" ng-show="ctrl.activeForm == 'register'">
-                <div class="modal-body">
-                  <md-input-container class="md-block form-group" flex-gt-sm>
-                    <label>Email</label>
-                    <input type="email" ng-model="ctrl.user.username" class="form-control" placeholder="tvuj@email.cz" ng-required="true">
-                  </md-input-container>
-                </div>
+                <md-input-container class="md-block form-group" flex-gt-sm>
+                  <label>Email</label>
+                  <input type="email" ng-model="ctrl.user.username" class="form-control" ng-required="true">
+                </md-input-container>
 
-                <div class="form-group col-sm-12">
+                <section layout="row" layout-sm="column">
                   <div vc-recaptcha key="'6Lcg1yoUAAAAAGenfhvyKUiE0sB8dU28b-L623s_'" lang="cs"></div>
-                </div>
-                <div class="form-group">
-                  <div class="row">
-                    <div class="col-sm-6 col-sm-offset-3">
-                      <input type="submit" class="form-control btn btn-mycom" ng-disabled="!ctrl.registerForm.$valid" value="Registrovat se">
-                    </div>
-                  </div>
-                </div>
-              </form>
+                </section>
 
+                <section layout="row" layout-sm="column">
+                  <span>Kliknutím na registrovat souhlasíte s obchodními podmínkami</span>
+                </section>
+
+                <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                  <md-button type="submit" class="md-raised md-accent btn-login" ng-disabled="!ctrl.registerForm.$valid">Registrovat se</md-button>
+                </section>
+
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -75,13 +75,12 @@
   <div cg-busy="[ctrl.promise]"></div>
   <form name="ctrl.forgotPasswordForm" role="form">
     <div class="modal-header">
-      <md-button type="button" class="close" ng-click="ctrl.cancel()">×</button>
-        <h4 class="modal-title">Zapomenuté heslo</h4>
+      <h4 class="modal-title">Zapomenuté heslo</h4>
     </div>
     <div class="modal-body">
       <md-input-container class="md-block form-group" flex-gt-sm>
         <label>Uživatelské jméno</label>
-        <input type="email" ng-model="ctrl.username" class="form-control" placeholder="tvuj@email.cz" ng-required="true">
+        <input type="email" ng-model="ctrl.username" class="form-control" ng-required="true">
       </md-input-container>
     </div>
     <div class="modal-footer">

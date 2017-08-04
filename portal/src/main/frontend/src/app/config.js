@@ -4,7 +4,8 @@
   angular
     .module('portal')
     .value('cgBusyDefaults', {
-      message: 'Čekejte prosím'
+      message: 'Čekejte prosím',
+      delay: 500
     })
     .service('authInterceptor', function($q, $log) {
       var service = this;
@@ -43,20 +44,8 @@
           templateUrl: 'app/login/changePassword.html',
           controller: 'ChangePasswordController as ctrl'
         })
-        .when('/tenants', {
-          templateUrl: 'app/tenant/tenants.html',
-          controller: 'TenantsController as ctrl'
-        })
-        .when('/subtenants', {
-          templateUrl: 'app/tenant/subtenants.html',
-          controller: 'SubtenantsController as ctrl'
-        })
-        .when('/repositoryHistory', {
-          templateUrl: 'app/history/repositoryHistory.html',
-          controller: 'RepositoryHistoryController as ctrl'
-        })
-        .when('/tenantHistory', {
-          templateUrl: 'app/history/tenantHistory.html',
+        .when('/history', {
+          templateUrl: 'app/history/history.html',
           controller: 'TenantHistoryController as ctrl'
         })
         .otherwise({

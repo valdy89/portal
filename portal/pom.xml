@@ -65,7 +65,7 @@
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>prepare-package</phase>
                         <configuration>
                             <nodeVersion>v4.2.6</nodeVersion>
                             <npmVersion>3.7.1</npmVersion>
@@ -76,22 +76,24 @@
                         <goals>
                             <goal>npm</goal>
                         </goals>
+                        <phase>prepare-package</phase>
                     </execution>
                     <execution>
                         <id>bower install</id>
                         <goals>
                             <goal>bower</goal>
                         </goals>
+                        <phase>prepare-package</phase>
                     </execution>
                     <execution>
                         <id>gulp build</id>
                         <goals>
                             <goal>gulp</goal>
                         </goals>
+                        <phase>prepare-package</phase>
                         <configuration>
                             <arguments>--production</arguments>
                         </configuration>
-                        <phase>generate-resources</phase>
                     </execution>
                 </executions>
             </plugin>

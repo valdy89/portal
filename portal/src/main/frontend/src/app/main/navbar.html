@@ -1,30 +1,23 @@
 <md-toolbar class="md-menu-toolbar">
-  <div layout="row"  layout-align="center center">
+  <div layout="row" layout-align="center center">
     <div>
-      <img src="assets/logo.png" class="logo" />
+      <img src="assets/logo.png" class="logo"/>
     </div>
-    <md-menu-bar >
-      <div>
-      <md-menu>
-        <button ><a href="index.html"><span class="fa fa-home"></span>&nbsp;Dashboard</a></button>
-      </md-menu>
-      <md-menu>
-        <button><a href="/history"><span class="fa fa-history"></span>&nbsp;Historie</a></button>
-      </md-menu>
-    </div>
-    </md-menu-bar>
 
-    <md-menu-bar  class="md-toolbar-tools" flex>
+    <md-button href="index.html"><span class="fa fa-home"></span>&nbsp;Dashboard</md-button>
+    <md-button href="index.html"><span class="fa fa-file-pdf-o"></span>&nbsp;Objednávky</md-button>
+    <md-button href="/history"><span class="fa fa-history"></span>&nbsp;Historie</md-button>
+
+    <md-menu-bar class="md-toolbar-tools" flex>
       <md-menu>
-        <button ng-click="$mdMenu.open()">{{::main.userData.username}}</button>
+        <md-button ng-click="$mdMenu.open()">{{::main.userData.username}}</md-button>
         <md-menu-content>
           <md-menu-item>
             <md-button ng-click="main.logout()">Odhlásit se</md-button>
           </md-menu-item>
-
         </md-menu-content>
       </md-menu>
     </md-menu-bar>
   </div>
-   <md-divider></md-divider>
+  <md-divider></md-divider>
 </md-toolbar>
