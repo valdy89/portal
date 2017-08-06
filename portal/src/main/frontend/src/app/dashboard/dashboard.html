@@ -1,7 +1,7 @@
 <div cg-busy="{promise:ctrl.tenant,delay:0}"></div>
 
 <md-content class="md-padding">
-    <div layout="column" layout-gt-sm="row">
+  <div layout="column" layout-gt-sm="row">
     <div flex-gt-sm flex-gt-md="50" layout="column">
       <md-card>
         <md-card-title>
@@ -11,27 +11,27 @@
         </md-card-title>
         <md-card-content>
           <div layout="row" layout-xs="column">
-          <div flex-xs="40" flex>
-            <canvas class="chart chart-doughnut" chart-data="ctrl.repositoryData" chart-labels="ctrl.repositoryLabels" chart-options="ctrl.options"></canvas>
-          </div>
-          <div>
-            <div layout="row">
-              <div flex><label>Využívaná velikost</label></div>
-              <div flex>{{ctrl.tenant.usedQuota/1024 | number:1}} GB - {{(ctrl.tenant.usedQuota/ctrl.tenant.quota)*100 | number:2}} %</div>
+            <div flex-xs="40" flex>
+              <canvas class="chart chart-doughnut" chart-data="ctrl.repositoryData" chart-labels="ctrl.repositoryLabels" chart-options="ctrl.options"></canvas>
             </div>
-            <div layout="row">
-              <div flex><label>Počet VM</label></div>
-              <div flex>{{ctrl.tenant.vmCount}}</div>
+            <div>
+              <div layout="row">
+                <div flex><label>Využívaná velikost</label></div>
+                <div flex>{{ctrl.tenant.usedQuota/1024 | number:1}} GB - {{(ctrl.tenant.usedQuota/ctrl.tenant.quota)*100 | number:2}} %</div>
+              </div>
+              <div layout="row">
+                <div flex><label>Počet VM</label></div>
+                <div flex>{{ctrl.tenant.vmCount}}</div>
+              </div>
+              <div layout="row">
+                <div flex><label>Počet Server</label></div>
+                <div flex>{{ctrl.tenant.serverCount}}</div>
+              </div>
+              <div layout="row">
+                <div flex><label>Počet Workstation</label></div>
+                <div flex>{{ctrl.tenant.workstationCount}}</div>
+              </div>
             </div>
-            <div layout="row">
-              <div flex><label>Počet Server</label></div>
-              <div flex>{{ctrl.tenant.serverCount}}</div>
-            </div>
-            <div layout="row">
-              <div flex><label>Počet Workstation</label></div>
-              <div flex>{{ctrl.tenant.workstationCount}}</div>
-            </div>
-          </div>
           </div>
         </md-card-content>
       </md-card>
@@ -47,7 +47,7 @@
           </md-card-title-text>
         </md-card-title>
         <md-card-actions layout="row" layout-xs="column" layout-align="center center" layout-wrap>
-          <md-button ng-click="ctrl.createTenant()"class="md-raised md-accent">Vytořit zálohovací prostor</md-button>
+          <md-button ng-click="ctrl.createTenant()" class="md-raised md-accent">Vytořit zálohovací prostor</md-button>
           <md-button ng-click="ctrl.buyCredit()" class="md-raised md-accent">Koupit kredit</md-button>
         </md-card-actions>
         <md-card-content>
@@ -65,7 +65,7 @@
             <div flex>{{ctrl.tenant.credit}}</div>
           </div>
           <div layout="row" layout-padding>
-            <md-whiteframe class="md-whiteframe-2dp warningFrame"   flex layout-align="center center" ng-show="ctrl.tenant.credit <= 0">
+            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.credit <= 0">
               Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.
             </md-whiteframe>
           </div>
@@ -116,79 +116,131 @@
         </md-card-content>
       </md-card>
     </div>
-    </div>
+  </div>
 
 
 
-    <div layout="row">
-      <md-card flex>
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">Subtenanti</span>
-          </md-card-title-text>
-        </md-card-title>
+  <div layout="row">
+    <md-card flex>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">Subtenanti</span>
+        </md-card-title-text>
+      </md-card-title>
 
-        <md-card-content>
-      <table class="table table-striped table-hover">
-        <thead>
-        <tr>
-          <th>Jméno</th>
-          <th>Alokace GB</th>
-          <th>Využívaná GB</th>
-          <th>Využívaná %</th>
-          <th>Povolen</th>
-          <th>Založen</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="subtenant in ctrl.tenant.subtenants">
-          <td>{{::subtenant.username}}</td>
-          <td>{{::subtenant.quota/1024 | number:1}}</td>
-          <td>{{::subtenant.usedQuota/1024 | number:1}}</td>
-          <td>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}}%</td>
-          <td>
-            <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
-            <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
-          </td>
-          <td>{{::subtenant.dateCreated | portalDateTime}}</td>
-        </tr>
-        </tbody>
-      </table>
-    </md-card-content>
+      <md-card-content>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Jméno</th>
+              <th>Alokace GB</th>
+              <th>Využívaná GB</th>
+              <th>Využívaná %</th>
+              <th>Povolen</th>
+              <th>Založen</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="subtenant in ctrl.tenant.subtenants">
+              <td>{{::subtenant.username}}</td>
+              <td>{{::subtenant.quota/1024 | number:1}}</td>
+              <td>{{::subtenant.usedQuota/1024 | number:1}}</td>
+              <td>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}}%</td>
+              <td>
+                <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
+                <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
+              </td>
+              <td>{{::subtenant.dateCreated | portalDateTime}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </md-card-content>
     </md-card>
-    </div>
-  </md-content>
+  </div>
+</md-content>
 
 
 <script type="text/ng-template" id="buyCredit.html">
   <div cg-busy="[ctrl.promise]"></div>
-  <form name="ctrl.buyCreditForm" role="form">
-    <div class="modal-header">
-      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
-      <h4 class="modal-title">Koupit kredit</h4>
-    </div>
-    <div class="modal-body">
-      <div class="form-group form-group-sm" style="width: 150px">
-        <label>Počet kreditů: </label>
-        <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculatePrice()" class="form-control" required="true">
+
+  <md-dialog flex>
+    <md-toolbar class="md-accent">
+      <h2 class="md-toolbar-tools">
+       Koupit kredit
+     </h2>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <form name="ctrl.buyCreditForm" role="form" ng-cloak>
+          <md-input-container class="md-block form-group">
+            <label>Počet kreditů: </label>
+            <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculatePrice()" class="form-control" required="true">
+
+          </md-input-container>
+          <md-input-container class="md-block form-group" layout="row">
+            <label>Cena:</label>
+
+            <input type="number" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
+            <md-icon>Kč</md-icon>
+
+          </md-input-container>
+        </form>
       </div>
-      <div class="form-group form-group-sm" style="width: 150px">
-        <label>Cena:</label>
-        <div class="input-group">
-          <input type="number" class="form-control" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
-          <span class="input-group-addon">Kč</span>
-        </div>
+
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
+      <div class="modal-footer">
+        <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Zaplatit</md-button>
+        <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-mycom" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Zaplatit</button>
-      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
-    </div>
-  </form>
+    </md-dialog-actions>
+  </md-dialog>
+
 </script>
 
 <script type="text/ng-template" id="changeQuota.html">
   <div cg-busy="[ctrl.promise]"></div>
+  <md-dialog flex>
+    <md-toolbar class="md-accent">
+      <h2 class="md-toolbar-tools">
+       Koupit kredit
+     </h2>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <form name="ctrl.buyCreditForm" role="form" ng-cloak>
+          <md-input-container class="md-block form-group">
+            <label>Počet kreditů: </label>
+            <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculatePrice()" class="form-control" required="true">
+
+          </md-input-container>
+          <md-input-container class="md-block form-group" layout="row">
+            <label>Cena:</label>
+
+            <input type="number" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
+            <md-icon>Kč</md-icon>
+
+          </md-input-container>
+        </form>
+      </div>
+
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
+      <div class="modal-footer">
+        <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Zaplatit</md-button>
+        <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
+      </div>
+    </md-dialog-actions>
+  </md-dialog>
+
+
+
+
+
+
+
   <form name="ctrl.changeQuotaForm" role="form">
     <div class="modal-header">
       <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
@@ -208,31 +260,44 @@
 </script>
 
 <script type="text/ng-template" id="createTenant.html">
-  <div cg-busy="[ctrl.promise]"></div>
-  <form name="ctrl.createTenantForm" role="form">
-    <div class="modal-header">
-      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
-      <h4 class="modal-title">Založit tenanta</h4>
+<div cg-busy="[ctrl.promise]"></div>
+<md-dialog flex>
+  <md-toolbar class="md-accent">
+    <h2 class="md-toolbar-tools">
+     Koupit kredit
+   </h2>
+  </md-toolbar>
+
+  <md-dialog-content>
+    <div class="md-dialog-content">
+      <form name="ctrl.createTenantForm" role="form" ng-cloak>
+        <md-input-container class="md-block form-group">
+          <label>Velikost kvóty v GB:</label>
+          <input type="number" ng-model="ctrl.quota" class="form-control" step="10" required="true" min="10">
+          <md-icon>GB</md-icon>
+        </md-input-container>
+        <md-input-container class="md-block form-group" layout="row">
+          <label>Heslo</label>
+          <input type="password" ng-model="ctrl.password" class="form-control" ng-required="true">
+
+        </md-input-container>
+        <md-input-container class="md-block form-group" layout="row">
+          <label>Potvrdit heslo</label>
+          <input type="password" ng-model="ctrl.confirmPassword" class="form-control" ng-required="true">
+
+        </md-input-container>
+      </form>
     </div>
-    <div class="modal-body">
-      <div class="form-group form-group-sm">
-        <label>Velikost kvóty v GB: </label>
-        <input type="number" ng-model="ctrl.quota" class="form-control" step="10" required="true" min="10">
-      </div>
-      <div class="form-group">
-        <label>Heslo *</label>
-        <input type="password" ng-model="ctrl.password" class="form-control" ng-required="true">
-      </div>
-      <div class="form-group">
-        <label>Potvrdit heslo *</label>
-        <input type="password" ng-model="ctrl.confirmPassword" class="form-control" ng-required="true">
-      </div>
-    </div>
+
+  </md-dialog-content>
+  <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
     <div class="modal-footer">
-      <button type="button" class="btn btn-mycom" ng-disabled="ctrl.password !== ctrl.confirmPassword || !ctrl.createTenantForm.$valid" ng-click="ctrl.save()">Založit</button>
-      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+      <md-button type="button" class="md-raised md-accent"  ng-disabled="ctrl.password !== ctrl.confirmPassword || !ctrl.createTenantForm.$valid" ng-click="ctrl.save()">Založit</md-button>
+      <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
     </div>
-  </form>
+  </md-dialog-actions>
+</md-dialog>
+
 </script>
 
 <script type="text/ng-template" id="changeTenantPassword.html">

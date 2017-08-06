@@ -11,7 +11,7 @@
     .controller('ChangeTenantPasswordController', ChangeTenantPasswordController);
 
   /** @ngInject */
-  function DashboardController($log, $rootScope, $uibModal, TenantResource) {
+  function DashboardController($log, $rootScope, $uibModal, TenantResource,$mdDialog) {
     var ctrl = this;
 
     $log.debug("user data: " + $rootScope.userData);
@@ -64,34 +64,35 @@
     };
 
     ctrl.createTenant = function () {
-      var modalInstance = $uibModal.open({
+      var modalInstance = $mdDialog.show({
         animation: false,
         templateUrl: 'createTenant.html',
         controller: 'CreateTenantController as ctrl',
-        size: 'sm'
+        parent: angular.element(document.body),
+
+      clickOutsideToClose:true,
+      fullscreen: $rootScope.customFullscreen
       });
 
-      modalInstance.result.then(function () {
-        ctrl.tenant = TenantResource.get();
-      });
     };
 
     ctrl.buyCredit = function () {
-      var modalInstance = $uibModal.open({
-        animation: false,
+      var modalInstance = $mdDialog.show({
+        // animation: false,
         templateUrl: 'buyCredit.html',
         controller: 'BuyCreditController as ctrl',
-        size: 'sm'
+        parent: angular.element(document.body),
+
+      clickOutsideToClose:true,
+      fullscreen: $rootScope.customFullscreen
       });
 
-      modalInstance.result.then(function () {
-        ctrl.tenant = TenantResource.get();
-      });
+
     };
   }
 
   /** @ngInject */
-  function BuyCreditController($log, $uibModalInstance, $http, EndpointConfigService) {
+  function BuyCreditController($log, $mdDialog, $http, EndpointConfigService) {
     var ctrl = this;
 
     ctrl.credit = 1000;
@@ -108,7 +109,7 @@
     ctrl.save = function () {
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {credit: ctrl.credit});
       ctrl.promise.then(function (response) {
-        $uibModalInstance.close();
+        $mdDialog.hide();
       }, function (response) {
         alert(response.data.message);
       });
@@ -116,7 +117,7 @@
     };
 
     ctrl.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
+      $mdDialog.hide('cancel');
     };
   }
 
@@ -143,7 +144,7 @@
   }
 
   /** @ngInject */
-  function CreateTenantController($log, $uibModalInstance , $http, EndpointConfigService) {
+  function CreateTenantController($log, $mdDialog , $http, EndpointConfigService) {
     var ctrl = this;
 
     ctrl.quota = 0;
@@ -151,7 +152,7 @@
     ctrl.save = function () {
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {quota: ctrl.quota * 1024, password: ctrl.password});
       ctrl.promise.then(function (response) {
-        $uibModalInstance.close();
+        $mdDialog.hide();
       }, function (response) {
         alert(response.data.message);
       });
@@ -159,7 +160,7 @@
     };
 
     ctrl.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
+      $mdDialog.hide('cancel');
     };
   }
 
