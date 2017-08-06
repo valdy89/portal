@@ -11,7 +11,7 @@
     // console.log(CURRENT_BACKEND);
     var service = this,
       endpointMap = {
-        LOCALHOST: {URI: 'http://localhost:8080', contextPath: '/portal', root: '/api', format: ''},
+        LOCALHOST: {URI: 'https://portal.dursik.eu', contextPath: '', root: '/api', format: ''},
         REMOTE: {URI: $location.protocol() + '://' + $location.host() + ':' + $location.port(), contextPath: _contextPath , root: '/api', format: ''}
       },
       currentEndpoint = endpointMap[CURRENT_BACKEND];
