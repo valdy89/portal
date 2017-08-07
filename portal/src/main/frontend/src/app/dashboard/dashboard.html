@@ -14,7 +14,7 @@
             <div flex-xs="40" flex>
               <canvas class="chart chart-doughnut" chart-data="ctrl.repositoryData" chart-labels="ctrl.repositoryLabels" chart-options="ctrl.options"></canvas>
             </div>
-            <div>
+            <div flex>
               <div layout="row">
                 <div flex><label>Využívaná velikost</label></div>
                 <div flex>{{ctrl.tenant.usedQuota/1024 | number:1}} GB - {{(ctrl.tenant.usedQuota/ctrl.tenant.quota)*100 | number:2}} %</div>

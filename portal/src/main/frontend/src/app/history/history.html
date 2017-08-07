@@ -1,58 +1,87 @@
-<div cg-busy="[ctrl.tenants]"></div>
-
-<div class="panel-body">
-  <div class="row">
-    <div class="col-sm-2">
-      <md-datepicker md-placeholder="Datum od" ng-model="ctrl.dateFrom"></md-datepicker>
-    </div>
-    <div class="col-sm-2">
-      <md-datepicker md-placeholder="Datum do" ng-model="ctrl.dateTo"></md-datepicker>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-6">
-      <div class="panel panel-info">
-        <div class="panel-heading">Využití repository</div>
-        <div class="panel-body">
-          <canvas class="chart chart-bar" chart-data="ctrl.repositoryData"
-                  chart-dataset-override="ctrl.repositoryOverride"
-                  chart-labels="ctrl.repositoryLabels"
-                  chart-series="ctrl.repositorySeries"
-                  chart-options="ctrl.repositoryOptions"
-                  width="523" height="261" style="display: block; width: 523px; height: 261px;"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6">
-      <div class="panel panel-info">
-        <div class="panel-heading">Kredit</div>
-        <div class="panel-body">
-          <canvas class="chart chart-line" chart-data="ctrl.creditData" chart-labels="ctrl.creditLabels" chart-series="ctrl.creditSeries" chart-options="ctrl.options"
-                  width="523" height="261" style="display: block; width: 523px; height: 261px;"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-12">
-      <table class="table table-striped table-hover">
-        <thead>
-        <tr>
-          <th>Datum</th>
-          <th>Zakoupená alokace GB</th>
-          <th>Počet VM</th>
-          <th>Kredit</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>1.1.2017</td>
-          <td>3</td>
-          <td>1</td>
-          <td>100</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div cg-busy="[ctrl.tenants]">
 </div>
+
+<md-content class="md-padding">
+  <div layout="row" flex>
+    <md-card flex>
+
+      <md-card-content>
+        <md-datepicker md-placeholder="Datum od" ng-model="ctrl.dateFrom"></md-datepicker>
+
+        <md-datepicker md-placeholder="Datum do" ng-model="ctrl.dateTo"></md-datepicker>
+      </md-card-content>
+    </md-card>
+  </div>
+
+  <div layout="column" layout-gt-sm="row">
+    <div flex-xs flex-gt-sm="50" layout="column">
+      <md-card>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Využití repository</span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+          <div layout="row" flex>
+
+            <canvas class="chart chart-bar" chart-data="ctrl.repositoryData" chart-dataset-override="ctrl.repositoryOverride" chart-labels="ctrl.repositoryLabels" chart-series="ctrl.repositorySeries" chart-options="ctrl.repositoryOptions">
+                      </canvas>
+
+          </div>
+        </md-card-content>
+      </md-card>
+    </div>
+
+
+    <div flex-xs flex-gt-sm="50" layout="column">
+
+      <md-card>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Kredit</span>
+          </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+
+          <div layout="row" flex>
+            <canvas class="chart chart-line" chart-data="ctrl.creditData" chart-labels="ctrl.creditLabels" chart-series="ctrl.creditSeries" chart-options="ctrl.options">
+                  </canvas>
+          </div>
+        </md-card-content>
+      </md-card>
+    </div>
+  </div>
+
+
+
+  <div layout="row">
+    <md-card flex>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">Historie</span>
+        </md-card-title-text>
+      </md-card-title>
+
+      <md-card-content>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Zakoupená alokace GB</th>
+              <th>Počet VM</th>
+              <th>Kredit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1.1.2017</td>
+              <td>3</td>
+              <td>1</td>
+              <td>100</td>
+            </tr>
+          </tbody>
+        </table>
+      </md-card-content>
+    </md-card>
+  </div>
+</md-content>
