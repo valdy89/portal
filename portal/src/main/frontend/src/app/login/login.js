@@ -91,12 +91,12 @@
   }
 
   /** @ngInject */
-  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService,$mdDialog) {
+  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService,$mdDialog, $rootScope) {
     var ctrl = this;
 
     ctrl.login = function () {
       var user = {
-        username: $rootScope.userData.username,
+        code: $routeParams.code,
         password: ctrl.password
       };
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/verify'), user);
@@ -111,6 +111,20 @@
         if (response.data) {
           alert(response.data.message);
         } else {
+          alert("Server not responding, please try action again later.");
+        }
+      });
+    };
+
+
+    ctrl.change = function () {
+      var user = {
+        password: ctrl.password
+      };
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/changePassword'), user);
+      ctrl.promise.then(function (response) {
+      }, function (response) {
+        if (!response.data) {
           alert("Server not responding, please try action again later.");
         }
       });
