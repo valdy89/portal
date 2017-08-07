@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.net.InetAddress;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,7 +89,13 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
-    public AuthResponse changePassword(@RequestBody AuthRequest authRequest) {
+    public void changePassword(@RequestBody AuthRequest authRequest, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
+    }
+
+    @RequestMapping(value = "/verify", method = RequestMethod.POST)
+    public AuthResponse verify(@RequestBody AuthRequest authRequest) {
         try {
             String pomCode = new String(Base64.decodeBase64(authRequest.getCode()), "UTF-8");
             String username = StringUtils.substringBefore(pomCode, ":");

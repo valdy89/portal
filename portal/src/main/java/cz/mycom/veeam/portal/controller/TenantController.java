@@ -58,13 +58,13 @@ public class TenantController {
         int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
         int priceVm = Integer.parseInt(configRepository.getOne("price.vm").getValue());
         int priceServer = Integer.parseInt(configRepository.getOne("price.server").getValue());
-        int privateWorkstation = Integer.parseInt(configRepository.getOne("price.workstation").getValue());
+        int priceWorkstation = Integer.parseInt(configRepository.getOne("price.workstation").getValue());
         while (credit > 0) {
             int change = credit;
             if (month != cal.get(Calendar.MONTH)) {
                 credit -= tenant.getVmCount() * priceVm;
                 credit -= tenant.getServerCount() * priceServer;
-                credit -= tenant.getWorkstationCount() * privateWorkstation;
+                credit -= tenant.getWorkstationCount() * priceWorkstation;
                 month = cal.get(Calendar.MONTH);
             }
             credit -= Math.ceil(((float) tenant.getQuota() / 1024 / 10) * priceQuota);
