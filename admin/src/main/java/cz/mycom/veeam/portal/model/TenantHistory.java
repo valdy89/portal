@@ -15,12 +15,13 @@ import java.util.Date;
 @Table(name = "tenant_history")
 @IdClass(HistoryPK.class)
 public class TenantHistory {
+
     public TenantHistory() {
     }
 
     public TenantHistory(Tenant tenant, String modifier) {
         this.modifier = modifier;
-        this.userId = tenant.getUserId();
+        this.uid = tenant.getUid();
         this.dateCreated = new Date();
         this.repositoryUid = tenant.getRepositoryUid();
         this.vmCount = tenant.getVmCount();
@@ -28,11 +29,12 @@ public class TenantHistory {
         this.serverCount = tenant.getServerCount();
         this.usedQuota = tenant.getUsedQuota();
         this.quota = tenant.getQuota();
+        this.credit = tenant.getCredit();
     }
 
     @Id
     @Column
-    private int userId;
+    private String uid;
 
     @Id
     @Column
@@ -52,11 +54,17 @@ public class TenantHistory {
     private int workstationCount;
 
     @Column
-    private int quota;
+    private long quota;
 
     @Column
-    private int usedQuota;
+    private long usedQuota;
+
+    @Column
+    private int credit;
 
     @Column
     private String modifier;
+
+    @Column
+    private String note;
 }

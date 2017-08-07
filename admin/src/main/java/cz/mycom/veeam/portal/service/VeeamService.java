@@ -111,6 +111,19 @@ public class VeeamService {
         }
     }
 
+    public List<CloudTenant> getTenants() {
+        try {
+            EntityReferences referenceListType = veeamRestTemplate.getForObject(getUrl("cloud/tenants"), EntityReferences.class);
+            return referenceListType.getReves()
+                    .stream()
+                    .map(r -> veeamRestTemplate.getForObject(r.getHref() + "?format=Entity", CloudTenant.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     public CloudTenant getTenant(String uid) {
         try {
             return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{uid}?format=Entity"), CloudTenant.class, uid);

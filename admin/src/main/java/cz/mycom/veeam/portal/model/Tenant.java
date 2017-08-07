@@ -2,6 +2,8 @@ package cz.mycom.veeam.portal.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,15 +19,12 @@ import java.util.List;
 @Table(name = "tenants")
 public class Tenant {
 
-    @Id
     @Column
-    private int userId;
+    @Id
+    private String uid;
 
     @Column(unique = true, nullable = false)
     private String username;
-
-    @Column
-    private String uid;
 
     @Column
     private String repositoryUid;
@@ -40,16 +39,20 @@ public class Tenant {
     private int workstationCount;
 
     @Column
-    private int quota;
+    private long quota;
 
     @Column
-    private int usedQuota;
+    private long usedQuota;
+
+    @Column
+    private int credit;
 
     @Column
     private boolean enabled;
 
     @OneToOne
     @JoinColumn(name="userId")
+    @NotFound(action = NotFoundAction.IGNORE)
     private User user;
 
     @Column(nullable = false)

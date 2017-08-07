@@ -33,6 +33,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -52,6 +53,7 @@ import java.util.Properties;
 @EnableWebMvc
 @EnableCaching
 @EnableRetry
+@EnableScheduling
 public class AppConfig {
 
     @Autowired

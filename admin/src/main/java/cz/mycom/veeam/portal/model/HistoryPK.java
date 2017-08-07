@@ -13,19 +13,19 @@ import java.util.Date;
 public class HistoryPK implements Serializable {
     @Id
     @Column
-    private int userId;
+    private String uid;
 
     @Id
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreated;
 
-    public int getUserId() {
-        return userId;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public Date getDateCreated() {

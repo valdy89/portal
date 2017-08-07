@@ -59,7 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/api/register", "/api/login", "/api/changePassword", "/api/forgotPassword").permitAll()
+                .antMatchers("/api/register", "/api/login", "/api/verify", "/api/forgotPassword").permitAll()
                 .antMatchers("/api/*").hasRole("USER").and()
                 .httpBasic().and()
                 .logout().logoutSuccessUrl("/").and()
