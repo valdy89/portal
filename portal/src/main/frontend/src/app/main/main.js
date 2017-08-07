@@ -6,7 +6,7 @@
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($log, $cookies, $http, $window, $scope, $injector, $rootScope, $location, AuthenticationService) {
+  function MainController($log, $cookies, $http, $window, $scope, $injector, $rootScope, $location, AuthenticationService, $mdDialog) {
     var main = this;
 
     $log.debug("Main controller begin");
@@ -45,7 +45,24 @@
       AuthenticationService.logout();
       $window.location.reload();
     };
+
+    main.changePassword = function () {
+      var modalInstance = $mdDialog.show({
+        // animation: false,
+        templateUrl: 'changePasswordInternal.html',
+        controller: 'ChangePasswordController as ctrl',
+        parent: angular.element(document.body),
+
+      clickOutsideToClose:true,
+      fullscreen: $rootScope.customFullscreen
+      });
+
+
+    };
   }
+
+
+
 
 })
 ();

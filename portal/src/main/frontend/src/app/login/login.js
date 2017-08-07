@@ -91,15 +91,15 @@
   }
 
   /** @ngInject */
-  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService) {
+  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService,$mdDialog) {
     var ctrl = this;
 
     ctrl.login = function () {
       var user = {
-        code: $routeParams.code,
+        username: $rootScope.userData.username,
         password: ctrl.password
       };
-      ctrl.promise = $http.post(EndpointConfigService.getUrl('/changePassword'), user);
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/verify'), user);
       ctrl.promise.then(function (response) {
         var userData = response.data;
         $http.defaults.headers.common.Authorization = 'Basic ' + $base64.encode(userData.username + ':' + ctrl.password); // jshint ignore:line
@@ -114,6 +114,10 @@
           alert("Server not responding, please try action again later.");
         }
       });
+    };
+
+    ctrl.cancel = function () {
+      $mdDialog.hide('cancel');
     };
   }
 

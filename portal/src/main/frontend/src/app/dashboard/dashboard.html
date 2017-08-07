@@ -159,11 +159,11 @@
   </div>
 </md-content>
 
-
+<!--Buy credit modal form  -->
 <script type="text/ng-template" id="buyCredit.html">
   <div cg-busy="[ctrl.promise]"></div>
 
-  <md-dialog flex>
+  <md-dialog>
     <md-toolbar class="md-accent">
       <h2 class="md-toolbar-tools">
        Koupit kredit
@@ -198,10 +198,16 @@
   </md-dialog>
 
 </script>
+<!-- end of modal -->
 
+
+
+
+
+<!-- Buy creadit modal form -->
 <script type="text/ng-template" id="changeQuota.html">
   <div cg-busy="[ctrl.promise]"></div>
-  <md-dialog flex>
+  <md-dialog>
     <md-toolbar class="md-accent">
       <h2 class="md-toolbar-tools">
        Koupit kredit
@@ -234,7 +240,7 @@
       </div>
     </md-dialog-actions>
   </md-dialog>
-
+<!-- end of modal -->
 
 
 
@@ -261,7 +267,7 @@
 
 <script type="text/ng-template" id="createTenant.html">
 <div cg-busy="[ctrl.promise]"></div>
-<md-dialog flex>
+<md-dialog>
   <md-toolbar class="md-accent">
     <h2 class="md-toolbar-tools">
      Koupit kredit
@@ -309,7 +315,7 @@
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label>Heslo *</label>
+        <label>Heslo</label>
         <input type="password" ng-model="ctrl.password" class="form-control" ng-required="true">
       </div>
       <div class="form-group">
