@@ -91,7 +91,7 @@
   }
 
   /** @ngInject */
-  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService,$mdDialog, $rootScope) {
+  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService,$mdDialog) {
     var ctrl = this;
 
     ctrl.login = function () {
