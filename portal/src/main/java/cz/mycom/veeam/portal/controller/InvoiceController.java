@@ -66,14 +66,14 @@ public class InvoiceController {
                 contact = new Contact();
             }
             contact.setCountryId(iDokladService.getCountry("cz").getId());
-            contact.setCompanyName(user.getCompanyName());
+            contact.setCompanyName(user.getName());
             contact.setStreet(user.getStreet());
             contact.setEmail(user.getUsername());
             contact.setIdentificationNumber(user.getIco());
             contact.setVatIdentificationNumber(user.getDic());
             contact.setPostalCode(user.getPostalCode());
             contact.setCity(user.getCity());
-            contact.setPhone(user.getMobile());
+            contact.setPhone(user.getPhone());
             contact.setId(null);
             contact = iDokladService.saveContact(contact);
 

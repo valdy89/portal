@@ -54,6 +54,11 @@ public class LoginController {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public User getUser(Principal principal) {
+        return userRepository.findByUsername(principal.getName());
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public AuthResponse login(@RequestBody AuthRequest authRequest) {
         User user = userRepository.findByUsername(authRequest.getUsername());
@@ -94,7 +99,7 @@ public class LoginController {
         if (!passwordEncoder.matches(authRequest.getOldPassword(), user.getPassword())) {
             throw new RuntimeException("Nesprávne původní heslo");
         }
-        ((JdbcUserDetailsManager) userDetailsService).changePassword(passwordEncoder.encode(authRequest.getOldPassword()), passwordEncoder.encode(authRequest.getPassword()));
+        user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
         LogonSession logonSession = veeamService.logonSystem();
         try {
             String tenantUid = user.getTenant().getUid();
@@ -191,13 +196,11 @@ public class LoginController {
 
     @Data
     public static class AuthResponse {
-        String firstname;
-        String surname;
+        String name;
         String username;
 
         public AuthResponse(User user) {
-            this.firstname = user.getFirstname();
-            this.surname = user.getSurname();
+            this.name = user.getName();
             this.username = user.getUsername();
         }
     }

@@ -4,7 +4,8 @@
   angular
     .module('portal')
     .controller('MainController', MainController)
-    .controller('ChangePasswordController', ChangePasswordController);
+    .controller('ChangePasswordController', ChangePasswordController)
+    .controller('ChangeUserController', ChangeUserController);
 
   /** @ngInject */
   function MainController($log, $cookies, $http, $window, $scope, $injector, $rootScope, $location, AuthenticationService, $mdDialog) {
@@ -107,6 +108,19 @@
     ctrl.cancel = function () {
       $mdDialog.hide('cancel');
     };
+  }
+
+  /** @ngInject */
+  function ChangeUserController($log, UserResource) {
+    var ctrl = this;
+
+    ctrl.user = UserResource.get();
+    ctrl.user.then(function (response) {
+    }, function (response) {
+      if (!response.data) {
+        alert("Server not responding, please try action again later.");
+      }
+    });
   }
 
 })
