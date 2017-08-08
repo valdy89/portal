@@ -23,19 +23,13 @@ public class User {
     private String username;
 
     @Column
-    private String surname;
+    private String name;
 
     @Column
-    private String firstname;
-
-    @Column
-    private String mobile;
+    private String phone;
 
     @Column
     private String postalCode;
-
-    @Column
-    private String companyName;
 
     @Column
     private String street;

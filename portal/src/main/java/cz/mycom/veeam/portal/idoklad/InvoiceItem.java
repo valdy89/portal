@@ -1,5 +1,6 @@
 package cz.mycom.veeam.portal.idoklad;
 
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import lombok.Getter;
 import lombok.Setter;
 

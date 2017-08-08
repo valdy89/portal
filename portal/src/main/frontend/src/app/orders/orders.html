@@ -1,0 +1,32 @@
+<div cg-busy="[ctrl.orders]"></div>
+<md-card>
+  <md-card-title>
+    <md-card-title-text>
+      <span class="md-headline">Objednávky</span>
+    </md-card-title-text>
+  </md-card-title>
+  <md-card-content>
+      <table md-table>
+        <thead md-head>
+        <tr md-row>
+          <th md-column>Číslo objednávky</th>
+          <th md-column>Datum vytvoření</th>
+          <th md-column>Cena</th>
+          <th md-column>Kredit</th>
+          <th md-column>Stav</th>
+          <th md-column>Doklad</th>
+        </tr>
+        </thead>
+        <tbody md-body>
+        <tr md-row ng-repeat="order in ctrl.orders">
+          <td md-cell>{{::("0000000"+order.id).slice(-8)}}</td>
+          <td md-cell>{{::order.dateCreated | portalDateTime}}</td>
+          <td md-cell>{{::order.price}} Kč</td>
+          <td md-cell>{{::order.credit}}</td>
+          <td md-cell>{{::(order.paid?'Uhrazena':'Čeká na platbu')}}</td>
+          <td md-cell><a target="_blank" href="api/invoice/{{::order.id}}">{{::order.documentNumber}}</a></td>
+        </tr>
+        </tbody>
+      </table>
+  </md-card-content>
+</md-card>

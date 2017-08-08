@@ -1,6 +1,8 @@
 package cz.mycom.veeam.portal.controller;
 
-import com.veeam.ent.v1.*;
+import com.veeam.ent.v1.CloudTenant;
+import com.veeam.ent.v1.CreateCloudTenantSpec;
+import com.veeam.ent.v1.LogonSession;
 import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.User;
 import cz.mycom.veeam.portal.repository.TenantRepository;
@@ -14,7 +16,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.conn.util.InetAddressUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.net.InetAddress;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +53,11 @@ public class LoginController {
     private TenantRepository tenantRepository;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public User getUser(Principal principal) {
+        return userRepository.findByUsername(principal.getName());
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public AuthResponse login(@RequestBody AuthRequest authRequest) {
@@ -91,7 +96,19 @@ public class LoginController {
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
     public void changePassword(@RequestBody AuthRequest authRequest, Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
+        if (!passwordEncoder.matches(authRequest.getOldPassword(), user.getPassword())) {
+            throw new RuntimeException("Nesprávne původní heslo");
+        }
         user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
+        LogonSession logonSession = veeamService.logonSystem();
+        try {
+            String tenantUid = user.getTenant().getUid();
+            CloudTenant cloudTenant = veeamService.getTenant(tenantUid);
+            cloudTenant.setPassword(authRequest.getPassword());
+            veeamService.saveTenant(tenantUid, cloudTenant);
+        } catch (Exception e) {
+            veeamService.logout(logonSession);
+        }
     }
 
     @RequestMapping(value = "/verify", method = RequestMethod.POST)
@@ -162,7 +179,7 @@ public class LoginController {
                 .build();
         ((JdbcUserDetailsManager) userDetailsService).createUser(userDetails);
         try {
-            String text = "https://" +request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + user.getPassword()).getBytes("UTF-8"));
+            String text = "https://" + request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + user.getPassword()).getBytes("UTF-8"));
             mailService.sendMail(user.getUsername(), "Potvrzení registrace", text);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -173,18 +190,17 @@ public class LoginController {
     public static class AuthRequest {
         String username;
         String password;
+        String oldPassword;
         String code;
     }
 
     @Data
     public static class AuthResponse {
-        String firstname;
-        String surname;
+        String name;
         String username;
 
         public AuthResponse(User user) {
-            this.firstname = user.getFirstname();
-            this.surname = user.getSurname();
+            this.name = user.getName();
             this.username = user.getUsername();
         }
     }

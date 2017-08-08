@@ -60,6 +60,15 @@ public class IDokladService {
         iDokladRestTemplate.delete(IDOKLAD_URL + "api/v2/Contacts/{id}", id);
     }
 
+    public ProformaInvoiceInsert proformaDefault() {
+        try {
+            return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices/Default", ProformaInvoiceInsert.class);
+        } catch (HttpStatusCodeException e) {
+            log.error("Error: {}", e.getResponseBodyAsString());
+            throw e;
+        }
+
+    }
     public ProformaInvoice proforma(ProformaInvoiceInsert proformaInvoiceInsert) {
         try {
             ProformaInvoice proformaInvoice = iDokladRestTemplate.postForObject(IDOKLAD_URL + "api/v2/ProformaInvoices", proformaInvoiceInsert, ProformaInvoice.class);
@@ -73,5 +82,13 @@ public class IDokladService {
 
     public List<ProformaInvoiceInsert> invoices() {
         return null;
+    }
+
+    public String getPdf(Integer id) {
+        return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices/{id}/GetPdf", String.class, id);
+    }
+
+    public void sendProforma(Integer id) {
+        iDokladRestTemplate.put(IDOKLAD_URL + "api/v2/ProformaInvoices/{id}/SendMailToPurchaser", id);
     }
 }

@@ -91,96 +91,79 @@ public class TenantController {
         User user = userRepository.findByUsername(principal.getName());
         Tenant tenant = user.getTenant();
         TenantHistory tenantHistory = null;
-        if (change.getCredit() != null) {
-            int credit = tenant.getCredit() + change.getCredit();
-            tenant.setCredit(credit);
-            tenantHistory = new TenantHistory(tenant, principal.getName());
-        } else {
-            LogonSession logonSession = veeamService.logonSystem();
-            try {
 
-                CloudTenant cloudTenant = veeamService.getTenant(tenant.getUid());
-                cloudTenant.setEnabled(tenant.isEnabled());
-                if (StringUtils.isNotBlank(tenant.getPassword())) {
-                    cloudTenant.setPassword(tenant.getPassword());
+        if (tenant.getQuota() == change.getQuota()) {
+            return tenant;
+        }
+
+        LogonSession logonSession = veeamService.logonSystem();
+        try {
+            CloudTenant cloudTenant = veeamService.getTenant(tenant.getUid());
+            cloudTenant.setPassword(null);
+
+
+            if (StringUtils.isNotBlank(tenant.getRepositoryUid())) {
+                Repository repository = veeamService.getRepository(tenant.getRepositoryUid());
+                Integer sumQuota = tenantRepository.sumQuota(tenant.getRepositoryUid(), tenant.getUid());
+                if (sumQuota == null) {
+                    sumQuota = change.getQuota();
                 } else {
-                    cloudTenant.setPassword(null);
+                    sumQuota += change.getQuota();
                 }
-                if (change.getQuota() != null && change.getQuota() > 0) {
-                    if (StringUtils.isNotBlank(tenant.getRepositoryUid())) {
-                        Repository repository = veeamService.getRepository(tenant.getRepositoryUid());
-                        Integer sumQuota = tenantRepository.sumQuota(tenant.getRepositoryUid(), tenant.getUid());
-                        if (sumQuota == null) {
-                            sumQuota = change.getQuota();
-                        } else {
-                            sumQuota += change.getQuota();
-                        }
-                        if (sumQuota > (repository.getCapacity() / Math.pow(1024, 2)) * veeamService.getFilledParam()) {
-                            sendMail(tenant, tenant.getQuota());
-                            throw new RuntimeException("Tento požadavek nelze z technických důvodů momentálně splnit automaticky. Byla kontaktována podpora dodavatele. Budete kontaktováni v nejkratším možném termínu.");
-                        }
+                if (sumQuota > (repository.getCapacity() / Math.pow(1024, 2)) * veeamService.getFilledParam()) {
+                    sendMail(tenant, tenant.getQuota());
+                    throw new RuntimeException("Tento požadavek nelze z technických důvodů momentálně splnit automaticky. Byla kontaktována podpora dodavatele. Budete kontaktováni v nejkratším možném termínu.");
+                }
 
-                        if (change.getQuota() != null) {
-                            CloudTenantResources cloudTenantResources = cloudTenant.getResources();
-                            if (cloudTenantResources != null
-                                    && !CollectionUtils.isEmpty(cloudTenantResources.getCloudTenantResources())) {
-                                CloudTenantResource cloudTenantResource = cloudTenantResources.getCloudTenantResources().get(0);
-                                cloudTenantResource.getRepositoryQuota().setQuota(Long.valueOf(change.getQuota()));
-                            }
-                        }
-
-                    } else {
-                        Repository repository = veeamService.getPreferredRepository(change.getQuota());
-                        if (repository == null) {
-                            sendMail(tenant, tenant.getQuota());
-                        } else {
-                            CreateCloudTenantResourceSpec backupResource = new CreateCloudTenantResourceSpec();
-                            backupResource.setQuotaMb(change.getQuota());
-                            backupResource.setName(user.getUsername() + " - BackupResource");
-                            backupResource.setRepositoryUid(repository.getUID());
-                            tenant.setRepositoryUid(StringUtils.substringAfterLast(repository.getUID(), ":"));
-                            veeamService.createResource(tenant.getUid(), backupResource);
-                        }
+                if (change.getQuota() != null) {
+                    CloudTenantResources cloudTenantResources = cloudTenant.getResources();
+                    if (cloudTenantResources != null
+                            && !CollectionUtils.isEmpty(cloudTenantResources.getCloudTenantResources())) {
+                        CloudTenantResource cloudTenantResource = cloudTenantResources.getCloudTenantResources().get(0);
+                        cloudTenantResource.getRepositoryQuota().setQuota(Long.valueOf(change.getQuota()));
                     }
-                    veeamService.saveTenant(tenant.getUid(), cloudTenant);
                 }
 
-                if (change.getQuota() != null && tenant.getQuota() != change.getQuota()) {
-                    int diff = change.getQuota() - tenant.getQuota();
-                    tenant.setQuota(change.getQuota());
-
-                    Integer todayMax = tenantHistoryRepository.getTodayMaxQuota(tenant.getUid());
-                    if (diff > 0 && (todayMax == null || todayMax < tenant.getQuota())) {
-                        int credit = tenant.getCredit();
-                        //kdyz je vic tak ho zkasni
-                        int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
-                        credit -= Math.ceil(((float) diff / 1024 / 10) * priceQuota);
-
-                        if (credit != tenant.getCredit()) {
-                            tenant.setCredit(credit);
-                        }
-                    }
-                    tenantHistory = new TenantHistory(tenant, principal.getName());
+            } else {
+                Repository repository = veeamService.getPreferredRepository(change.getQuota());
+                if (repository == null) {
+                    sendMail(tenant, tenant.getQuota());
+                } else {
+                    CreateCloudTenantResourceSpec backupResource = new CreateCloudTenantResourceSpec();
+                    backupResource.setQuotaMb(change.getQuota());
+                    backupResource.setName(user.getUsername() + " - BackupResource");
+                    backupResource.setRepositoryUid(repository.getUID());
+                    tenant.setRepositoryUid(StringUtils.substringAfterLast(repository.getUID(), ":"));
+                    veeamService.createResource(tenant.getUid(), backupResource);
                 }
-
-            } finally {
-                veeamService.logout(logonSession);
             }
-        }
 
-        if (tenantRepository != null) {
+            int diff = change.getQuota() - tenant.getQuota();
+            tenant.setQuota(change.getQuota());
+
+            Integer todayMax = tenantHistoryRepository.getTodayMaxQuota(tenant.getUid());
+            if (diff > 0 && (todayMax == null || todayMax < tenant.getQuota())) {
+                int credit = tenant.getCredit();
+                //kdyz je vic tak ho zkasni
+                int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
+                credit -= Math.ceil(((float) diff / 1024 / 10) * priceQuota);
+
+                if (credit != tenant.getCredit()) {
+                    tenant.setCredit(credit);
+                }
+            }
+            tenantHistory = new TenantHistory(tenant, principal.getName());
             tenantHistoryRepository.save(tenantHistory);
-        }
-        //kdyz nemam credity tak zakazat
-        if (tenant.getCredit() < 0) {
-            LogonSession logonSession = veeamService.logonSystem();
-            try {
-                CloudTenant cloudTenant = veeamService.getTenant(tenant.getUid());
+
+            //kdyz nemam credity tak zakazat
+            if (tenant.getCredit() < 0 && !tenant.getUser().isVip()) {
+                cloudTenant = veeamService.getTenant(tenant.getUid());
                 cloudTenant.setEnabled(false);
-                veeamService.saveTenant(tenant.getUid(), cloudTenant);
-            } finally {
-                veeamService.logout(logonSession);
+                tenant.setEnabled(false);
             }
+            veeamService.saveTenant(tenant.getUid(), cloudTenant);
+        } finally {
+            veeamService.logout(logonSession);
         }
         return tenant;
     }
@@ -192,7 +175,5 @@ public class TenantController {
     @Data
     public static class Change {
         private Integer quota;
-        private String password;
-        private Integer credit;
     }
 }
