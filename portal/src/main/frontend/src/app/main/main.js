@@ -124,11 +124,12 @@
   }
 
   /** @ngInject */
-  function ChangeUserController($log, UserResource,EndpointConfigService, $mdDialog, $http) {
+  function ChangeUserController($log, UserResource,EndpointConfigService, $mdDialog, $http, $rootScope, $location) {
     var ctrl = this;
-
+    var userData;
     ctrl.user = UserResource.get();
-    ctrl.user.then(function (response) {
+    ctrl.user.$promise.then(function (response) {
+      ctrl.userData = response;
     }, function (response) {
       if (!response.data) {
         alert("Server not responding, please try action again later.");
@@ -137,18 +138,15 @@
 
  // save function
     ctrl.change = function () {
-      var user = {
-        password: ctrl.password,
-        oldPassword: ctrl.oldPassword
-      };
-      ctrl.promise = $http.post(EndpointConfigService.getUrl('/changePassword'), user);
-      ctrl.promise.then(function (response) {
-        $mdDialog.hide('cancel');
-      }, function (response) {
-        if (!response.data) {
-          alert("Server not responding, please try action again later.");
-        }
-      });
+      ctrl.user = UserResource.save(ctrl.userData);
+      console.log(ctrl.user);
+      ctrl.user.$promise.then(function (response) {
+         $mdDialog.hide('cancel');
+       }, function (response) {
+         if (!response.data) {
+           alert("Server not responding, please try action again later.");
+         }
+       });
     };
 
     ctrl.cancel = function () {

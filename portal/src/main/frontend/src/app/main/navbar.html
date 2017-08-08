@@ -1,7 +1,7 @@
 <md-toolbar class="md-menu-toolbar">
   <div layout="row" layout-xs="column" layout-align="center center">
     <div>
-      <img src="assets/logo.png" class="logo"/>
+      <img src="assets/logo.png" class="logo" />
     </div>
 
     <md-button href="index.html"><span class="fa fa-home"></span>&nbsp;Dashboard</md-button>
@@ -29,51 +29,93 @@
 </md-toolbar>
 
 
-
 <script type="text/ng-template" id="changeInvoiceInput.html">
   <div cg-busy="[ctrl.promise]"></div>
-  <form name="ctrl.changeInvoiceInputForm" role="form">
-    <div class="modal-header">
-      <h4 class="modal-title">Fakturační údaje</h4>
-    </div>
-    <div class="modal-body">
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>Jméno a přijmení (název firmy)</label>
-        <input type="email" ng-model="ctrl.name" class="form-control" ng-required="true">
-      </md-input-container>
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>Ulice a číslo popisné</label>
-        <input type="email" ng-model="ctrl.street" class="form-control" ng-required="true">
-      </md-input-container>
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>Město</label>
-        <input type="email" ng-model="ctrl.city" class="form-control" ng-required="true">
-      </md-input-container>
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>Země</label>
-        <input type="email" ng-model="ctrl.city" class="form-control" ng-required="true">
-      </md-input-container>
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>PSČ</label>
-        <input type="email" ng-model="ctrl.postalCode" class="form-control">
-      </md-input-container>
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>Telefon</label>
-        <input type="email" ng-model="ctrl.phone" class="form-control">
-      </md-input-container>
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>IČ</label>
-        <input type="email" ng-model="ctrl.ico" class="form-control">
-      </md-input-container>
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>DIČ</label>
-        <input type="email" ng-model="ctrl.dic" class="form-control">
-      </md-input-container>
+  <md-dialog>
+    <md-toolbar class="md-accent">
+      <h2 class="md-toolbar-tools">
+       Fakturační údaje
+     </h2>
+    </md-toolbar>
 
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="md-raised md-accent" ng-disabled="!ctrl.changeInvoiceInputForm.$valid" ng-click="ctrl.save()">Uložit</button>
-      <button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</button>
-    </div>
-  </form>
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <form name="ctrl.changeInvoiceInputForm" role="form">
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Jméno a přijmení (název firmy)</label>
+            <input type="text" ng-model="ctrl.userData.name" class="form-control" ng-required="true">
+          </md-input-container>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Ulice a číslo popisné</label>
+            <input type="text" ng-model="ctrl.userData.street" class="form-control" ng-required="true">
+          </md-input-container>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Město</label>
+            <input type="text" ng-model="ctrl.userData.city" class="form-control" ng-required="true">
+          </md-input-container>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>PSČ</label>
+            <input type="text" ng-model="ctrl.userData.postalCode" class="form-control">
+          </md-input-container>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Telefon</label>
+            <input type="text" ng-model="ctrl.userData.phone" class="form-control">
+          </md-input-container>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>IČ</label>
+            <input type="text" ng-model="ctrl.userData.ico" class="form-control">
+          </md-input-container>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>DIČ</label>
+            <input type="text" ng-model="ctrl.userData.dic" class="form-control">
+          </md-input-container>
+
+
+      </form>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
+      <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.changeInvoiceInputForm.$valid" ng-click="ctrl.change()">Uložit</md-button>
+      <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
+    </md-dialog-actions>
+  </md-dialog>
+</script>
+
+
+<script type="text/ng-template" id="changePasswordInternal.html">
+  <div cg-busy="[ctrl.promise]"></div>
+  <md-dialog>
+    <md-toolbar class="md-accent">
+      <h2 class="md-toolbar-tools">
+        Změna hesla
+      </h2>
+    </md-toolbar>
+
+   <md-dialog-content>
+      <div class="md-dialog-content">
+        <form name="ctrl.changePasswordForm" role="form" ng-cloak>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Původní heslo</label>
+            <input type="password" ng-model="ctrl.oldPassword" class="form-control" ng-required="true">
+          </md-input-container>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Nové heslo</label>
+            <input type="password" ng-model="ctrl.password" class="form-control" ng-required="true">
+          </md-input-container>
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Potvrdit heslo</label>
+            <input type="password" ng-model="ctrl.confirmPassword" class="form-control" ng-required="true">
+          </md-input-container>
+        </form>
+      </div>
+
+    </md-dialog-content>
+    <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
+      <div class="modal-footer">
+        <md-button type="submit" class="md-raised md-accent" ng-click="ctrl.change()" ng-disabled="ctrl.password !== ctrl.confirmPassword || !ctrl.changePasswordForm.$valid">Změnit heslo</md-button>
+        <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
+      </div>
+    </md-dialog-actions>
+  </md-dialog>
+
 </script>
