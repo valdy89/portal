@@ -11,10 +11,10 @@
         </md-card-title>
         <md-card-content>
           <div layout="row" layout-xs="column">
-            <div flex-xs="40" flex>
+            <div flex-xs="40" flex="40">
               <canvas class="chart chart-doughnut" chart-data="ctrl.repositoryData" chart-labels="ctrl.repositoryLabels" chart-options="ctrl.options"></canvas>
             </div>
-            <div flex>
+            <div flex="60">
               <div layout="row">
                 <div flex><label>Využívaná velikost</label></div>
                 <div flex>{{ctrl.tenant.usedQuota/1024 | number:1}} GB - {{(ctrl.tenant.usedQuota/ctrl.tenant.quota)*100 | number:2}} %</div>

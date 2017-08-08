@@ -15,7 +15,8 @@
       'chart.js',
       'vcRecaptcha',
       'ngIdle',
-      'ngMaterial'
+      'ngMaterial',
+      'md.data.table'
     ]).config(function($mdThemingProvider) {
   $mdThemingProvider.theme('default')
     .primaryPalette('blue-grey')

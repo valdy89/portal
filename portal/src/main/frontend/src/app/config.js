@@ -48,6 +48,10 @@
           templateUrl: 'app/history/history.html',
           controller: 'TenantHistoryController as ctrl'
         })
+        .when('/orders', {
+          templateUrl: 'app/orders/orders.html',
+          controller: 'OrdersController as ctrl'
+        })
         .otherwise({
           redirectTo: '/'
         });

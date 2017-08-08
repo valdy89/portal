@@ -89,39 +89,3 @@
     </div>
   </form>
 </script>
-
-
-
-<script type="text/ng-template" id="changePasswordInternal.html">
-<div cg-busy="[ctrl.promise]"></div>
-<md-dialog>
-  <md-toolbar class="md-accent">
-    <h2 class="md-toolbar-tools">
-     Změna hesla
-   </h2>
-  </md-toolbar>
-
-  <md-dialog-content>
-    <div class="md-dialog-content">
-      <form name="ctrl.changePasswordForm" role="form" ng-cloak>
-        <md-input-container class="md-block form-group" flex-gt-sm>
-          <label>Nové heslo</label>
-          <input type="password" ng-model="ctrl.password" class="form-control" ng-required="true">
-        </md-input-container>
-        <md-input-container class="md-block form-group" flex-gt-sm>
-          <label>Potvrdit heslo</label>
-          <input type="password" ng-model="ctrl.confirmPassword" class="form-control" ng-required="true">
-        </md-input-container>
-      </form>
-    </div>
-
-  </md-dialog-content>
-  <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
-    <div class="modal-footer">
-      <md-button type="submit" class="md-raised md-accent" ng-click="ctrl.change()" ng-disabled="ctrl.password !== ctrl.confirmPassword || !ctrl.changePasswordForm.$valid">Změnit heslo</md-button>
-      <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
-    </div>
-  </md-dialog-actions>
-</md-dialog>
-
-</script>

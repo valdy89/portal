@@ -107,7 +107,7 @@
     };
 
     ctrl.save = function () {
-      ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {credit: ctrl.credit});
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/invoice'), {price: ctrl.price});
       ctrl.promise.then(function (response) {
         $mdDialog.hide();
       }, function (response) {

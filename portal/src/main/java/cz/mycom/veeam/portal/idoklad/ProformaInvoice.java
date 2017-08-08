@@ -16,10 +16,11 @@ public class ProformaInvoice extends AbstractObject {
     int PurchaserId;
     String VariableSymbol;
     String OrderNumber;
-    Date DateOfIssue;
-    Date DateOfMaturity;
-    Date DateOfPayment;
+    String DateOfIssue;
+    String DateOfMaturity;
+    String DateOfPayment;
     PaymentStatusEnum PaymentStatus;
+    String documentNumber;
 
     @Override
     public String toString() {

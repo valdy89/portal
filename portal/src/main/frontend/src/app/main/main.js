@@ -3,7 +3,8 @@
 
   angular
     .module('portal')
-    .controller('MainController', MainController);
+    .controller('MainController', MainController)
+    .controller('ChangePasswordController', ChangePasswordController);
 
   /** @ngInject */
   function MainController($log, $cookies, $http, $window, $scope, $injector, $rootScope, $location, AuthenticationService, $mdDialog) {
@@ -61,8 +62,52 @@
     };
   }
 
+  /** @ngInject */
+  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService,$mdDialog) {
+    var ctrl = this;
+
+    ctrl.login = function () {
+      var user = {
+        code: $routeParams.code,
+        password: ctrl.password
+      };
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/verify'), user);
+      ctrl.promise.then(function (response) {
+        var userData = response.data;
+        $http.defaults.headers.common.Authorization = 'Basic ' + $base64.encode(userData.username + ':' + ctrl.password); // jshint ignore:line
+        $rootScope.userData = userData;
+        $cookies.putObject('userData', userData);
+        $rootScope.$broadcast('userLoggedIn', userData);
+        $location.path('/');
+      }, function (response) {
+        if (response.data) {
+          alert(response.data.message);
+        } else {
+          alert("Server not responding, please try action again later.");
+        }
+      });
+    };
 
 
+    ctrl.change = function () {
+      var user = {
+        password: ctrl.password,
+        oldPassword: ctrl.oldPassword
+      };
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/changePassword'), user);
+      ctrl.promise.then(function (response) {
+        $mdDialog.hide('cancel');
+      }, function (response) {
+        if (!response.data) {
+          alert("Server not responding, please try action again later.");
+        }
+      });
+    };
+
+    ctrl.cancel = function () {
+      $mdDialog.hide('cancel');
+    };
+  }
 
 })
 ();
