@@ -6,12 +6,10 @@
     .module('portal')
     .controller('DashboardController', DashboardController)
     .controller('ChangeQuotaController', ChangeQuotaController)
-    .controller('CreateTenantController', CreateTenantController)
-    .controller('BuyCreditController', BuyCreditController)
-    .controller('ChangeTenantPasswordController', ChangeTenantPasswordController);
+    .controller('BuyCreditController', BuyCreditController);
 
   /** @ngInject */
-  function DashboardController($log, $rootScope, $uibModal, TenantResource,$mdDialog) {
+  function DashboardController($log, $rootScope, TenantResource, $mdDialog, $mdToast) {
     var ctrl = this;
 
     $log.debug("user data: " + $rootScope.userData);
@@ -22,9 +20,18 @@
 
       ctrl.tenant.$promise.then(
         function () {
-          $log.debug(ctrl.tenant);
-
-          ctrl.repositoryData = [((ctrl.tenant.quota - ctrl.tenant.usedQuota - 1) / 1024).toFixed(1), (ctrl.tenant.usedQuota / 1024).toFixed(1)];
+          if (!ctrl.tenant.enabled) {
+            $mdToast.show($mdToast.simple()
+              .textContent('Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.')
+              .action('ok')
+              .hideDelay(0)
+              .position('top right'));
+          }
+          var pom = ctrl.tenant.quota - ctrl.tenant.usedQuota - 1;
+          if (pom < 0) {
+            pom = 0;
+          }
+          ctrl.repositoryData = [(pom / 1024).toFixed(1), (ctrl.tenant.usedQuota / 1024).toFixed(1)];
         },
         function (error) {
           alert(error.data.message);
@@ -37,56 +44,46 @@
     };
 
     ctrl.changeQuota = function () {
-      var modalInstance = $uibModal.open({
-        animation: false,
+      var modalInstance = $mdDialog.show({
+        //animation: false,
         templateUrl: 'changeQuota.html',
         controller: 'ChangeQuotaController as ctrl',
-        size: 'sm',
-        resolve: {
-          tenant: function () {
-            return ctrl.tenant;
-          }
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        fullscreen: $rootScope.customFullscreen,
+        locals: {
+          tenant: ctrl.tenant
         }
       });
 
-      modalInstance.result.then(function () {
+      modalInstance.finally(function () {
         ctrl.tenant = TenantResource.get();
       });
     };
 
-    ctrl.changeTenantPassword = function () {
-      var modalInstance = $uibModal.open({
-        animation: false,
-        templateUrl: 'changeTenantPassword.html',
-        controller: 'ChangeTenantPasswordController as ctrl',
-        size: 'sm'
-      });
-    };
-
-    ctrl.createTenant = function () {
-      var modalInstance = $mdDialog.show({
-        animation: false,
-        templateUrl: 'createTenant.html',
-        controller: 'CreateTenantController as ctrl',
-        parent: angular.element(document.body),
-
-      clickOutsideToClose:true,
-      fullscreen: $rootScope.customFullscreen
-      });
-
-    };
-
     ctrl.buyCredit = function () {
-      var modalInstance = $mdDialog.show({
-        // animation: false,
-        templateUrl: 'buyCredit.html',
-        controller: 'BuyCreditController as ctrl',
-        parent: angular.element(document.body),
+      if (!ctrl.tenant.name || ctrl.tenant.name === '') {
+        var alert = $mdDialog.alert({
+          title: 'Varování',
+          textContent: 'Nemáte vyplněné fakturační údaje!',
+          ok: 'Vyplnit nyní'
+        });
 
-      clickOutsideToClose:true,
-      fullscreen: $rootScope.customFullscreen
-      });
+        $mdDialog
+          .show(alert)
+          .finally(function () {
 
+          });
+      } else {
+        var modalInstance = $mdDialog.show({
+          // animation: false,
+          templateUrl: 'buyCredit.html',
+          controller: 'BuyCreditController as ctrl',
+          parent: angular.element(document.body),
+          clickOutsideToClose: true,
+          fullscreen: $rootScope.customFullscreen
+        });
+      }
 
     };
   }
@@ -122,35 +119,15 @@
   }
 
   /** @ngInject */
-  function ChangeQuotaController($log, $uibModalInstance, $http, tenant, EndpointConfigService) {
+  function ChangeQuotaController($log, $mdDialog, $http, tenant, EndpointConfigService) {
     var ctrl = this;
 
     ctrl.tenant = tenant;
+
     ctrl.quota = ctrl.tenant.quota / 1024;
 
     ctrl.save = function () {
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {quota: ctrl.quota * 1024});
-      ctrl.promise.then(function (response) {
-        $uibModalInstance.close();
-      }, function (response) {
-        alert(response.data.message);
-      });
-
-    };
-
-    ctrl.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
-    };
-  }
-
-  /** @ngInject */
-  function CreateTenantController($log, $mdDialog , $http, EndpointConfigService) {
-    var ctrl = this;
-
-    ctrl.quota = 0;
-
-    ctrl.save = function () {
-      ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {quota: ctrl.quota * 1024, password: ctrl.password});
       ctrl.promise.then(function (response) {
         $mdDialog.hide();
       }, function (response) {
@@ -161,25 +138,6 @@
 
     ctrl.cancel = function () {
       $mdDialog.hide('cancel');
-    };
-  }
-
-  /** @ngInject */
-  function ChangeTenantPasswordController($log, $uibModalInstance, $http, EndpointConfigService) {
-    var ctrl = this;
-
-    ctrl.save = function () {
-      ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {password: ctrl.password});
-      ctrl.promise.then(function (response) {
-        $uibModalInstance.close();
-      }, function (response) {
-        alert(response.data.message);
-      });
-
-    };
-
-    ctrl.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
     };
   }
 

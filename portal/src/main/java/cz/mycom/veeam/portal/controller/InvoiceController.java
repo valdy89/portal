@@ -8,6 +8,7 @@ import cz.mycom.veeam.portal.repository.ConfigRepository;
 import cz.mycom.veeam.portal.repository.OrderRepository;
 import cz.mycom.veeam.portal.repository.UserRepository;
 import cz.mycom.veeam.portal.service.IDokladService;
+import cz.mycom.veeam.portal.service.MailService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -41,6 +44,8 @@ public class InvoiceController {
     private IDokladService iDokladService;
     @Autowired
     private ConfigRepository configRepository;
+    @Autowired
+    private MailService mailService;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Order> list(Principal principal) {
@@ -93,6 +98,15 @@ public class InvoiceController {
             ProformaInvoice proforma = iDokladService.proforma(proformaInvoice);
             order.setProformaId(proforma.getId());
             order.setDocumentNumber(proforma.getDocumentNumber());
+
+            try {
+                String pdf = iDokladService.getPdf(order.getInvoiceId() != null ? order.getInvoiceId() : order.getProformaId());
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                IOUtils.write(Base64.decodeBase64(pdf), output);
+                mailService.sendMail(user.getUsername(), "Zálohová faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
 
         }
         orderRepository.save(order);

@@ -59,6 +59,20 @@ public class LoginController {
         return userRepository.findByUsername(principal.getName());
     }
 
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public void save(@RequestBody User user, Principal principal) {
+        User userEntity = userRepository.findByUsername(principal.getName());
+        userEntity.setCity(user.getCity());
+        userEntity.setCountry("CZ");
+        userEntity.setDic(user.getDic());
+        userEntity.setIco(user.getIco());
+        userEntity.setName(user.getName());
+        userEntity.setPhone(user.getPhone());
+        userEntity.setPostalCode(user.getPostalCode());
+        userEntity.setStreet(user.getStreet());
+    }
+
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public AuthResponse login(@RequestBody AuthRequest authRequest) {
         User user = userRepository.findByUsername(authRequest.getUsername());

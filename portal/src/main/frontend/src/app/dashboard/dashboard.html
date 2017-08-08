@@ -47,7 +47,7 @@
           </md-card-title-text>
         </md-card-title>
         <md-card-actions layout="row" layout-xs="column" layout-align="center center" layout-wrap>
-          <md-button ng-click="ctrl.createTenant()" class="md-raised md-accent">Vytořit zálohovací prostor</md-button>
+          <md-button ng-click="ctrl.changeQuota()" class="md-raised md-accent">Změnit alokaci</md-button>
           <md-button ng-click="ctrl.buyCredit()" class="md-raised md-accent">Koupit kredit</md-button>
         </md-card-actions>
         <md-card-content>
@@ -64,10 +64,9 @@
             <div flex><label>Počet volných kreditů</label></div>
             <div flex>{{ctrl.tenant.credit}}</div>
           </div>
-          <div layout="row" layout-padding>
-            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.credit <= 0">
-              Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.
-            </md-whiteframe>
+          <div layout="row">
+            <div flex><label>Odhad vyčerpání kreditů: </label></div>
+            <div flex>{{ctrl.tenant.creditDate | portalDate}}</div>
           </div>
         </md-card-content>
       </md-card>
@@ -118,8 +117,6 @@
     </div>
   </div>
 
-
-
   <div layout="row">
     <md-card flex>
       <md-card-title>
@@ -131,27 +128,27 @@
       <md-card-content>
         <table md-table>
           <thead md-head>
-            <tr md-row>
-              <th md-column>Jméno</th>
-              <th md-column>Alokace GB</th>
-              <th md-column>Využívaná GB</th>
-              <th md-column>Využívaná %</th>
-              <th md-column>Povolen</th>
-              <th md-column>Založen</th>
-            </tr>
+          <tr md-row>
+            <th md-column>Jméno</th>
+            <th md-column>Alokace GB</th>
+            <th md-column>Využívaná GB</th>
+            <th md-column>Využívaná %</th>
+            <th md-column>Povolen</th>
+            <th md-column>Založen</th>
+          </tr>
           </thead>
           <tbody  md-body>
-            <tr md-row ng-repeat="subtenant in ctrl.tenant.subtenants">
-              <td md-cell>{{::subtenant.username}}</td>
-              <td md-cell>{{::subtenant.quota/1024 | number:1}}</td>
-              <td md-cell>{{::subtenant.usedQuota/1024 | number:1}}</td>
-              <td md-cell>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}}%</td>
-              <td md-cell>
-                <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
-                <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
-              </td>
-              <td md-cell>{{::subtenant.dateCreated | portalDateTime}}</td>
-            </tr>
+          <tr md-row ng-repeat="subtenant in ctrl.tenant.subtenants">
+            <td md-cell>{{::subtenant.username}}</td>
+            <td md-cell>{{::subtenant.quota/1024 | number:1}}</td>
+            <td md-cell>{{::subtenant.usedQuota/1024 | number:1}}</td>
+            <td md-cell>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}}%</td>
+            <td md-cell>
+              <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
+              <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
+            </td>
+            <td md-cell>{{::subtenant.dateCreated | portalDateTime}}</td>
+          </tr>
           </tbody>
         </table>
       </md-card-content>

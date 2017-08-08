@@ -112,7 +112,9 @@
       ctrl.promise.then(function (response) {
         $mdDialog.hide('cancel');
       }, function (response) {
-        if (!response.data) {
+        if (response.data) {
+          alert(response.data.message);
+        } else {
           alert("Server not responding, please try action again later.");
         }
       });
@@ -136,23 +138,24 @@
       }
     });
 
- // save function
+    // save function
     ctrl.change = function () {
       ctrl.user = UserResource.save(ctrl.userData);
       console.log(ctrl.user);
       ctrl.user.$promise.then(function (response) {
-         $mdDialog.hide('cancel');
-       }, function (response) {
-         if (!response.data) {
-           alert("Server not responding, please try action again later.");
-         }
-       });
+        $mdDialog.hide('cancel');
+      }, function (response) {
+        if (response.data) {
+          alert(response.data.message);
+        } else {
+          alert("Server not responding, please try action again later.");
+        }
+      });
     };
 
     ctrl.cancel = function () {
       $mdDialog.hide('cancel');
     };
-
 
   }
 

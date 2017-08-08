@@ -158,6 +158,7 @@ public class TenantController {
             //kdyz nemam credity tak zakazat
             if (tenant.getCredit() < 0 && !tenant.getUser().isVip()) {
                 cloudTenant = veeamService.getTenant(tenant.getUid());
+                cloudTenant.setPassword(null);
                 cloudTenant.setEnabled(false);
                 tenant.setEnabled(false);
             }
