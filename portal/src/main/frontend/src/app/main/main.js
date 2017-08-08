@@ -61,6 +61,19 @@
 
 
     };
+    main.changeInvoiceInput = function () {
+      var modalInstance = $mdDialog.show({
+        // animation: false,
+        templateUrl: 'changeInvoiceInput.html',
+        controller: 'ChangeUserController as ctrl',
+        parent: angular.element(document.body),
+
+      clickOutsideToClose:true,
+      fullscreen: $rootScope.customFullscreen
+      });
+
+
+    };
   }
 
   /** @ngInject */
@@ -111,7 +124,7 @@
   }
 
   /** @ngInject */
-  function ChangeUserController($log, UserResource) {
+  function ChangeUserController($log, UserResource,EndpointConfigService, $mdDialog, $http) {
     var ctrl = this;
 
     ctrl.user = UserResource.get();
@@ -121,6 +134,28 @@
         alert("Server not responding, please try action again later.");
       }
     });
+
+ // save function
+    ctrl.change = function () {
+      var user = {
+        password: ctrl.password,
+        oldPassword: ctrl.oldPassword
+      };
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/changePassword'), user);
+      ctrl.promise.then(function (response) {
+        $mdDialog.hide('cancel');
+      }, function (response) {
+        if (!response.data) {
+          alert("Server not responding, please try action again later.");
+        }
+      });
+    };
+
+    ctrl.cancel = function () {
+      $mdDialog.hide('cancel');
+    };
+
+
   }
 
 })
