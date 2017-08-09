@@ -30,7 +30,7 @@
 
 
 <script type="text/ng-template" id="changeInvoiceInput.html">
-  <div cg-busy="[ctrl.promise]"></div>
+  <div cg-busy="[ctrl.user]"></div>
   <md-dialog  flex-gt-sm="40" flex>
     <md-toolbar class="md-accent">
       <h2 class="md-toolbar-tools">
@@ -43,31 +43,31 @@
         <form name="ctrl.changeInvoiceInputForm" role="form">
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>Jméno a přijmení (název firmy)</label>
-            <input type="text" ng-model="ctrl.userData.name" class="form-control" ng-required="true">
+            <input type="text" ng-model="ctrl.user.name" class="form-control" ng-required="true">
           </md-input-container>
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>Ulice a číslo popisné</label>
-            <input type="text" ng-model="ctrl.userData.street" class="form-control" ng-required="true">
+            <input type="text" ng-model="ctrl.user.street" class="form-control" ng-required="true">
           </md-input-container>
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>Město</label>
-            <input type="text" ng-model="ctrl.userData.city" class="form-control" ng-required="true">
+            <input type="text" ng-model="ctrl.user.city" class="form-control" ng-required="true">
           </md-input-container>
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>PSČ</label>
-            <input type="text" ng-model="ctrl.userData.postalCode" class="form-control">
+            <input type="text" ng-model="ctrl.user.postalCode" class="form-control">
           </md-input-container>
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>Telefon</label>
-            <input type="text" ng-model="ctrl.userData.phone" class="form-control">
+            <input type="text" ng-model="ctrl.user.phone" class="form-control">
           </md-input-container>
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>IČ</label>
-            <input type="text" ng-model="ctrl.userData.ico" class="form-control">
+            <input type="text" ng-model="ctrl.user.ico" class="form-control">
           </md-input-container>
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>DIČ</label>
-            <input type="text" ng-model="ctrl.userData.dic" class="form-control">
+            <input type="text" ng-model="ctrl.user.dic" class="form-control">
           </md-input-container>
 
 

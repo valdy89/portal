@@ -62,7 +62,7 @@
     };
 
     ctrl.buyCredit = function () {
-      if (!ctrl.tenant.name || ctrl.tenant.name === '') {
+      if (!ctrl.tenant.user.name || ctrl.tenant.user.name === '') {
         var alert = $mdDialog.alert({
           title: 'Varování',
           textContent: 'Nemáte vyplněné fakturační údaje!',
@@ -72,7 +72,28 @@
         $mdDialog
           .show(alert)
           .finally(function () {
+            var modalInstance = $mdDialog.show({
+              // animation: false,
+              templateUrl: 'changeInvoiceInput.html',
+              controller: 'ChangeUserController as ctrl',
+              parent: angular.element(document.body),
 
+              clickOutsideToClose:true,
+              fullscreen: $rootScope.customFullscreen
+            });
+            modalInstance.finally(function () {
+              modalInstance = $mdDialog.show({
+                // animation: false,
+                templateUrl: 'buyCredit.html',
+                controller: 'BuyCreditController as ctrl',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true,
+                fullscreen: $rootScope.customFullscreen
+              });
+              modalInstance.finally(function () {
+                ctrl.tenant = TenantResource.get();
+              });
+            });
           });
       } else {
         var modalInstance = $mdDialog.show({
@@ -82,6 +103,9 @@
           parent: angular.element(document.body),
           clickOutsideToClose: true,
           fullscreen: $rootScope.customFullscreen
+        });
+        modalInstance.finally(function () {
+          ctrl.tenant = TenantResource.get();
         });
       }
 

@@ -128,20 +128,20 @@
   /** @ngInject */
   function ChangeUserController($log, UserResource,EndpointConfigService, $mdDialog, $http, $rootScope, $location) {
     var ctrl = this;
-    var userData;
+
     ctrl.user = UserResource.get();
     ctrl.user.$promise.then(function (response) {
-      ctrl.userData = response;
     }, function (response) {
-      if (!response.data) {
+      if (response.data) {
+        alert(response.data.message);
+      } else {
         alert("Server not responding, please try action again later.");
       }
     });
 
     // save function
     ctrl.change = function () {
-      ctrl.user = UserResource.save(ctrl.userData);
-      console.log(ctrl.user);
+      ctrl.user = UserResource.save(ctrl.user);
       ctrl.user.$promise.then(function (response) {
         $mdDialog.hide('cancel');
       }, function (response) {
