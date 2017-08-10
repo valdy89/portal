@@ -9,7 +9,9 @@
           <span class="md-headline">Subtenanti</span>
         </md-card-title-text>
       </md-card-title>
-
+      <md-card-actions layout="row" layout-xs="column" layout-align="start center" layout-wrap>
+        <md-button ng-click="ctrl.createSubtenant()" class="md-raised md-accent">Založit subtenant</md-button>
+      </md-card-actions>
       <md-card-content>
         <table md-table>
           <thead md-head>
@@ -40,3 +42,55 @@
     </md-card>
   </div>
 </md-content>
+
+
+
+
+
+
+
+<script type="text/ng-template" id="createSubtenant.html">
+  <div cg-busy="[ctrl.promise]"></div>
+
+  <md-dialog>
+    <md-toolbar class="md-accent">
+      <h2 class="md-toolbar-tools">
+      Založit subtenant
+      </h2>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <form name="ctrl.createSubtenantForm" role="form">
+          <md-input-container class="md-block form-group">
+            <label>Název</label>
+            <input type="text" ng-model="ctrl.subtenant.name" class="form-control" required="true">
+
+          </md-input-container>
+          <md-input-container class="md-block form-group">
+            <label>Velikost kvóty v GB: </label>
+            <input type="number" ng-model="ctrl.subtenant.quota" class="form-control" required="true">
+
+          </md-input-container>
+          <md-input-container class="md-block form-group">
+            <label>Heslo:</label>
+            <input type="password" ng-model="ctrl.subtenant.password" class="form-control" required="true">
+
+          </md-input-container>
+          <md-input-container class="md-block form-group">
+            <label>Heslo:</label>
+            <input type="password" ng-model="ctrl.subtenant.confirmPassword" class="form-control" required="true">
+
+          </md-input-container>
+        </form>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
+      <div class="modal-footer">
+        <md-button type="button" class="md-raised md-accent" ng-disabled="ctrl.subtenant.password !== ctrl.subtenant.confirmPassword ||!ctrl.createSubtenantForm.$valid" ng-click="ctrl.save()">Změnit</md-button>
+        <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
+      </div>
+    </md-dialog-actions>
+  </md-dialog>
+</script>
