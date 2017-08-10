@@ -44,6 +44,10 @@
           templateUrl: 'app/login/changePassword.html',
           controller: 'ChangePasswordController as ctrl'
         })
+        .when('/subtenants', {
+          templateUrl: 'app/subtenants/subtenants.html',
+          controller: 'SubtenantsController as ctrl'
+        })
         .when('/history', {
           templateUrl: 'app/history/history.html',
           controller: 'TenantHistoryController as ctrl'

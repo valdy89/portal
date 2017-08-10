@@ -1,0 +1,42 @@
+<div cg-busy="[ctrl.tenants]">
+</div>
+
+<md-content class="md-padding">
+  <div layout="row">
+    <md-card flex>
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-headline">Subtenanti</span>
+        </md-card-title-text>
+      </md-card-title>
+
+      <md-card-content>
+        <table md-table>
+          <thead md-head>
+          <tr md-row>
+            <th md-column>Jméno</th>
+            <th md-column>Alokace GB</th>
+            <th md-column>Využívaná GB</th>
+            <th md-column>Využívaná %</th>
+            <th md-column>Povolen</th>
+            <th md-column>Založen</th>
+          </tr>
+          </thead>
+          <tbody  md-body>
+          <tr md-row ng-repeat="subtenant in ctrl.tenant.subtenants">
+            <td md-cell>{{::subtenant.username}}</td>
+            <td md-cell>{{::subtenant.quota/1024 | number:1}}</td>
+            <td md-cell>{{::subtenant.usedQuota/1024 | number:1}}</td>
+            <td md-cell>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}}%</td>
+            <td md-cell>
+              <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
+              <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
+            </td>
+            <td md-cell>{{::subtenant.dateCreated | portalDateTime}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </md-card-content>
+    </md-card>
+  </div>
+</md-content>
