@@ -2,6 +2,7 @@ package cz.mycom.veeam.portal.service;
 
 import cz.mycom.veeam.portal.AppConfig;
 import cz.mycom.veeam.portal.idoklad.*;
+import cz.mycom.veeam.portal.repository.CountryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author dursik
@@ -23,6 +25,9 @@ public class IDokladServiceTest {
 
     @Autowired
     IDokladService iDokladService;
+
+    @Autowired
+    CountryRepository countryRepository;
 
     @Test
     public void getCountries() throws Exception {

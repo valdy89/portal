@@ -81,6 +81,7 @@ public class InvoiceController {
             contact.setPhone(user.getPhone());
             contact.setId(null);
             contact = iDokladService.saveContact(contact);
+            user.setCreditCheck(contact.getCreditCheck());
 
             ProformaInvoiceInsert proformaInvoice = iDokladService.proformaDefault();
             proformaInvoice.setPurchaserId(contact.getId());
@@ -100,7 +101,7 @@ public class InvoiceController {
             order.setDocumentNumber(proforma.getDocumentNumber());
 
             try {
-                String pdf = iDokladService.getPdf(order.getInvoiceId() != null ? order.getInvoiceId() : order.getProformaId());
+                String pdf = iDokladService.getProformaPdf(order.getProformaId());
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
                 IOUtils.write(Base64.decodeBase64(pdf), output);
                 mailService.sendMail(user.getUsername(), "Zálohová faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
@@ -122,7 +123,12 @@ public class InvoiceController {
         try {
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=" + order.getDocumentNumber() + ".pdf");
-            String pdf = iDokladService.getPdf(order.getInvoiceId() != null ? order.getInvoiceId() : order.getProformaId());
+            String pdf = null;
+            if (order.getInvoiceId()!=null) {
+                pdf = iDokladService.getInvoicePdf(order.getInvoiceId());
+            } else {
+                pdf = iDokladService.getProformaPdf(order.getInvoiceId());
+            }
             IOUtils.write(Base64.decodeBase64(pdf), response.getOutputStream());
             response.flushBuffer();
         } catch (Exception e) {

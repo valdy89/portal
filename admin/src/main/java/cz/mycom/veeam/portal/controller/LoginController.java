@@ -30,13 +30,11 @@ public class LoginController {
 
     @Data
     public static class AuthResponse {
-        String firstname;
-        String surname;
+        String name;
         String username;
 
         public AuthResponse(User user) {
-            this.firstname = user.getFirstname();
-            this.surname = user.getSurname();
+            this.name = user.getName();
             this.username = user.getUsername();
         }
     }
