@@ -2,7 +2,10 @@ package cz.mycom.veeam.portal.service;
 
 import com.opencsv.CSVReader;
 import com.veeam.ent.v1.*;
-import cz.mycom.veeam.portal.idoklad.*;
+import cz.mycom.veeam.portal.idoklad.InvoiceItem;
+import cz.mycom.veeam.portal.idoklad.IssuedInvoice;
+import cz.mycom.veeam.portal.idoklad.IssuedInvoiceInsert;
+import cz.mycom.veeam.portal.idoklad.ProformaInvoice;
 import cz.mycom.veeam.portal.model.*;
 import cz.mycom.veeam.portal.repository.*;
 import lombok.extern.slf4j.Slf4j;
@@ -141,30 +144,28 @@ public class AccountingService {
                             tenant.setEnabled(cloudTenant.isEnabled());
                             tenant.setUsername(cloudTenant.getName());
                         }
-                        CloudSubtenants subtenants = veeamService.getSubtenants(tenantUid);
-                        if (subtenants != null) {
-                            for (CloudSubtenant cloudSubtenant : subtenants.getCloudSubtenants()) {
-                                String subtenantUid = StringUtils.substringAfterLast(cloudSubtenant.getId(), ":");
-                                Subtenant subtenant = subtenantRepository.findByUid(subtenantUid);
-                                if (subtenant == null) {
-                                    subtenant = new Subtenant();
-                                    subtenant.setEnabled(cloudSubtenant.isEnabled());
-                                    subtenant.setTenant(tenant);
-                                    subtenant.setUid(subtenantUid);
-                                    subtenant.setUsername(cloudSubtenant.getName());
-                                    subtenant.setDateCreated(new Date());
-                                    subtenant = subtenantRepository.save(subtenant);
-                                } else {
-                                    subtenant.setEnabled(cloudSubtenant.isEnabled());
-                                }
 
-                                CloudSubtenantRepositoryQuotaInfoType repositoryQuota = cloudSubtenant.getRepositoryQuota();
-                                if (repositoryQuota != null) {
-                                    Long pom = repositoryQuota.getQuotaMb();
-                                    subtenant.setQuota(pom != null ? pom : 0L);
-                                    pom = repositoryQuota.getUsedQuotaMb();
-                                    subtenant.setUsedQuota(pom != null ? pom : 0L);
-                                }
+                        for (CloudSubtenant cloudSubtenant : veeamService.getSubtenants(tenantUid)) {
+                            String subtenantUid = StringUtils.substringAfterLast(cloudSubtenant.getId(), ":");
+                            Subtenant subtenant = subtenantRepository.findByUid(subtenantUid);
+                            if (subtenant == null) {
+                                subtenant = new Subtenant();
+                                subtenant.setEnabled(cloudSubtenant.isEnabled());
+                                subtenant.setTenant(tenant);
+                                subtenant.setUid(subtenantUid);
+                                subtenant.setUsername(cloudSubtenant.getName());
+                                subtenant.setDateCreated(new Date());
+                                subtenant = subtenantRepository.save(subtenant);
+                            } else {
+                                subtenant.setEnabled(cloudSubtenant.isEnabled());
+                            }
+
+                            CloudSubtenantRepositoryQuotaInfoType repositoryQuota = cloudSubtenant.getRepositoryQuota();
+                            if (repositoryQuota != null) {
+                                Long pom = repositoryQuota.getQuotaMb();
+                                subtenant.setQuota(pom != null ? pom : 0L);
+                                pom = repositoryQuota.getUsedQuotaMb();
+                                subtenant.setUsedQuota(pom != null ? pom : 0L);
                             }
                         }
                         if (cloudTenant.getResources() != null) {

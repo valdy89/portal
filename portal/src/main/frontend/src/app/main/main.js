@@ -1,3 +1,4 @@
+/*globals alert, document */
 (function () {
   'use strict';
 

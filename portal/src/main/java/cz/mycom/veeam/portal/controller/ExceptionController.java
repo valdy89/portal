@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.persistence.RollbackException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,14 @@ public class ExceptionController {
         return new ErrorInfo(e.getMessage());
     }
 
+    @ExceptionHandler(HttpClientErrorException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorInfo httpClientErrorException(HttpServletRequest request, HttpClientErrorException e) {
+        log.debug("Http Client Error on " + request.getRequestURL() + ": " + e.getResponseBodyAsString(), e);
+        return new ErrorInfo(e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
@@ -51,6 +60,11 @@ public class ExceptionController {
             if (cause instanceof RollbackException && cause.getCause() != null) {
                 log.error(cause.getCause().getClass().getName() + ": " + cause.getCause().getMessage());
                 return new ErrorInfo(cause.getCause().getMessage());
+            }
+            if (e.getCause() instanceof HttpClientErrorException) {
+                String message = ((HttpClientErrorException) e.getCause()).getResponseBodyAsString();
+                log.error(cause.getCause().getClass().getName() + ": " + message);
+                return new ErrorInfo(message);
             }
 
         }

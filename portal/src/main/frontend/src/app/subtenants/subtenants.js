@@ -1,74 +1,70 @@
-/*globals alert */
-(function() {
-    'use strict';
+/*globals alert, document */
+(function () {
+  'use strict';
 
-    angular
-      .module('portal')
-      .controller('SubtenantsController', SubtenantsController)
-      .controller('CreateSubtenantController', SubtenantsController);
+  angular
+    .module('portal')
+    .controller('SubtenantsController', SubtenantsController)
+    .controller('CreateSubtenantController', CreateSubtenantController);
 
-    /** @ngInject */
-    function SubtenantsController($log, $rootScope, TenantResource, $mdDialog) {
-      var ctrl = this;
-      $log.debug("user data: " + $rootScope.userData);
-      ctrl.userData = $rootScope.userData;
+  /** @ngInject */
+  function SubtenantsController($log, $rootScope, SubtenantResource, $mdDialog) {
+    var ctrl = this;
 
-      if (ctrl.userData) {
-        ctrl.tenant = TenantResource.get();
-        ctrl.tenant.$promise.then(
-          function() {
+    ctrl.getItems = function () {
+      ctrl.subtenants = SubtenantResource.query();
+      ctrl.subtenants.$promise.then(
+        function () {
 
-            ctrl.repositoryData = [(pom / 1024).toFixed(1), (ctrl.tenant.usedQuota / 1024).toFixed(1)];
-          },
-          function(error) {
-            alert(error.data.message);
-          });
-      }
+        },
+        function (error) {
+          alert(error.data.message);
+        });
+    };
 
-      ctrl.createSubtenant = function() {
-        var modalInstance = $mdDialog.show({
-          //animation: false,
-          templateUrl: 'createSubtenant.html',
-          controller: 'CreateSubtenantController as ctrl',
-          parent: angular.element(document.body),
-          clickOutsideToClose: true,
-          fullscreen: $rootScope.customFullscreen,
-          locals: {
-            tenant: ctrl.tenant
-          }
+
+    ctrl.createSubtenant = function () {
+      var modalInstance = $mdDialog.show({
+        //animation: false,
+        templateUrl: 'createSubtenant.html',
+        controller: 'CreateSubtenantController as ctrl',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        fullscreen: $rootScope.customFullscreen
+      });
+
+      modalInstance.finally(function () {
+        ctrl.getItems();
+      });
+    };
+
+    ctrl.getItems();
+
+  }
+
+  /** @ngInject */
+  function CreateSubtenantController($log, $mdDialog, SubtenantResource) {
+    var ctrl = this;
+
+    ctrl.subtenant = {};
+    ctrl.quota = 0;
+
+    ctrl.save = function () {
+      ctrl.subtenant.quota = ctrl.quota * 1024;
+      ctrl.promise = SubtenantResource.save(ctrl.subtenant);
+      ctrl.promise.$promise.then(
+        function () {
+          $mdDialog.hide('success');
+        },
+        function (error) {
+          alert(error.data.message);
         });
 
-        modalInstance.finally(function() {
-          ctrl.tenant = TenantResource.get();
-        });
-      };
+    };
 
+    ctrl.cancel = function () {
+      $mdDialog.hide('cancel');
+    };
+  }
 
-
-      }
-
-
-      function CreateSubtenantController($log, $mdDialog, $http, tenant, EndpointConfigService) {
-        var ctrl = this;
-
-        ctrl.tenant = tenant;
-
-        ctrl.subtenant.quota = ctrl.tenant.quota / 1024;
-
-        ctrl.save = function() {
-          //todo: call backend
-          // ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {quota: ctrl.quota * 1024});
-          // ctrl.promise.then(function (response) {
-          //   $mdDialog.hide();
-          // }, function (response) {
-          //   alert(response.data.message);
-          // });
-
-        };
-
-        ctrl.cancel = function() {
-          $mdDialog.hide('cancel');
-        };
-      }
-
-    })();
+})();
