@@ -3,8 +3,8 @@ package cz.mycom.veeam.portal.service;
 import com.veeam.ent.v1.*;
 import cz.mycom.veeam.portal.TestConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +83,7 @@ public class VeeamServiceTest {
         CreateCloudTenantResourceSpec backupResource = new CreateCloudTenantResourceSpec();
         backupResource.setQuotaMb(2000);
         backupResource.setName("dursik@gmail.com - BackupResource");
-        Repository repostitory = veeamService.getPreferredRepository();
+        Repository repostitory = veeamService.getPreferredRepository(10);
         backupResource.setRepositoryUid(repostitory.getUID());
 
         tenant.getResources().getBackupResources().add(backupResource);

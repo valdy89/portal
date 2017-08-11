@@ -1,5 +1,6 @@
 package cz.mycom.veeam.portal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.NotFound;
@@ -60,6 +61,7 @@ public class Tenant {
     private Date dateCreated;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.REMOVE)
+    @JsonIgnore
     private List<Subtenant> subtenants = new ArrayList<>();
 
     @Transient

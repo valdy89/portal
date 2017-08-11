@@ -12,4 +12,5 @@ public interface SubtenantRepository extends JpaRepository<Subtenant, String> {
     List<Subtenant> findByTenant_UserId(int userId);
     Subtenant findByUid(String uid);
     Subtenant findByUsernameAndTenantUid(String username, String tenantUid);
+    Subtenant findByUidAndTenantUid(String uid, String tenantUid);
 }

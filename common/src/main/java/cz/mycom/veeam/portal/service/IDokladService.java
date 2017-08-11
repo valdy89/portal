@@ -23,7 +23,6 @@ public class IDokladService {
     @Autowired
     private OAuth2RestTemplate iDokladRestTemplate;
 
-    @Cacheable("countries")
     public Country getCountry(String code) {
         Assert.isTrue(StringUtils.isNotBlank(code), "code is required");
         CountryData data = iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/Countries?filter=Code~eq~" + code, CountryData.class);

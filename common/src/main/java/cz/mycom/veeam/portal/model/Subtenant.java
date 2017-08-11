@@ -21,7 +21,6 @@ public class Subtenant {
     private String username;
 
     @Column(nullable = false, unique = true, updatable = false)
-    @JsonIgnore
     private String uid;
 
     @Column

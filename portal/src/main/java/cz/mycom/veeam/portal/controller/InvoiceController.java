@@ -13,8 +13,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -94,7 +94,7 @@ public class InvoiceController {
             invoiceItem.setPriceType(PriceTypeEnum.WithoutVat);
             invoiceItem.setVatRateType(VatRateTypeEnum.Basic);
             proformaInvoice.getProformaInvoiceItems().add(invoiceItem);
-            proformaInvoice.setDateOfMaturity(DateFormatUtils.ISO_DATETIME_FORMAT.format(DateUtils.addDays(new Date(), 1)));
+            proformaInvoice.setDateOfMaturity(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(DateUtils.addDays(new Date(), 1)));
             proformaInvoice.setDateOfPayment(null);
             ProformaInvoice proforma = iDokladService.proforma(proformaInvoice);
             order.setProformaId(proforma.getId());
