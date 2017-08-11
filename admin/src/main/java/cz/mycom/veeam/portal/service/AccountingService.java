@@ -2,18 +2,15 @@ package cz.mycom.veeam.portal.service;
 
 import com.opencsv.CSVReader;
 import com.veeam.ent.v1.*;
-import cz.mycom.veeam.portal.idoklad.InvoiceItem;
-import cz.mycom.veeam.portal.idoklad.IssuedInvoice;
-import cz.mycom.veeam.portal.idoklad.IssuedInvoiceInsert;
-import cz.mycom.veeam.portal.idoklad.ProformaInvoice;
+import cz.mycom.veeam.portal.idoklad.*;
 import cz.mycom.veeam.portal.model.*;
 import cz.mycom.veeam.portal.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -54,6 +52,69 @@ public class AccountingService {
 
     private static final String SYSTEM = "SYSTEM";
 
+    @Scheduled(cron = "0/5 * * * * ?")
+    public void checkOrders() {
+        List<Order> orders = orderRepository.findByPaymentStatusIsNull();
+        for (Order order : orders) {
+            try {
+                transactionTemplate.execute(new TransactionCallback<Integer>() {
+                    @Override
+                    public Integer doInTransaction(TransactionStatus transactionStatus) {
+                        Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
+                        User user = tenant.getUser();
+                        Contact contact = iDokladService.findContact(user.getUsername());
+                        if (contact == null) {
+                            contact = new Contact();
+                        }
+                        contact.setCountryId(iDokladService.getCountry("cz").getId());
+                        contact.setCompanyName(user.getName());
+                        contact.setStreet(user.getStreet());
+                        contact.setEmail(user.getUsername());
+                        contact.setIdentificationNumber(user.getIco());
+                        contact.setVatIdentificationNumber(user.getDic());
+                        contact.setPostalCode(user.getPostalCode());
+                        contact.setCity(user.getCity());
+                        contact.setPhone(user.getPhone());
+                        contact.setId(null);
+                        contact = iDokladService.saveContact(contact);
+                        user.setCreditCheck(contact.getCreditCheck());
+
+                        ProformaInvoiceInsert proformaInvoice = iDokladService.proformaDefault();
+                        proformaInvoice.setOrderNumber(StringUtils.leftPad(String.valueOf(order.getId()), 8, '0'));
+                        proformaInvoice.setPurchaserId(contact.getId());
+                        proformaInvoice.setProformaInvoiceItems(new ArrayList<>());
+                        InvoiceItem invoiceItem = new InvoiceItem();
+                        invoiceItem.setAmount(BigDecimal.ONE);
+                        invoiceItem.setName("Nákup kreditů: " + order.getCredit() + "ks");
+                        invoiceItem.setUnit("");
+                        invoiceItem.setUnitPrice(order.getPrice());
+                        invoiceItem.setPriceType(PriceTypeEnum.WithoutVat);
+                        invoiceItem.setVatRateType(VatRateTypeEnum.Basic);
+                        proformaInvoice.getProformaInvoiceItems().add(invoiceItem);
+                        proformaInvoice.setDateOfMaturity(DateFormatUtils.ISO_DATETIME_FORMAT.format(DateUtils.addDays(new Date(), 1)));
+                        proformaInvoice.setDateOfPayment(null);
+                        ProformaInvoice proforma = iDokladService.proforma(proformaInvoice);
+                        order.setProformaId(proforma.getId());
+                        order.setDocumentNumber(proforma.getDocumentNumber());
+
+                        try {
+                            String pdf = iDokladService.getProformaPdf(order.getProformaId());
+                            ByteArrayOutputStream output = new ByteArrayOutputStream();
+                            IOUtils.write(Base64.decodeBase64(pdf), output);
+                            mailService.sendMail(user.getUsername(), "Zálohová faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
+                        } catch (IOException e) {
+                            log.error(e.getMessage(), e);
+                        }
+
+                        return 1;
+                    }
+                });
+
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+    }
 
     @Scheduled(cron = "0 0 * * * ?")
     public void checkPaid() {
@@ -69,13 +130,14 @@ public class AccountingService {
 
                             if (order.getPaymentStatus() == PaymentStatusEnum.Paid || order.getPaymentStatus() == PaymentStatusEnum.Overpaid) {
                                 IssuedInvoiceInsert issuedInvoiceInsert = iDokladService.invoiceDefault();
+                                issuedInvoiceInsert.setOrderNumber(StringUtils.leftPad(String.valueOf(order.getId()), 8, '0'));
                                 issuedInvoiceInsert.setDateOfPayment(proforma.getDateOfPayment());
                                 InvoiceItem invoiceItem = issuedInvoiceInsert.getIssuedInvoiceItems().get(0);
                                 InvoiceItem proformaItem = proforma.getProformaInvoiceItems().get(0);
                                 invoiceItem.setUnitPrice(proformaItem.getUnitPrice());
                                 invoiceItem.setUnit(proformaItem.getUnit());
                                 invoiceItem.setName(proformaItem.getName());
-                                issuedInvoiceInsert.setDateOfMaturity(DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(DateUtils.addDays(new Date(), 1)));
+                                issuedInvoiceInsert.setDateOfMaturity(DateFormatUtils.ISO_DATETIME_FORMAT.format(DateUtils.addDays(new Date(), 1)));
                                 issuedInvoiceInsert.setPurchaserId(proforma.getPurchaserId());
                                 IssuedInvoice invoice = iDokladService.invoice(issuedInvoiceInsert);
                                 order.setInvoiceId(invoice.getId());

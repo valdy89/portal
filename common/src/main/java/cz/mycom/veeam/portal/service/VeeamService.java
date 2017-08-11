@@ -145,6 +145,7 @@ public class VeeamService {
         }
         float filledParam = getFilledParam();
 
+        Repository fallback = null;
         for (Repository repository : repositories) {
             Integer sumQuota = tenantRepository.sumQuota(StringUtils.substringAfterLast(repository.getUID(), ":"), "NOT_EXISTING");
             if (sumQuota == null) {
@@ -152,12 +153,15 @@ public class VeeamService {
             } else {
                 sumQuota += quota;
             }
-            if (sumQuota <= (repository.getCapacity() / 1024) * filledParam) {
+            if (sumQuota <= (repository.getCapacity() / Math.pow(1024, 2)) * filledParam) {
                 //nasel jsem misto
                 return repository;
             }
+            if (fallback == null || repository.getCapacity() > fallback.getCapacity()) {
+                fallback = repository;
+            }
         }
-        return null;
+        return fallback;
     }
 
     public Repository getRepository(String uid) {

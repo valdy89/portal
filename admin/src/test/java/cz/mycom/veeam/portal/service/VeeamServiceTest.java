@@ -87,8 +87,8 @@ public class VeeamServiceTest {
         backupResource.setRepositoryUid(repostitory.getUID());
 
         tenant.getResources().getBackupResources().add(backupResource);
-        CloudTenant tenantEntity = veeamService.createTenant(tenant);
-        log.info(tenantEntity.getUID());
+       // CloudTenant tenantEntity = veeamService.createTenant(tenant);
+       // log.info(tenantEntity.getUID());
         veeamService.logout(logonSessionType.getSessionId());
     }
 }

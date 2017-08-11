@@ -4,7 +4,7 @@
 
     <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="Append" value="true"/>
-        <param name="File" value="/var/log/mycom-portal.log"/>
+        <param name="File" value="/tmp/mycom-portal.log"/>
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <param name="ImmediateFlush" value="true"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -23,8 +23,7 @@
     </logger>
 
     <root>
-        <level value="INFO"/>
-        <appender-ref ref="stdout"/>
+        <level value="DEBUG"/>
         <appender-ref ref="FILE"/>
     </root>
 
