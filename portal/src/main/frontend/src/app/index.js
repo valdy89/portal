@@ -26,10 +26,10 @@
   portalModule.value('ENUMS', {
     'PAYMENT_STATUS': [
       {id: '', name: 'Založená'},
-      {id: 'Unpaid', name: 'Neuhrazena'},
-      {id: 'Paid', name: 'Zaplacena'},
-      {id: 'PartialPaid', name: 'Zaplacena částečně'},
-      {id: 'Overpaid', name: 'Zaplacena'}
+      {id: 'Unpaid', name: 'Neuhrazená'},
+      {id: 'Paid', name: 'Uhrazená'},
+      {id: 'PartialPaid', name: 'Uhrazená částečně'},
+      {id: 'Overpaid', name: 'Uhrazená'}
     ]
   });
 

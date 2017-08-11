@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -75,7 +75,7 @@ public class AccountingService {
                         contact.setPostalCode(user.getPostalCode());
                         contact.setCity(user.getCity());
                         contact.setPhone(user.getPhone());
-                        contact.setId(null);
+                        contact.getDefaultBankAccount().setBankId("");
                         contact = iDokladService.saveContact(contact);
                         user.setCreditCheck(contact.getCreditCheck());
 
@@ -96,13 +96,15 @@ public class AccountingService {
                         ProformaInvoice proforma = iDokladService.proforma(proformaInvoice);
                         order.setProformaId(proforma.getId());
                         order.setDocumentNumber(proforma.getDocumentNumber());
+                        order.setPaymentStatus(proforma.getPaymentStatus());
+                        orderRepository.save(order);
 
                         try {
                             String pdf = iDokladService.getProformaPdf(order.getProformaId());
                             ByteArrayOutputStream output = new ByteArrayOutputStream();
                             IOUtils.write(Base64.decodeBase64(pdf), output);
                             mailService.sendMail(user.getUsername(), "Zálohová faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             log.error(e.getMessage(), e);
                         }
 
@@ -112,6 +114,9 @@ public class AccountingService {
 
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
+                if (e instanceof HttpClientErrorException) {
+                    log.error(((HttpClientErrorException) e).getResponseBodyAsString());
+                }
             }
         }
     }
@@ -133,7 +138,10 @@ public class AccountingService {
                                 issuedInvoiceInsert.setOrderNumber(StringUtils.leftPad(String.valueOf(order.getId()), 8, '0'));
                                 issuedInvoiceInsert.setDateOfPayment(proforma.getDateOfPayment());
                                 InvoiceItem invoiceItem = issuedInvoiceInsert.getIssuedInvoiceItems().get(0);
-                                InvoiceItem proformaItem = proforma.getProformaInvoiceItems().get(0);
+                                InvoiceItem proformaItem = proforma.getProformaInvoiceItems()
+                                        .stream()
+                                        .filter(i -> !i.getName().equals("Rounding"))
+                                        .findFirst().get();
                                 invoiceItem.setUnitPrice(proformaItem.getUnitPrice());
                                 invoiceItem.setUnit(proformaItem.getUnit());
                                 invoiceItem.setName(proformaItem.getName());
@@ -143,16 +151,38 @@ public class AccountingService {
                                 order.setInvoiceId(invoice.getId());
                                 order.setDocumentNumber(invoice.getDocumentNumber());
 
+                                Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
+                                tenant.setCredit(tenant.getCredit() + order.getCredit());
+                                tenantRepository.save(tenant);
+
+                                if (tenant.getCredit() > 0 && !tenant.isEnabled()) {
+                                    tenant.setEnabled(true);
+                                    LogonSession logonSession = veeamService.logonSystem();
+                                    try {
+                                        CloudTenant cloudTenant = veeamService.getTenant(tenant.getUid());
+                                        cloudTenant.setEnabled(true);
+                                        cloudTenant.setPassword(null);
+                                        veeamService.saveTenant(tenant.getUid(), cloudTenant);
+                                    } catch (Exception e) {
+                                        log.error(e.getMessage(), e);
+                                    } finally {
+                                        veeamService.logout(logonSession);
+                                    }
+                                }
+
+                                TenantHistory tenantHistory = new TenantHistory(tenant, SYSTEM);
+                                tenantHistoryRepository.save(tenantHistory);
+
                                 try {
-                                    String pdf = iDokladService.getInvoicePdf(order.getInvoiceId() != null ? order.getInvoiceId() : order.getProformaId());
+                                    String pdf = iDokladService.getInvoicePdf(order.getInvoiceId());
                                     ByteArrayOutputStream output = new ByteArrayOutputStream();
                                     IOUtils.write(Base64.decodeBase64(pdf), output);
-                                    Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
                                     mailService.sendMail(tenant.getUser().getUsername(), "Faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
-                                } catch (IOException e) {
+                                } catch (Exception e) {
                                     log.error(e.getMessage(), e);
                                 }
                             }
+                            orderRepository.save(order);
                         }
 
                         return 1;
@@ -295,6 +325,8 @@ public class AccountingService {
                                 mailService.sendMail(tenant.getUser().getUsername(), "Účet " + tenant.getUsername() + " byl zablokován", "Váš účet byl zablokován z důvodu nedostatečného kreditu.");
                             }
                         }
+                        tenantRepository.save(tenant);
+
                         if (todaySystem == null) {
                             TenantHistory tenantHistory = new TenantHistory(tenant, SYSTEM);
                             tenantHistoryRepository.save(tenantHistory);

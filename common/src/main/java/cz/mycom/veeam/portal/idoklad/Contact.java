@@ -1,8 +1,11 @@
 package cz.mycom.veeam.portal.idoklad;
 
 import cz.mycom.veeam.portal.model.CreditCheckEnum;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 /**
  * @author dursik
@@ -23,6 +26,16 @@ public class Contact extends AbstractObject {
     String Phone;
     CreditCheckEnum CreditCheck;
 
+    //tento hnuj je required pro update, PATCH nefungoval
+    BigDecimal DiscountPercentage = BigDecimal.ZERO;
+    String Fax = "";
+    Boolean IsSendReminder = false;
+    String Mobile = "";
+    String Title = "";
+    String VatIdentificationNumberSk = "";
+    String Www = "";
+    DefaultBankAccount DefaultBankAccount = new DefaultBankAccount();
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Contact{");
@@ -41,5 +54,16 @@ public class Contact extends AbstractObject {
         sb.append(", CreditCheck=").append(CreditCheck);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Data
+    public static class DefaultBankAccount {
+        String AccountNumber = "";
+        String Iban = "";
+        String Name = "";
+        String Swift = "";
+        String BankId = "";
+        String CurrencyId = "";
+
     }
 }

@@ -1,6 +1,8 @@
 package cz.mycom.veeam.portal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +29,8 @@ public class IDokladClientConfig {
     private ObjectMapper objectMapper;
 
     @Bean
-    public OAuth2RestTemplate iDokladRestTemplate(OAuth2ClientContext oauth2ClientContext) {
-        OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(iDoklad(), oauth2ClientContext);
+    public OAuth2RestTemplate iDokladRestTemplate() {
+        OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(iDoklad());
         for (HttpMessageConverter messageConverter : restTemplate.getMessageConverters()) {
             if (messageConverter instanceof MappingJackson2HttpMessageConverter) {
                 ((MappingJackson2HttpMessageConverter) messageConverter).setObjectMapper(objectMapper);

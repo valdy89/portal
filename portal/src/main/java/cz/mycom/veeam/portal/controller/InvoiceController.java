@@ -72,7 +72,7 @@ public class InvoiceController {
         User user = userRepository.findByUsername(principal.getName());
         Order order = orderRepository.findByTenantUidAndId(user.getTenant().getUid(), id);
         if (order == null) {
-            throw new RuntimeException("Co to zkousis?");
+            throw new RuntimeException("WTF");
         }
         try {
             response.setContentType("application/pdf");
@@ -81,7 +81,7 @@ public class InvoiceController {
             if (order.getInvoiceId() != null) {
                 pdf = iDokladService.getInvoicePdf(order.getInvoiceId());
             } else {
-                pdf = iDokladService.getProformaPdf(order.getInvoiceId());
+                pdf = iDokladService.getProformaPdf(order.getProformaId());
             }
             IOUtils.write(Base64.decodeBase64(pdf), response.getOutputStream());
             response.flushBuffer();

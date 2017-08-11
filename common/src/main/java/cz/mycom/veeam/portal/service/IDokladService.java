@@ -39,7 +39,7 @@ public class IDokladService {
 
     public Contact saveContact(Contact contact) {
         if (contact.getId() != null) {
-            //update
+            //update, PATCH nefungoval
             iDokladRestTemplate.put(IDOKLAD_URL + "api/v2/Contacts/{id}", contact, contact.getId());
         } else {
             contact = iDokladRestTemplate.postForObject(IDOKLAD_URL + "api/v2/Contacts", contact, Contact.class);
@@ -50,7 +50,7 @@ public class IDokladService {
 
     public Contact findContact(String email) {
         Assert.isTrue(StringUtils.isNotBlank(email), "email is required");
-        ContactData data = iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/Contacts?filter=Email~eq~" + email, ContactData.class);
+        ContactData data = iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/Contacts?filter=email~eq~" + email, ContactData.class);
         log.debug(String.valueOf(data));
         if (data.getTotalItems() != 1) {
             log.debug("Contact not found by email: {}", email);
