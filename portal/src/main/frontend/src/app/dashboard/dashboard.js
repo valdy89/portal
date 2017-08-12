@@ -9,7 +9,7 @@
     .controller('BuyCreditController', BuyCreditController);
 
   /** @ngInject */
-  function DashboardController($log, $rootScope, TenantResource, $mdDialog, $mdToast) {
+  function DashboardController($log, $rootScope, TenantResource, $mdDialog) {
     var ctrl = this;
 
     $log.debug("user data: " + $rootScope.userData);
@@ -20,13 +20,6 @@
 
       ctrl.tenant.$promise.then(
         function () {
-          if (!ctrl.tenant.enabled) {
-            $mdToast.show($mdToast.simple()
-              .textContent('Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.')
-              .action('ok')
-              .hideDelay(0)
-              .position('top right'));
-          }
           var pom = ctrl.tenant.quota - ctrl.tenant.usedQuota - 1;
           if (pom < 0) {
             pom = 0;
@@ -121,7 +114,7 @@
     ctrl.user = UserResource.get();
     ctrl.type = 0;
 
-    
+
     ctrl.user.$promise.then(function (response) {
     }, function (response) {
       if (response.data) {
