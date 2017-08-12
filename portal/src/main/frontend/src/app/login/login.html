@@ -1,74 +1,67 @@
 <div cg-busy="[ctrl.promise]"></div>
-<div class="container">
-  <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
-      <div class="panel no-border">
-        <div class="panel-heading">
-          <div class="row">
-            <div class="col-sm-6 col-sm-offset-2">
-              <img src="assets/logo.png"/>
-            </div>
-          </div>
-          <div class="row"  flex-gt-xs>
+<div layout-align="center center" flex>
+<md-content  class="md-padding" layout-align="center center" flex  layout="column">
+  <md-card flex="50">
+    <md-card-title>
+      <img src="assets/logo.png" />
+    </md-card-title>
+    <md-card-content  class="md-padding">
+      <div layout="row" flex>
 
-              <md-nav-bar md-selected-nav-item="ctrl.activeForm" nav-bar-aria-label="navigation links">
-                <md-nav-item md-nav-click="ctrl.panelChange('login')" name="login">Existujíci uživatel</md-nav-item>
-                <md-nav-item md-nav-click="ctrl.panelChange('register')" name="register">Registrace nového uživatele</md-nav-item>
-              </md-nav-bar>
+          <md-nav-bar md-selected-nav-item="ctrl.activeForm" nav-bar-aria-label="navigation links">
+            <md-nav-item md-nav-click="ctrl.panelChange('login')" name="login">Existujíci uživatel</md-nav-item>
+            <md-nav-item md-nav-click="ctrl.panelChange('register')" name="register">Nový uživatele</md-nav-item>
+          </md-nav-bar>
 
-          </div>
-
-        </div>
-        <div>
-          <div class="row">
-            <div class="col-sm-12" ng-show="ctrl.activeForm === 'login'">
-              <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form">
-
-                <md-input-container class="md-block form-group" flex-gt-sm>
-                  <label>Uživatelské jméno</label>
-                  <input type="email" ng-model="ctrl.username" placeholder="tvuj@email.cz" ng-required="true">
-                </md-input-container>
-
-                <md-input-container class="md-block form-group" flex-gt-sm>
-                  <label>Heslo</label>
-                  <input type="password" ng-model="ctrl.password" ng-required="true" class="md-no-float">
-                </md-input-container>
-
-                <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-                  <md-button type="submit" class="md-raised md-accent btn-login" ng-disabled="!ctrl.formLogin.$valid">Přihlásit se</md-button>
-                </section>
-                <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-                  <a href="" ng-click="ctrl.forgotPassword()" class="forgot-password">Zapomenuté heslo?</a>
-                </section>
-              </form>
-            </div>
-            <div class="col-sm-12" ng-hide="ctrl.activeForm === 'login'">
-              <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form">
-
-                <md-input-container class="md-block form-group" flex-gt-sm>
-                  <label>Email</label>
-                  <input type="email" ng-model="ctrl.user.username" class="form-control" ng-required="true">
-                </md-input-container>
-
-                <section layout="row" layout-sm="column">
-                  <div vc-recaptcha key="'6Lcg1yoUAAAAAGenfhvyKUiE0sB8dU28b-L623s_'" lang="cs"></div>
-                </section>
-
-                <section layout="row" layout-sm="column">
-                  <span>Kliknutím na registrovat souhlasíte s obchodními podmínkami</span>
-                </section>
-
-                <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
-                  <md-button type="submit" class="md-raised md-accent btn-login" ng-disabled="!ctrl.registerForm.$valid">Registrovat se</md-button>
-                </section>
-
-              </form>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
-  </div>
+
+      <div ng-show="ctrl.activeForm === 'login'" layout-fill>
+        <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form"  >
+
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Uživatelské jméno</label>
+            <input type="email" ng-model="ctrl.username"  class="md-block" placeholder="tvuj@email.cz" ng-required="true">
+          </md-input-container>
+
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Heslo</label>
+            <input type="password" ng-model="ctrl.password" ng-required="true"  class="md-block">
+          </md-input-container>
+
+          <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+            <md-button type="submit" class="md-raised md-accent btn-login" ng-disabled="!ctrl.formLogin.$valid">Přihlásit se</md-button>
+          </section>
+          <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+            <a href="" ng-click="ctrl.forgotPassword()" class="forgot-password">Zapomenuté heslo?</a>
+          </section>
+        </form>
+      </div>
+      <div ng-hide="ctrl.activeForm === 'login'" layout-fill>
+        <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form" flex>
+
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Email</label>
+            <input type="email" ng-model="ctrl.user.username" class="form-control" ng-required="true">
+          </md-input-container>
+
+          <section layout="row" layout-sm="column">
+            <div vc-recaptcha key="'6Lcg1yoUAAAAAGenfhvyKUiE0sB8dU28b-L623s_'" lang="cs"></div>
+          </section>
+
+          <section layout="row" layout-sm="column">
+            <span>Kliknutím na registrovat souhlasíte s obchodními podmínkami</span>
+          </section>
+
+          <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+            <md-button type="submit" class="md-raised md-accent btn-login" ng-disabled="!ctrl.registerForm.$valid">Registrovat se</md-button>
+          </section>
+
+        </form>
+        </div>
+    </md-card-content>
+  </md-card>
+
+</md-content>
 </div>
 
 <script type="text/ng-template" id="forgotPassword.html">
