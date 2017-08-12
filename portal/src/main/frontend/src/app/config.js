@@ -19,7 +19,7 @@
         return $q.reject(response);
       };
     })
-    .config(function ($logProvider, $routeProvider, $locationProvider, $httpProvider, uiSelectConfig, IdleProvider, KeepaliveProvider) {
+    .config(function ($logProvider, $routeProvider, $mdDateLocaleProvider, $locationProvider, $httpProvider, uiSelectConfig, IdleProvider, KeepaliveProvider) {
 
       $logProvider.debugEnabled(true);
       uiSelectConfig.theme = 'bootstrap';
@@ -30,6 +30,21 @@
       KeepaliveProvider.interval(60); // in seconds
 
       $httpProvider.interceptors.push('authInterceptor');
+
+      $mdDateLocaleProvider.months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
+      $mdDateLocaleProvider.shortMonths = ['Led','Úno','Bře','Dub','Kvě','Čvn','Čvc','Srp','Zář','Říj','Lis','Pro'];
+      $mdDateLocaleProvider.days = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle'];
+      $mdDateLocaleProvider.shortDays = ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'];
+      $mdDateLocaleProvider.firstDayOfWeek = 1;
+      $mdDateLocaleProvider.parseDate = function(dateString) {
+        var m = moment(dateString, 'DD.MM.YYYY', true);
+        return m.isValid() ? m.toDate() : new Date(NaN);
+      };
+
+      $mdDateLocaleProvider.formatDate = function(date) {
+        var m = moment(date);
+        return m.isValid() ? m.format('DD.MM.YYYY') : '';
+      };
 
       //routing
       $routeProvider

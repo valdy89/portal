@@ -9,7 +9,7 @@
     .controller('ChangeUserController', ChangeUserController);
 
   /** @ngInject */
-  function MainController($log, $cookies, $http, $window, $scope, $injector, $rootScope, $location, AuthenticationService, $mdDialog) {
+  function MainController($log, $cookies, $window, $scope, $injector, $rootScope, $location, AuthenticationService, $mdDialog) {
     var main = this;
 
     $log.debug("Main controller begin");

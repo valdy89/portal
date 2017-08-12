@@ -7,20 +7,36 @@
     .controller('TenantHistoryController', TenantHistoryController);
 
   /** @ngInject */
-  function TenantHistoryController($log) {
+  function TenantHistoryController($log, $http, EndpointConfigService) {
     var ctrl = this;
 
-    ctrl.repositoryLabels = ['1.1.2017', '1.2.2017', '1.3.2017', '1.4.2017', '1.6.2017', '1.7.2017'];
-    ctrl.repositorySeries = ['Skutečná velikost GB', 'Zakoupená alokace GB', 'Počet VM', 'Počet Server', 'Počet Workstation'];
+    ctrl.dateFrom = new Date();
+    ctrl.dateFrom.setMonth(ctrl.dateFrom.getMonth() - 2);
+    ctrl.dateTo = new Date();
 
-    ctrl.repositoryData = [
-      [20, 50, 100, 75, 55, 100],
-      [80, 50, 0, 75, 60, 50],
-      [1, 1, 0, 1, 2, 2, 1],
-      [0, 1, 1, 2, 2, 0, 2],
-      [1, 1, 0, 1, 2, 2, 1]
+    ctrl.maxDate = new Date();
+    ctrl.minDate = new Date();
+    ctrl.minDate.setFullYear(ctrl.minDate.getFullYear() - 2);
 
-    ];
+    ctrl.recalculate = function () {
+      var input = {from: ctrl.dateFrom, to: ctrl.dateTo};
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/history'), input);
+      ctrl.promise.then(function (response) {
+        ctrl.repositoryLabels = response.data.repositoryLabels;
+        ctrl.repositoryData = response.data.repositoryData;
+        ctrl.creditLabels = response.data.creditLabels;
+        ctrl.creditData = response.data.creditData;
+        ctrl.repositorySeries = response.data.repositorySeries;
+        ctrl.histories = response.data.histories;
+      }, function (response) {
+        if (response.data) {
+          alert(response.data.message);
+        } else {
+          alert("Server not responding, please try action again later.");
+        }
+      });
+    };
+
     ctrl.repositoryOverride =
       [{
         yAxisID: 'left-y-axis'
@@ -59,13 +75,9 @@
       }
     };
 
-    ctrl.creditLabels = ['1.1.2017', '1.2.2017', '1.3.2017', '1.4.2017', '1.6.2017', '1.7.2017', '23.7.2017'];
     ctrl.creditSeries = ['Kredit'];
 
-    ctrl.creditData = [
-      [100, 300, 200, 300, 100, 150, 50]
-    ];
-
+    ctrl.recalculate();
   }
 
 })();
