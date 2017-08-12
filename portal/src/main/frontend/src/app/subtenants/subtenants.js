@@ -24,6 +24,8 @@
 
 
     ctrl.createSubtenant = function () {
+      var subtenant = {};
+      subtenant.enabled = true;
       var modalInstance = $mdDialog.show({
         //animation: false,
         templateUrl: 'createSubtenant.html',
@@ -32,7 +34,7 @@
         clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen,
         locals:{
-            subtenant: {},
+            subtenant: subtenant,
             quota: 0
         }
       });
@@ -101,7 +103,9 @@
     ctrl.subtenant = subtenant;
     ctrl.quota = quota;
 
+
     ctrl.save = function () {
+
       ctrl.subtenant.quota = ctrl.quota * 1024;
       ctrl.promise = SubtenantResource.save(ctrl.subtenant);
       ctrl.promise.$promise.then(

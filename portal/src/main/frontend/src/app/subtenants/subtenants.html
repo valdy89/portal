@@ -9,7 +9,7 @@
           <span class="md-headline">Subtenanti</span>
         </md-card-title-text>
       </md-card-title>
-      <md-card-actions layout="row" layout-xs="column" layout-align="start center" layout-wrap>
+      <md-card-actions class="md-padding" layout="row" layout-xs="column" layout-align="end center" layout-wrap>
         <md-button ng-click="ctrl.createSubtenant()" class="md-raised md-accent">Založit subtenanta</md-button>
       </md-card-actions>
       <md-card-content>
@@ -37,7 +37,7 @@
               </td>
               <td md-cell>{{::subtenant.dateCreated | portalDateTime}}</td>
               <td md-cell layout="row">
-                <md-button type="button" class="md-accent md-icon-button launch" ng-click="ctrl.updateSubtenant(subtenant)">
+                <md-button type="button" class="md-primary md-icon-button launch" ng-click="ctrl.updateSubtenant(subtenant)">
                   <md-icon md-font-icon="fa-pencil-square-o" class="fa fa-2"></md-icon>
                 </md-button>
                 <md-button type="button" class="md-warn md-icon-button launch" ng-click="ctrl.deleteSubtenant(subtenant)">
@@ -87,8 +87,9 @@
 
           </md-input-container>
           <md-input-container class="md-block form-group">
-            <md-checkbox ng-model="ctrl.subtenant.enabled" aria-label="Checkbox 1">Subtenant <span ng-if="ctrl.subtenant.enabled">povolen</span><span ng-if="!ctrl.subtenant.enabled">nepovolen</span>
-            </md-checkbox>
+            <md-switch class="md-accent" name="special" ng-model="ctrl.subtenant.enabled">
+              Subtenant <span ng-if="ctrl.subtenant.enabled">povolen</span><span ng-if="!ctrl.subtenant.enabled">nepovolen</span>
+            </md-switch>
           </md-input-container>
         </form>
       </div>
@@ -107,7 +108,7 @@
 <script type="text/ng-template" id="updateSubtenant.html">
   <div cg-busy="[ctrl.promise]"></div>
 
-  <md-dialog  flex-gt-sm="40" flex>
+  <md-dialog flex-gt-sm="40" flex>
     <md-toolbar class="md-accent">
       <h2 class="md-toolbar-tools">
       Upravit subtenant {{ctrl.subtenant.username}}
@@ -116,25 +117,26 @@
 
     <md-dialog-content>
       <div class="md-dialog-content">
-        <form name="ctrl.createSubtenantForm" role="form">
+        <form name="ctrl.updateSubtenantForm" role="form">
           <md-input-container class="md-block form-group">
             <label>Velikost kvóty v GB: </label>
-            <input type="number" ng-model="ctrl.quota" class="form-control" required="true" min="1" max="10">
+            <input type="number" ng-model="ctrl.quota" class="form-control" min="0">
 
           </md-input-container>
           <md-input-container class="md-block form-group">
             <label>Heslo:</label>
-            <input type="password" ng-model="ctrl.subtenant.password" class="form-control" required="true">
+            <input type="password" ng-model="ctrl.subtenant.password" class="form-control">
 
           </md-input-container>
           <md-input-container class="md-block form-group">
             <label>Heslo znovu:</label>
-            <input type="password" ng-model="ctrl.subtenant.confirmPassword" class="form-control" required="true">
+            <input type="password" ng-model="ctrl.subtenant.confirmPassword" class="form-control">
 
           </md-input-container>
           <md-input-container class="md-block form-group">
-            <md-checkbox ng-model="ctrl.subtenant.enabled" aria-label="Checkbox 1">Subtenant <span ng-if="ctrl.subtenant.enabled">povolen</span><span ng-if="!ctrl.subtenant.enabled">nepovolen</span>
-            </md-checkbox>
+            <md-switch class="md-accent" name="special" ng-model="ctrl.subtenant.enabled">
+              Subtenant <span ng-if="ctrl.subtenant.enabled">povolen</span><span ng-if="!ctrl.subtenant.enabled">nepovolen</span>
+            </md-switch>
           </md-input-container>
         </form>
       </div>
@@ -142,7 +144,7 @@
 
     <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
       <div class="modal-footer">
-        <md-button type="button" class="md-raised md-accent" ng-disabled="ctrl.subtenant.password !== ctrl.subtenant.confirmPassword ||!ctrl.createSubtenantForm.$valid" ng-click="ctrl.update()">Upravit</md-button>
+        <md-button type="button" class="md-raised md-accent" ng-disabled="(ctrl.subtenant.password !== ctrl.subtenant.confirmPassword && ctrl.subtenant.password) ||!ctrl.updateSubtenantForm.$valid" ng-click="ctrl.update()">Upravit</md-button>
         <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
       </div>
     </md-dialog-actions>
