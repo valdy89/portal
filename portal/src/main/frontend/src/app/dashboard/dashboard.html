@@ -68,7 +68,7 @@
           </div>
 
           <div layout="row" layout-padding>
-            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.enabled" ng-cloak>
+            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.credit <= 0" ng-cloak>
               Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.
             </md-whiteframe>
           </div>
@@ -135,8 +135,8 @@
   <md-dialog flex-gt-sm="50" flex>
     <md-toolbar class="md-accent">
       <h2 class="md-toolbar-tools">
-        Koupit kredit
-      </h2>
+       Koupit kredit
+     </h2>
     </md-toolbar>
 
     <md-dialog-content>
@@ -163,7 +163,7 @@
           <md-radio-group ng-model="ctrl.type">
 
             <md-radio-button value="0" selected>Bankovním převodem - proforma</md-radio-button>
-            <md-radio-button value="1">Kartou online</md-radio-button>
+            <md-radio-button value="1" disabled>Kartou online</md-radio-button>
 
           </md-radio-group>
 
@@ -200,12 +200,14 @@
           </div>
 
         </form>
+        <div ng-include="'changeInvoiceInputForm.html'"> </div>
+        </form>
       </div>
 
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
       <div class="modal-footer">
-        <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Objednat</md-button>
+        <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Zaplatit</md-button>
         <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
       </div>
     </md-dialog-actions>

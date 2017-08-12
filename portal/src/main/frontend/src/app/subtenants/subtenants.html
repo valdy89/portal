@@ -8,10 +8,13 @@
         <md-card-title-text>
           <span class="md-headline">Subtenanti</span>
         </md-card-title-text>
+        <md-card-actions  layout="row" layout-xs="column" layout-align="end center" layout-wrap>
+          <md-button ng-click="ctrl.createSubtenant()" class="md-raised md-accent md-fab md-mini" title="Založit subtenant"><md-icon md-font-icon="fa-plus" class="fa fa-1-5"></md-icon></md-button><span flex="5">
+        </md-card-actions>
+
       </md-card-title>
-      <md-card-actions class="md-padding" layout="row" layout-xs="column" layout-align="end center" layout-wrap>
-        <md-button ng-click="ctrl.createSubtenant()" class="md-raised md-accent">Založit subtenanta</md-button>
-      </md-card-actions>
+
+
       <md-card-content>
         <table md-table>
           <thead md-head>
@@ -31,16 +34,16 @@
               <td md-cell>{{::subtenant.quota/1024 | number:1}}</td>
               <td md-cell>{{::subtenant.usedQuota/1024 | number:1}}</td>
               <td md-cell>{{::(subtenant.usedQuota/subtenant.quota)*100 | number:2}}%</td>
-              <td md-cell>
+              <td md-cell >
                 <span class="fa fa-check" style="color: green" ng-if="subtenant.enabled"></span>
                 <span class="fa fa-remove red" style="color: red" ng-if="!subtenant.enabled"></span>
               </td>
               <td md-cell>{{::subtenant.dateCreated | portalDateTime}}</td>
-              <td md-cell layout="row">
-                <md-button type="button" class="md-primary md-icon-button launch" ng-click="ctrl.updateSubtenant(subtenant)">
-                  <md-icon md-font-icon="fa-pencil-square-o" class="fa fa-2"></md-icon>
+              <td md-cell layout="row" layout-align="end center" flex>
+                <md-button type="button" class="md-primary md-icon-button launch" ng-click="ctrl.updateSubtenant(subtenant)" title="upravit">
+                  <md-icon md-font-icon="fa-pencil-square-o" class="fa fa-2" ></md-icon>
                 </md-button>
-                <md-button type="button" class="md-warn md-icon-button launch" ng-click="ctrl.deleteSubtenant(subtenant)">
+                <md-button type="button" class="md-warn md-icon-button launch" ng-click="ctrl.deleteSubtenant(subtenant)" title="smazat">
                   <md-icon md-font-icon="fa-trash" class="fa fa-2"></md-icon>
                 </md-button>
 
@@ -73,7 +76,7 @@
           </md-input-container>
           <md-input-container class="md-block form-group">
             <label>Velikost kvóty v GB: </label>
-            <input type="number" ng-model="ctrl.quota" class="form-control" required="true" min="1" max="10">
+            <input type="number" ng-model="ctrl.quota" class="form-control" required="true" min="0">
 
           </md-input-container>
           <md-input-container class="md-block form-group">
