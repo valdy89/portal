@@ -66,6 +66,12 @@
             <div flex><label>Odhad vyčerpání kreditů: </label></div>
             <div flex>{{ctrl.tenant.creditDate | portalDate}}</div>
           </div>
+
+          <div layout="row" layout-padding>
+            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.credit <= 0" ng-cloak>
+              Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.
+            </md-whiteframe>
+</div>
         </md-card-content>
 
         <md-card-actions layout="row" layout-xs="column" layout-align="end center" layout-wrap>
@@ -124,9 +130,9 @@
 
 <!--Buy credit modal form  -->
 <script type="text/ng-template" id="buyCredit.html">
-  <div cg-busy="[ctrl.promise]"></div>
+  <div cg-busy="[ctrl.promise,ctrl.user]"></div>
 
-  <md-dialog>
+  <md-dialog flex-gt-sm="50" flex>
     <md-toolbar class="md-accent">
       <h2 class="md-toolbar-tools">
        Koupit kredit
@@ -136,18 +142,65 @@
     <md-dialog-content>
       <div class="md-dialog-content">
         <form name="ctrl.buyCreditForm" role="form" ng-cloak>
-          <md-input-container class="md-block form-group">
-            <label>Počet kreditů: </label>
-            <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculatePrice()" class="form-control" required="true">
+          <div layout-gt-sm="row">
 
+            <md-input-container class="md-block form-group" layout="row">
+              <label>Cena:</label>
+
+              <input type="number" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
+              <md-icon>Kč</md-icon>
+
+            </md-input-container>
+            <md-input-container class="md-block form-group">
+              <label>Počet kreditů: </label>
+              <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculatePrice()" class="form-control" required="true">
+
+            </md-input-container>
+          </div>
+
+
+          <h4>Způsob platby</h4>
+          <md-radio-group ng-model="ctrl.type">
+
+            <md-radio-button value="0" selected>Bankovním převodem - proforma</md-radio-button>
+            <md-radio-button value="1">Kartou online</md-radio-button>
+
+          </md-radio-group>
+
+          <h4>Fakturační údaje</h4>
+
+          <md-input-container class="md-block form-group" flex-gt-sm>
+            <label>Jméno a přijmení (název firmy)</label>
+            <input type="text" ng-model="ctrl.user.name" class="form-control" >
           </md-input-container>
-          <md-input-container class="md-block form-group" layout="row">
-            <label>Cena:</label>
+          <div layout-gt-sm="row">
+            <md-input-container class="md-block form-group" flex-gt-sm>
+              <label>Ulice a číslo popisné</label>
+              <input type="text" ng-model="ctrl.user.street" class="form-control" >
+            </md-input-container>
+            <md-input-container class="md-block form-group" flex-gt-sm>
+              <label>Město</label>
+              <input type="text" ng-model="ctrl.user.city" class="form-control">
+            </md-input-container>
+            <md-input-container class="md-block form-group" flex-gt-sm>
+              <label>PSČ</label>
+              <input type="text" ng-model="ctrl.user.postalCode" class="form-control">
+            </md-input-container>
+          </div>
 
-            <input type="number" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
-            <md-icon>Kč</md-icon>
+          <div layout-gt-sm="row">
+            <md-input-container class="md-block form-group" flex-gt-sm>
+              <label>IČ</label>
+              <input type="text" ng-model="ctrl.user.ico" class="form-control">
+            </md-input-container>
+            <md-input-container class="md-block form-group" flex-gt-sm>
+              <label>DIČ</label>
+              <input type="text" ng-model="ctrl.user.dic" class="form-control">
+            </md-input-container>
+          </div>
 
-          </md-input-container>
+        </form>
+        <div ng-include="'changeInvoiceInputForm.html'"> </div>
         </form>
       </div>
 
@@ -158,6 +211,7 @@
         <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
       </div>
     </md-dialog-actions>
+
   </md-dialog>
 
 </script>

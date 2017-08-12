@@ -47,7 +47,6 @@
 
 
     ctrl.updateSubtenant = function(subtenant){
-      console.log(subtenant);
       var modalInstance = $mdDialog.show({
         //animation: false,
         templateUrl: 'updateSubtenant.html',
@@ -85,13 +84,6 @@
         ctrl.getItems();
       });
     };
-
-
-
-
-
-
-
     ctrl.getItems();
 
   }
@@ -135,7 +127,7 @@
        ctrl.promise = $http.delete(EndpointConfigService.getUrl('/subtenant/'+ctrl.subtenant.uid));
   //    ctrl.promise = SubtenantResource.delete(ctrl.subtenant.uid);
       ctrl.promise.then(
-        function () {
+        function () { 
           $mdDialog.hide('success');
         },
         function (error) {

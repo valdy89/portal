@@ -113,11 +113,23 @@
   }
 
   /** @ngInject */
-  function BuyCreditController($log, $mdDialog, $http, EndpointConfigService) {
+  function BuyCreditController($log, $mdDialog, $http, EndpointConfigService, UserResource) {
     var ctrl = this;
 
     ctrl.credit = 1000;
     ctrl.price = ctrl.credit / 10 * 3;
+    ctrl.user = UserResource.get();
+    ctrl.type = 0;
+
+    
+    ctrl.user.$promise.then(function (response) {
+    }, function (response) {
+      if (response.data) {
+        alert(response.data.message);
+      } else {
+        alert("Server not responding, please try action again later.");
+      }
+    });
 
     ctrl.recalculatePrice = function () {
       ctrl.price = Math.ceil(ctrl.credit / 10 * 3);
@@ -128,7 +140,7 @@
     };
 
     ctrl.save = function () {
-      ctrl.promise = $http.post(EndpointConfigService.getUrl('/invoice'), {price: ctrl.price});
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/invoice'), {price: ctrl.price, type: ctrl.type, user: ctrl.user});
       ctrl.promise.then(function () {
         $mdDialog.hide();
       }, function (response) {
