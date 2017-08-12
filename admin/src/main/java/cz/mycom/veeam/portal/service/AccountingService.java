@@ -62,22 +62,34 @@ public class AccountingService {
                     public Integer doInTransaction(TransactionStatus transactionStatus) {
                         Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
                         User user = tenant.getUser();
-                        Contact contact = iDokladService.findContact(user.getUsername());
-                        if (contact == null) {
-                            contact = new Contact();
+                        Contact contact = null;
+                        if (StringUtils.isBlank(user.getName())) {
+                            contact = iDokladService.findContact("support@mycom.cz");
+                            if (contact == null) {
+                                contact = new Contact();
+                                contact.setCompanyName("Koncový zákazník");
+                                contact.setEmail("support@mycom.cz");
+                                contact.setCountryId(iDokladService.getCountry("cz").getId());
+                                contact = iDokladService.saveContact(contact);
+                            }
+                        } else {
+                            contact = iDokladService.findContact(user.getUsername());
+                            if (contact == null) {
+                                contact = new Contact();
+                                contact.setCountryId(iDokladService.getCountry("cz").getId());
+                            }
+                            contact.setCompanyName(user.getName());
+                            contact.setStreet(user.getStreet());
+                            contact.setEmail(user.getUsername());
+                            contact.setIdentificationNumber(user.getIco());
+                            contact.setVatIdentificationNumber(user.getDic());
+                            contact.setPostalCode(user.getPostalCode());
+                            contact.setCity(user.getCity());
+                            contact.setPhone(user.getPhone());
+                            contact.getDefaultBankAccount().setBankId("");
+                            contact = iDokladService.saveContact(contact);
+                            user.setCreditCheck(contact.getCreditCheck());
                         }
-                        contact.setCountryId(iDokladService.getCountry("cz").getId());
-                        contact.setCompanyName(user.getName());
-                        contact.setStreet(user.getStreet());
-                        contact.setEmail(user.getUsername());
-                        contact.setIdentificationNumber(user.getIco());
-                        contact.setVatIdentificationNumber(user.getDic());
-                        contact.setPostalCode(user.getPostalCode());
-                        contact.setCity(user.getCity());
-                        contact.setPhone(user.getPhone());
-                        contact.getDefaultBankAccount().setBankId("");
-                        contact = iDokladService.saveContact(contact);
-                        user.setCreditCheck(contact.getCreditCheck());
 
                         ProformaInvoiceInsert proformaInvoice = iDokladService.proformaDefault();
                         proformaInvoice.setOrderNumber(StringUtils.leftPad(String.valueOf(order.getId()), 8, '0'));
@@ -117,6 +129,7 @@ public class AccountingService {
                 if (e instanceof HttpClientErrorException) {
                     log.error(((HttpClientErrorException) e).getResponseBodyAsString());
                 }
+                mailService.sendError("checkOrders", e);
             }
         }
     }
@@ -191,6 +204,7 @@ public class AccountingService {
 
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
+                mailService.sendError("checkPaid", e);
             }
         }
     }
@@ -221,115 +235,120 @@ public class AccountingService {
                 transactionTemplate.execute(new TransactionCallback<Integer>() {
                     @Override
                     public Integer doInTransaction(TransactionStatus transactionStatus) {
-                        log.info("Tenant: {} - {}", cloudTenant.getName(), cloudTenant.getUID());
-                        String tenantUid = StringUtils.substringAfterLast(cloudTenant.getUID(), ":");
-                        Tenant tenant = tenantRepository.findByUid(tenantUid);
-                        if (tenant == null) {
-                            log.warn("Not existing tenant");
-                            tenant = new Tenant();
-                            tenant.setUid(tenantUid);
-                            tenant.setEnabled(cloudTenant.isEnabled());
-                            tenant.setDateCreated(new Date());
-                            tenant.setUsername(cloudTenant.getName());
-                            tenant = tenantRepository.save(tenant);
-                        } else {
-                            tenant.setEnabled(cloudTenant.isEnabled());
-                            tenant.setUsername(cloudTenant.getName());
-                        }
-
-                        for (CloudSubtenant cloudSubtenant : veeamService.getSubtenants(tenantUid)) {
-                            String subtenantUid = StringUtils.substringAfterLast(cloudSubtenant.getId(), ":");
-                            Subtenant subtenant = subtenantRepository.findByUid(subtenantUid);
-                            if (subtenant == null) {
-                                subtenant = new Subtenant();
-                                subtenant.setEnabled(cloudSubtenant.isEnabled());
-                                subtenant.setTenant(tenant);
-                                subtenant.setUid(subtenantUid);
-                                subtenant.setUsername(cloudSubtenant.getName());
-                                subtenant.setDateCreated(new Date());
-                                subtenant = subtenantRepository.save(subtenant);
+                        try {
+                            log.info("Tenant: {} - {}", cloudTenant.getName(), cloudTenant.getUID());
+                            String tenantUid = StringUtils.substringAfterLast(cloudTenant.getUID(), ":");
+                            Tenant tenant = tenantRepository.findByUid(tenantUid);
+                            if (tenant == null) {
+                                log.warn("Not existing tenant");
+                                tenant = new Tenant();
+                                tenant.setUid(tenantUid);
+                                tenant.setEnabled(cloudTenant.isEnabled());
+                                tenant.setDateCreated(new Date());
+                                tenant.setUsername(cloudTenant.getName());
+                                tenant = tenantRepository.save(tenant);
                             } else {
-                                subtenant.setEnabled(cloudSubtenant.isEnabled());
+                                tenant.setEnabled(cloudTenant.isEnabled());
+                                tenant.setUsername(cloudTenant.getName());
                             }
 
-                            CloudSubtenantRepositoryQuotaInfoType repositoryQuota = cloudSubtenant.getRepositoryQuota();
-                            if (repositoryQuota != null) {
-                                Long pom = repositoryQuota.getQuotaMb();
-                                subtenant.setQuota(pom != null ? pom : 0L);
-                                pom = repositoryQuota.getUsedQuotaMb();
-                                subtenant.setUsedQuota(pom != null ? pom : 0L);
-                            }
-                        }
-                        if (cloudTenant.getResources() != null) {
-                            for (CloudTenantResource cloudTenantResource : cloudTenant.getResources().getCloudTenantResources()) {
-                                CloudTenantRepositoryQuotaInfoType repositoryQuota = cloudTenantResource.getRepositoryQuota();
+                            for (CloudSubtenant cloudSubtenant : veeamService.getSubtenants(tenantUid)) {
+                                String subtenantUid = StringUtils.substringAfterLast(cloudSubtenant.getId(), ":");
+                                Subtenant subtenant = subtenantRepository.findByUid(subtenantUid);
+                                if (subtenant == null) {
+                                    subtenant = new Subtenant();
+                                    subtenant.setEnabled(cloudSubtenant.isEnabled());
+                                    subtenant.setTenant(tenant);
+                                    subtenant.setUid(subtenantUid);
+                                    subtenant.setUsername(cloudSubtenant.getName());
+                                    subtenant.setDateCreated(new Date());
+                                    subtenant = subtenantRepository.save(subtenant);
+                                } else {
+                                    subtenant.setEnabled(cloudSubtenant.isEnabled());
+                                }
+
+                                CloudSubtenantRepositoryQuotaInfoType repositoryQuota = cloudSubtenant.getRepositoryQuota();
                                 if (repositoryQuota != null) {
-                                    if (repositoryQuota.getQuota() != null) {
-                                        tenant.setQuota(repositoryQuota.getQuota().intValue());
+                                    Long pom = repositoryQuota.getQuotaMb();
+                                    subtenant.setQuota(pom != null ? pom : 0L);
+                                    pom = repositoryQuota.getUsedQuotaMb();
+                                    subtenant.setUsedQuota(pom != null ? pom : 0L);
+                                }
+                            }
+                            if (cloudTenant.getResources() != null) {
+                                for (CloudTenantResource cloudTenantResource : cloudTenant.getResources().getCloudTenantResources()) {
+                                    CloudTenantRepositoryQuotaInfoType repositoryQuota = cloudTenantResource.getRepositoryQuota();
+                                    if (repositoryQuota != null) {
+                                        if (repositoryQuota.getQuota() != null) {
+                                            tenant.setQuota(repositoryQuota.getQuota().intValue());
+                                        }
+                                        if (repositoryQuota.getUsedQuota() != null) {
+                                            tenant.setUsedQuota(repositoryQuota.getUsedQuota().intValue());
+                                        }
+                                        tenant.setRepositoryUid(StringUtils.substringAfterLast(repositoryQuota.getRepositoryUid(), ":"));
                                     }
-                                    if (repositoryQuota.getUsedQuota() != null) {
-                                        tenant.setUsedQuota(repositoryQuota.getUsedQuota().intValue());
+                                }
+                            }
+
+                            //jestli jiz dnes neprobehlo uctovani
+                            TenantHistory todaySystem = tenantHistoryRepository.getTodayByModifier(tenantUid, SYSTEM);
+                            if (tenant.getUser() != null && todaySystem == null) {
+                                Calendar now = Calendar.getInstance();
+                                int credit = tenant.getCredit();
+                                int priceVm = Integer.parseInt(configRepository.getOne("price.vm").getValue());
+                                int priceServer = Integer.parseInt(configRepository.getOne("price.server").getValue());
+                                int priceWorkstation = Integer.parseInt(configRepository.getOne("price.workstation").getValue());
+
+                                Integer[] counts = countMap.get(tenant.getUsername());
+                                //kontrola jestli se nezmenil pocet VM
+                                if (now.get(Calendar.DAY_OF_MONTH) != 1 && counts != null) {
+                                    if (counts[0] > tenant.getVmCount()) {
+                                        credit -= (counts[0] - tenant.getVmCount()) * priceVm;
                                     }
-                                    tenant.setRepositoryUid(StringUtils.substringAfterLast(repositoryQuota.getRepositoryUid(), ":"));
+                                    if (counts[1] > tenant.getServerCount()) {
+                                        credit -= (counts[1] - tenant.getServerCount()) * priceServer;
+                                    }
+                                    if (counts[2] > tenant.getWorkstationCount()) {
+                                        credit -= (counts[2] - tenant.getWorkstationCount()) * priceWorkstation;
+                                    }
+                                }
+
+                                if (counts != null) {
+                                    tenant.setVmCount(counts[0]);
+                                    tenant.setServerCount(counts[1]);
+                                    tenant.setWorkstationCount(counts[2]);
+                                }
+
+                                //na zacatku mesice zkasni vsechny
+                                if (now.get(Calendar.DAY_OF_MONTH) == 1) {
+                                    credit -= tenant.getVmCount() * priceVm;
+                                    credit -= tenant.getServerCount() * priceServer;
+                                    credit -= tenant.getWorkstationCount() * priceWorkstation;
+                                }
+
+                                //kazdy den za quotu
+                                int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
+                                credit -= Math.ceil(((float) tenant.getQuota() / 1024 / 10) * priceQuota);
+                                tenant.setCredit(credit);
+
+                                if (tenant.getCredit() < 0 && !tenant.getUser().isVip() && cloudTenant.isEnabled()) {
+                                    log.warn("Disabling cloud tenant, no credit");
+                                    tenant.setEnabled(false);
+                                    cloudTenant.setEnabled(false);
+                                    cloudTenant.setPassword(null);
+                                    veeamService.saveTenant(tenantUid, cloudTenant);
+                                    mailService.sendMail(tenant.getUser().getUsername(), "Účet " + tenant.getUsername() + " byl zablokován", "Váš účet byl zablokován z důvodu nedostatečného kreditu.");
                                 }
                             }
-                        }
+                            tenantRepository.save(tenant);
 
-                        //jestli jiz dnes neprobehlo uctovani
-                        TenantHistory todaySystem = tenantHistoryRepository.getTodayByModifier(tenantUid, SYSTEM);
-                        if (tenant.getUser() != null && todaySystem == null) {
-                            Calendar now = Calendar.getInstance();
-                            int credit = tenant.getCredit();
-                            int priceVm = Integer.parseInt(configRepository.getOne("price.vm").getValue());
-                            int priceServer = Integer.parseInt(configRepository.getOne("price.server").getValue());
-                            int priceWorkstation = Integer.parseInt(configRepository.getOne("price.workstation").getValue());
-
-                            Integer[] counts = countMap.get(tenant.getUsername());
-                            //kontrola jestli se nezmenil pocet VM
-                            if (now.get(Calendar.DAY_OF_MONTH) != 1 && counts != null) {
-                                if (counts[0] > tenant.getVmCount()) {
-                                    credit -= (counts[0] - tenant.getVmCount()) * priceVm;
-                                }
-                                if (counts[1] > tenant.getServerCount()) {
-                                    credit -= (counts[1] - tenant.getServerCount()) * priceServer;
-                                }
-                                if (counts[2] > tenant.getWorkstationCount()) {
-                                    credit -= (counts[2] - tenant.getWorkstationCount()) * priceWorkstation;
-                                }
+                            if (todaySystem == null) {
+                                TenantHistory tenantHistory = new TenantHistory(tenant, SYSTEM);
+                                tenantHistoryRepository.save(tenantHistory);
                             }
-
-                            if (counts != null) {
-                                tenant.setVmCount(counts[0]);
-                                tenant.setServerCount(counts[1]);
-                                tenant.setWorkstationCount(counts[2]);
-                            }
-
-                            //na zacatku mesice zkasni vsechny
-                            if (now.get(Calendar.DAY_OF_MONTH) == 1) {
-                                credit -= tenant.getVmCount() * priceVm;
-                                credit -= tenant.getServerCount() * priceServer;
-                                credit -= tenant.getWorkstationCount() * priceWorkstation;
-                            }
-
-                            //kazdy den za quotu
-                            int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
-                            credit -= Math.ceil(((float) tenant.getQuota() / 1024 / 10) * priceQuota);
-                            tenant.setCredit(credit);
-
-                            if (tenant.getCredit() < 0 && !tenant.getUser().isVip() && cloudTenant.isEnabled()) {
-                                log.warn("Disabling cloud tenant, no credit");
-                                tenant.setEnabled(false);
-                                cloudTenant.setEnabled(false);
-                                cloudTenant.setPassword(null);
-                                veeamService.saveTenant(tenantUid, cloudTenant);
-                                mailService.sendMail(tenant.getUser().getUsername(), "Účet " + tenant.getUsername() + " byl zablokován", "Váš účet byl zablokován z důvodu nedostatečného kreditu.");
-                            }
-                        }
-                        tenantRepository.save(tenant);
-
-                        if (todaySystem == null) {
-                            TenantHistory tenantHistory = new TenantHistory(tenant, SYSTEM);
-                            tenantHistoryRepository.save(tenantHistory);
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                            mailService.sendError("process: " + cloudTenant.getName(), e);
                         }
                         return 1;
                     }

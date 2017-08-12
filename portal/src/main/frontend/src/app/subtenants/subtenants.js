@@ -47,7 +47,7 @@
 
 
     ctrl.updateSubtenant = function(subtenant){
-      console.log(subtenant);
+      //console.log(subtenant);
       var modalInstance = $mdDialog.show({
         //animation: false,
         templateUrl: 'updateSubtenant.html',
@@ -68,7 +68,7 @@
 
 
     ctrl.deleteSubtenant = function(subtenant){
-      console.log(subtenant);
+      //console.log(subtenant);
       var modalInstance = $mdDialog.show({
         //animation: false,
         templateUrl: 'deleteSubtenant.html',

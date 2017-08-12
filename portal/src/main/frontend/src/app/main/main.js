@@ -55,9 +55,8 @@
         templateUrl: 'changePasswordInternal.html',
         controller: 'ChangePasswordController as ctrl',
         parent: angular.element(document.body),
-
-      clickOutsideToClose:true,
-      fullscreen: $rootScope.customFullscreen
+        clickOutsideToClose:true,
+        fullscreen: $rootScope.customFullscreen
       });
 
 
@@ -68,9 +67,8 @@
         templateUrl: 'changeInvoiceInput.html',
         controller: 'ChangeUserController as ctrl',
         parent: angular.element(document.body),
-
-      clickOutsideToClose:true,
-      fullscreen: $rootScope.customFullscreen
+        clickOutsideToClose:true,
+        fullscreen: $rootScope.customFullscreen
       });
 
 
@@ -127,7 +125,7 @@
   }
 
   /** @ngInject */
-  function ChangeUserController($log, UserResource,EndpointConfigService, $mdDialog, $http, $rootScope, $location) {
+  function ChangeUserController($log, UserResource, $mdDialog) {
     var ctrl = this;
 
     ctrl.user = UserResource.get();

@@ -7,6 +7,7 @@ import cz.mycom.veeam.portal.repository.UserRepository;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author dursik
@@ -56,12 +54,26 @@ public class HistoryController {
                 creditDates.add(tenantHistory.getDateCreated());
             } else {
                 if (!Arrays.equals(repositoryValues, repositoryChange.get(repositoryChange.size() - 1))) {
-                    repositoryChange.add(repositoryValues);
-                    repositoryDates.add(tenantHistory.getDateCreated());
+                    Date lastDate = DateUtils.truncate(repositoryDates.get(repositoryDates.size() - 1), Calendar.DATE);
+                    Date currentDate = DateUtils.truncate(tenantHistory.getDateCreated(), Calendar.DATE);
+                    if (currentDate.equals(lastDate)) {
+                        repositoryChange.set(repositoryChange.size() - 1, repositoryValues);
+                        repositoryDates.set(repositoryDates.size() - 1, tenantHistory.getDateCreated());
+                    } else {
+                        repositoryChange.add(repositoryValues);
+                        repositoryDates.add(tenantHistory.getDateCreated());
+                    }
                 }
                 if (credit != creditChange.get(creditChange.size() - 1)) {
-                    creditChange.add(credit);
-                    creditDates.add(tenantHistory.getDateCreated());
+                    Date lastDate = DateUtils.truncate(creditDates.get(creditDates.size() - 1), Calendar.DATE);
+                    Date currentDate = DateUtils.truncate(tenantHistory.getDateCreated(), Calendar.DATE);
+                    if (currentDate.equals(lastDate)) {
+                        creditChange.set(creditChange.size() - 1, credit);
+                        creditDates.set(creditDates.size() - 1, tenantHistory.getDateCreated());
+                    } else{
+                        creditChange.add(credit);
+                        creditDates.add(tenantHistory.getDateCreated());
+                    }
                 }
             }
         }
@@ -106,7 +118,7 @@ public class HistoryController {
                 for (int i = 0; i < 5; i++) {
                     List<Integer> list = repositoryData.get(i);
                     if (list == null) {
-                        list  = new ArrayList<>();
+                        list = new ArrayList<>();
                         repositoryData.add(list);
                     }
                     list.add(pom[i]);

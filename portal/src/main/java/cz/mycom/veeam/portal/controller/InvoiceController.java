@@ -1,7 +1,6 @@
 package cz.mycom.veeam.portal.controller;
 
 import cz.mycom.veeam.portal.model.Order;
-import cz.mycom.veeam.portal.model.PaymentStatusEnum;
 import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.User;
 import cz.mycom.veeam.portal.repository.ConfigRepository;
@@ -57,6 +56,16 @@ public class InvoiceController {
             throw new RuntimeException("Máte nezaplacenou fakturu");
         }
 
+        User requestUser = orderRequest.getUser();
+        if (requestUser != null) {
+            user.setName(requestUser.getName());
+            user.setStreet(requestUser.getStreet());
+            user.setCity(requestUser.getCity());
+            user.setPostalCode(requestUser.getPostalCode());
+            user.setIco(requestUser.getIco());
+            user.setDic(requestUser.getDic());
+        }
+
         Order order = new Order();
         order.setTenantUid(tenant.getUid());
         BigDecimal price = orderRequest.getPrice();
@@ -96,5 +105,6 @@ public class InvoiceController {
     public static class OrderRequest {
         private BigDecimal price;
         private int type;
+        private User user;
     }
 }
