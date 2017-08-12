@@ -30,7 +30,11 @@
         controller: 'CreateSubtenantController as ctrl',
         parent: angular.element(document.body),
         clickOutsideToClose: true,
-        fullscreen: $rootScope.customFullscreen
+        fullscreen: $rootScope.customFullscreen,
+        locals:{
+            subtenant: {},
+            quota: 0
+        }
       });
 
       modalInstance.finally(function () {
@@ -38,16 +42,64 @@
       });
     };
 
+
+
+    ctrl.updateSubtenant = function(subtenant){
+      console.log(subtenant);
+      var modalInstance = $mdDialog.show({
+        //animation: false,
+        templateUrl: 'updateSubtenant.html',
+        controller: 'CreateSubtenantController as ctrl',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        fullscreen: $rootScope.customFullscreen,
+        locals:{
+            subtenant: subtenant,
+            quota: subtenant.quota/1024
+        }
+      });
+      modalInstance.finally(function () {
+        ctrl.getItems();
+      });
+    };
+
+
+
+    ctrl.deleteSubtenant = function(subtenant){
+      console.log(subtenant);
+      var modalInstance = $mdDialog.show({
+        //animation: false,
+        templateUrl: 'deleteSubtenant.html',
+        controller: 'CreateSubtenantController as ctrl',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        fullscreen: $rootScope.customFullscreen,
+        locals:{
+            subtenant: subtenant,
+            quota: subtenant.quota/1024
+        }
+      });
+      modalInstance.finally(function () {
+        ctrl.getItems();
+      });
+    };
+
+
+
+
+
+
+
     ctrl.getItems();
 
   }
 
   /** @ngInject */
-  function CreateSubtenantController($log, $mdDialog, SubtenantResource) {
+  function CreateSubtenantController($log, $mdDialog, SubtenantResource,subtenant,quota, $http, EndpointConfigService) {
     var ctrl = this;
 
-    ctrl.subtenant = {};
-    ctrl.quota = 0;
+    ctrl.subtenant = subtenant;
+    ctrl.quota = quota;
 
     ctrl.save = function () {
       ctrl.subtenant.quota = ctrl.quota * 1024;
@@ -59,6 +111,33 @@
         function (error) {
           alert(error.data.message);
         });
+
+    };
+
+    ctrl.update = function(){
+      ctrl.subtenant.quota = ctrl.quota * 1024;
+      ctrl.promise = SubtenantResource.save(ctrl.subtenant);
+      ctrl.promise.$promise.then(
+        function () {
+          $mdDialog.hide('success');
+        },
+        function (error) {
+          alert(error.data.message);
+        });
+
+
+    };
+    ctrl.delete = function(){
+       ctrl.promise = $http.delete(EndpointConfigService.getUrl('/subtenant/'+ctrl.subtenant.uid));
+  //    ctrl.promise = SubtenantResource.delete(ctrl.subtenant.uid);
+      ctrl.promise.then(
+        function () {
+          $mdDialog.hide('success');
+        },
+        function (error) {
+          alert(error.data.message);
+        });
+
 
     };
 
