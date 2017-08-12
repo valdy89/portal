@@ -17,7 +17,10 @@
         ctrl.tenant = TenantResource.get();
         ctrl.tenant.$promise.then(
           function() {
-
+            var pom = ctrl.tenant.quota - ctrl.tenant.usedQuota - 1;
+            if (pom < 0) {
+              pom = 0;
+            }
             ctrl.repositoryData = [(pom / 1024).toFixed(1), (ctrl.tenant.usedQuota / 1024).toFixed(1)];
           },
           function(error) {
