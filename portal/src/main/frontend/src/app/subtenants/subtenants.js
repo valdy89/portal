@@ -1,48 +1,42 @@
-/*globals alert */
-(function() {
-    'use strict';
+/*globals alert, document */
+(function () {
+  'use strict';
 
-    angular
-      .module('portal')
-      .controller('SubtenantsController', SubtenantsController)
-      .controller('CreateSubtenantController', SubtenantsController);
+  angular
+    .module('portal')
+    .controller('SubtenantsController', SubtenantsController)
+    .controller('CreateSubtenantController', CreateSubtenantController);
 
-    /** @ngInject */
-    function SubtenantsController($log, $rootScope, TenantResource, $mdDialog) {
-      var ctrl = this;
-      $log.debug("user data: " + $rootScope.userData);
-      ctrl.userData = $rootScope.userData;
+  /** @ngInject */
+  function SubtenantsController($log, $rootScope, SubtenantResource, $mdDialog) {
+    var ctrl = this;
 
-      if (ctrl.userData) {
-        ctrl.tenant = TenantResource.get();
-        ctrl.tenant.$promise.then(
-          function() {
-            var pom = ctrl.tenant.quota - ctrl.tenant.usedQuota - 1;
-            if (pom < 0) {
-              pom = 0;
-            }
-            ctrl.repositoryData = [(pom / 1024).toFixed(1), (ctrl.tenant.usedQuota / 1024).toFixed(1)];
-          },
-          function(error) {
-            alert(error.data.message);
-          });
-      }
+    ctrl.getItems = function () {
+      ctrl.subtenants = SubtenantResource.query();
+      ctrl.subtenants.$promise.then(
+        function () {
 
-      ctrl.createSubtenant = function() {
-        var modalInstance = $mdDialog.show({
-          //animation: false,
-          templateUrl: 'createSubtenant.html',
-          controller: 'CreateSubtenantController as ctrl',
-          parent: angular.element(document.body),
-          clickOutsideToClose: true,
-          fullscreen: $rootScope.customFullscreen,
-          locals: {
-            tenant: ctrl.tenant
-          }
+        },
+        function (error) {
+          alert(error.data.message);
         });
     };
 
 
+    ctrl.createSubtenant = function () {
+      var modalInstance = $mdDialog.show({
+        //animation: false,
+        templateUrl: 'createSubtenant.html',
+        controller: 'CreateSubtenantController as ctrl',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        fullscreen: $rootScope.customFullscreen
+      });
+
+      modalInstance.finally(function () {
+        ctrl.getItems();
+      });
+    };
 
     ctrl.getItems();
 

@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.transaction.Transactional;
@@ -41,6 +38,26 @@ public class SubtenantController {
     public List<Subtenant> list(Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
         return subtenantRepository.findByTenant_UserId(user.getId());
+    }
+
+    @RequestMapping(value="/{uid}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable String uid, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        String tenantUid = user.getTenant().getUid();
+        Subtenant subtenant = subtenantRepository.findByUidAndTenantUid(uid, tenantUid);
+        if (subtenant == null) {
+            throw new RuntimeException("Subtenant neexistuje: " + uid);
+        }
+        LogonSession logonSession = veeamService.logonSystem();
+        try {
+            veeamService.deteleSubtenant(tenantUid, subtenant.getUid());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        } finally {
+            veeamService.logout(logonSession);
+        }
+        subtenantRepository.delete(subtenant);
     }
 
     @RequestMapping(method = RequestMethod.POST)

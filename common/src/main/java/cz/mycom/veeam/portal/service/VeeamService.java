@@ -90,6 +90,11 @@ public class VeeamService {
         waitForTast(taskType.getBody());
     }
 
+    public void deteleSubtenant(String tenantUid, String uid) {
+        ResponseEntity<Task> taskType = veeamRestTemplate.exchange(getUrl("cloud/tenants/{tenantUid}/subtenants/{uid}"), HttpMethod.DELETE, null, Task.class, tenantUid, uid);
+        waitForTast(taskType.getBody());
+    }
+
     public CloudSubtenant getSubtenant(String tenantUid, String subtenantUid) {
         return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{tenantUid}/subtenants/{subtenantUid}"), CloudSubtenant.class, tenantUid, subtenantUid);
     }
