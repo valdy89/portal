@@ -58,7 +58,6 @@ public class VeeamService {
         return veeamRestTemplate.getForObject(url, CloudTenant.class);
     }
 
-    @Secured("ROLE_SYSTEM")
     public void saveTenant(String uid, CloudTenant tenant) {
         ResponseEntity<Task> taskType = veeamRestTemplate.exchange(getUrl("cloud/tenants/{tenantUid}"), HttpMethod.PUT, new HttpEntity<CloudTenant>(tenant), Task.class, uid);
         waitForTast(taskType.getBody());

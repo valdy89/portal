@@ -1,4 +1,4 @@
-<div cg-busy="[ctrl.tenants]">
+<div cg-busy="[ctrl.promise]">
 </div>
 
 <md-content class="md-padding">
@@ -6,9 +6,8 @@
     <md-card flex>
 
       <md-card-content>
-        <md-datepicker md-placeholder="Datum od" ng-model="ctrl.dateFrom"></md-datepicker>
-
-        <md-datepicker md-placeholder="Datum do" ng-model="ctrl.dateTo"></md-datepicker>
+        <md-datepicker md-placeholder="Datum od" ng-model="ctrl.dateFrom" md-min-date="ctrl.minDate" md-max-date="ctrl.maxDate" ng-change="ctrl.recalculate()"></md-datepicker>
+        <md-datepicker md-placeholder="Datum do" ng-model="ctrl.dateTo" md-min-date="ctrl.minDate" md-max-date="ctrl.maxDate" ng-change="ctrl.recalculate()"></md-datepicker>
       </md-card-content>
     </md-card>
   </div>
@@ -24,8 +23,9 @@
         <md-card-content>
           <div layout="row" flex>
 
-            <canvas class="chart chart-bar" chart-data="ctrl.repositoryData" chart-dataset-override="ctrl.repositoryOverride" chart-labels="ctrl.repositoryLabels" chart-series="ctrl.repositorySeries" chart-options="ctrl.repositoryOptions">
-                      </canvas>
+            <canvas class="chart chart-bar" chart-data="ctrl.repositoryData" chart-dataset-override="ctrl.repositoryOverride" chart-labels="ctrl.repositoryLabels" chart-series="ctrl.repositorySeries"
+                    chart-options="ctrl.repositoryOptions">
+            </canvas>
 
           </div>
         </md-card-content>
@@ -45,13 +45,12 @@
 
           <div layout="row" flex>
             <canvas class="chart chart-line" chart-data="ctrl.creditData" chart-labels="ctrl.creditLabels" chart-series="ctrl.creditSeries" chart-options="ctrl.options">
-                  </canvas>
+            </canvas>
           </div>
         </md-card-content>
       </md-card>
     </div>
   </div>
-
 
 
   <div layout="row">
@@ -65,20 +64,28 @@
       <md-card-content>
         <table md-table>
           <thead md-head>
-            <tr md-row>
-              <th md-column>Datum</th>
-              <th md-column>Zakoupená alokace GB</th>
-              <th md-column>Počet VM</th>
-              <th md-column>Kredit</th>
-            </tr>
+          <tr md-row>
+            <th md-column>Datum</th>
+            <th md-column>Zakoupená alokace GB</th>
+            <th md-column>Využívaná velikost GB</th>
+            <th md-column>Počet VM</th>
+            <th md-column>Počet Server</th>
+            <th md-column>Počet Workstation</th>
+            <th md-column>Kredit</th>
+            <th md-column>Autor změny</th>
+          </tr>
           </thead>
           <tbody md-body>
-            <tr md-row>
-              <td md-cell>1.1.2017</td>
-              <td md-cell>3</td>
-              <td md-cell>1</td>
-              <td md-cell>100</td>
-            </tr>
+          <tr md-row ng-repeat="history in ctrl.histories">
+            <td md-cell>{{::history.dateCreated | portalDateTime}}</td>
+            <td md-cell>{{::history.quota/1024 | number:1}}</td>
+            <td md-cell>{{::history.usedQuota/1024 | number:1}}</td>
+            <td md-cell>{{::history.vmCount}}</td>
+            <td md-cell>{{::history.serverCount}}</td>
+            <td md-cell>{{::history.workstationCount}}</td>
+            <td md-cell>{{::history.credit}}</td>
+            <td md-cell>{{::history.modifier}}</td>
+          </tr>
           </tbody>
         </table>
       </md-card-content>

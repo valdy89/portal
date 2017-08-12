@@ -171,8 +171,12 @@ public class TenantController {
             sumQuota += change.getQuota();
         }
         if (sumQuota > ((repository.getCapacity() / Math.pow(1024, 2)) * veeamService.getFilledParam())) {
-            String message = "Uzivatel " + tenant.getUser().getUsername() + " (" + tenant.getUsername() + ") pozaduje " + change.getQuota() + " GB, na repository " + repository.getName() + " je pouze " + (repository.getCapacity() / Math.pow(1024, 2)) + " GB";
-            mailService.sendMail(configRepository.getOne("admin.email").getValue(), "Varovani: Nedostatek mista", message);
+            try {
+                String message = "Uzivatel " + tenant.getUser().getUsername() + " (" + tenant.getUsername() + ") pozaduje " + change.getQuota() + " GB, na repository " + repository.getName() + " je pouze " + (repository.getCapacity() / Math.pow(1024, 2)) + " GB";
+                mailService.sendMail(configRepository.getOne("admin.email").getValue(), "Varovani: Nedostatek mista", message);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
         }
     }
 
