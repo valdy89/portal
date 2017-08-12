@@ -5,4 +5,4 @@ bower_components/
 .tmp/
 dist/
 node/
-src/app/resources/EndpointConfigService.js
+EndpointConfigService.js

@@ -1,4 +1,4 @@
-/*globals alert */
+/*globals alert, document */
 (function () {
   'use strict';
 
@@ -129,7 +129,7 @@
 
     ctrl.save = function () {
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/invoice'), {price: ctrl.price});
-      ctrl.promise.then(function (response) {
+      ctrl.promise.then(function () {
         $mdDialog.hide();
       }, function (response) {
         alert(response.data.message);
@@ -152,7 +152,7 @@
 
     ctrl.save = function () {
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {quota: ctrl.quota * 1024});
-      ctrl.promise.then(function (response) {
+      ctrl.promise.then(function () {
         $mdDialog.hide();
       }, function (response) {
         alert(response.data.message);

@@ -40,38 +40,37 @@
             tenant: ctrl.tenant
           }
         });
+    };
 
-        modalInstance.finally(function() {
-          ctrl.tenant = TenantResource.get();
+
+
+    ctrl.getItems();
+
+  }
+
+  /** @ngInject */
+  function CreateSubtenantController($log, $mdDialog, SubtenantResource) {
+    var ctrl = this;
+
+    ctrl.subtenant = {};
+    ctrl.quota = 0;
+
+    ctrl.save = function () {
+      ctrl.subtenant.quota = ctrl.quota * 1024;
+      ctrl.promise = SubtenantResource.save(ctrl.subtenant);
+      ctrl.promise.$promise.then(
+        function () {
+          $mdDialog.hide('success');
+        },
+        function (error) {
+          alert(error.data.message);
         });
-      };
 
+    };
 
+    ctrl.cancel = function () {
+      $mdDialog.hide('cancel');
+    };
+  }
 
-      }
-
-
-      function CreateSubtenantController($log, $mdDialog, $http, tenant, EndpointConfigService) {
-        var ctrl = this;
-
-        ctrl.tenant = tenant;
-
-        ctrl.subtenant.quota = ctrl.tenant.quota / 1024;
-
-        ctrl.save = function() {
-          //todo: call backend
-          // ctrl.promise = $http.post(EndpointConfigService.getUrl('/tenant'), {quota: ctrl.quota * 1024});
-          // ctrl.promise.then(function (response) {
-          //   $mdDialog.hide();
-          // }, function (response) {
-          //   alert(response.data.message);
-          // });
-
-        };
-
-        ctrl.cancel = function() {
-          $mdDialog.hide('cancel');
-        };
-      }
-
-    })();
+})();

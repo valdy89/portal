@@ -44,7 +44,7 @@
     ctrl.register = function () {
       $log.debug(ctrl.user);
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/register'), ctrl.user);
-      ctrl.promise.then(function (response) {
+      ctrl.promise.then(function () {
         ctrl.panelLogin = 'active';
         ctrl.panelRegister = '';
         alert("Uživatel úspěšně zaregistrován, vyčkejte na verifikační email.");
@@ -76,7 +76,7 @@
 
     ctrl.save = function () {
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/forgotPassword'), {username: ctrl.username});
-      ctrl.promise.then(function (response) {
+      ctrl.promise.then(function () {
         $modalInstance.close();
       }, function (response) {
         alert(response.data.message);

@@ -17,12 +17,21 @@
       'ngIdle',
       'ngMaterial',
       'md.data.table'
-    ]).config(function($mdThemingProvider) {
-  $mdThemingProvider.theme('default')
-    .primaryPalette('blue-grey')
-    .accentPalette('amber');
-});
+    ]).config(function ($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+      .primaryPalette('blue-grey')
+      .accentPalette('amber');
+  });
 
+  portalModule.value('ENUMS', {
+    'PAYMENT_STATUS': [
+      {id: '', name: 'Založená'},
+      {id: 'Unpaid', name: 'Neuhrazená'},
+      {id: 'Paid', name: 'Uhrazená'},
+      {id: 'PartialPaid', name: 'Uhrazená částečně'},
+      {id: 'Overpaid', name: 'Uhrazená'}
+    ]
+  });
 
   portalModule.run(runBlock);
 

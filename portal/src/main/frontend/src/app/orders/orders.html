@@ -24,7 +24,7 @@
           <td md-cell>{{::order.dateCreated | portalDateTime}}</td>
           <td md-cell>{{::order.price}} Kč</td>
           <td md-cell>{{::order.credit}}</td>
-          <td md-cell>{{::(order.paid?'Uhrazena':'Čeká na platbu')}}</td>
+          <td md-cell>{{::order.paymentStatus | portalEnum:'PAYMENT_STATUS'}}</td>
           <td md-cell><a target="_blank" href="api/invoice/{{::order.id}}">{{::order.documentNumber}}</a></td>
         </tr>
         </tbody>

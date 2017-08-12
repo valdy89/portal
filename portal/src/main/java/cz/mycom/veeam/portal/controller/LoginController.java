@@ -13,9 +13,9 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -144,7 +144,7 @@ public class LoginController {
                 try {
                     List<String> descriptionList = new ArrayList<>();
                     descriptionList.add("Email: " + user.getUsername());
-                    descriptionList.add("Portal automatically created user - " + DateFormatUtils.format(new Date(), "dd.MM.yyyy HH:mm:ss"));
+                    descriptionList.add("Portal tenant - " + DateFormatUtils.format(new Date(), "dd.MM.yyyy HH:mm:ss"));
 
                     Tenant tenant = new Tenant();
                     tenant.setUser(user);

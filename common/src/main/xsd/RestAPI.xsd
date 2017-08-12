@@ -1,0 +1,3706 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="restapi"
+    xmlns="http://www.veeam.com/ent/v1.0"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.veeam.com/ent/v1.0"
+    elementFormDefault="qualified">
+
+  <!-- root elements { -->
+
+  <xs:element name="LogonSession" type="LogonSessionType" />
+  <xs:element name="LogonSessions" type="LogonSessionListType" />
+  <xs:element name="EnterpriseManager" type="EnterpriseManagerType" />
+  <xs:element name="EntityRef" type="EntityReferenceType" />
+  <xs:element name="EntityReferences" type="EntityReferenceListType" />
+  <xs:element name="BackupServer" type="BackupServerEntityType" />
+  <xs:element name="BackupServers" type="BackupServerEntityListType" />
+  <xs:element name="ManagedServer" type="ManagedServerEntityType"/>
+  <xs:element name="ManagedServers" type="ManagedServerEntityListType"/>
+  <xs:element name="Job" type="JobEntityType" />
+  <xs:element name="FailoverPlan" type="FailoverPlanEntityType" />
+  <xs:element name="Jobs" type="JobEntityListType" />
+  <xs:element name="FailoverPlans" type="FailoverPlanEntityListType" />
+  <xs:element name="ObjectInJob" type="ObjectInJobType" />
+  <xs:element name="ObjectsInJob" type="ObjectInJobListType" />
+  <xs:element name="FailoveredVm" type="FailoveredVmType" />
+  <xs:element name="FailoveredVms" type="FailoveredVmListType" />
+  <xs:element name="Backup" type="BackupEntityType" />
+  <xs:element name="Backups" type="BackupEntityListType" />
+  <xs:element name="Replica" type="ReplicaEntityType" />
+  <xs:element name="Replicas" type="ReplicaEntityListType" />
+  <xs:element name="RestorePoint" type="RestorePointEntityType" />
+  <xs:element name="RestorePoints" type="RestorePointEntityListType" />
+  <xs:element name="VmRestorePoint" type="VmRestorePointEntityType" />
+  <xs:element name="VmRestorePoints" type="VmRestorePointEntityListType" />
+  <xs:element name="VAppRestorePoint" type="VAppRestorePointEntityType" />
+  <xs:element name="VAppRestorePoints" type="VAppRestorePointEntityListType" />
+  <xs:element name="VmReplicaPoint" type="VmReplicaPointEntityType" />
+  <xs:element name="VmReplicaPoints" type="VmReplicaPointEntityListType" />
+  <xs:element name="VmRestorePointMount" type="VmRestorePointMountType" />
+  <xs:element name="VmRestorePointMounts" type="VmRestorePointMountListType" />
+  <xs:element name="VmReplicaPointMount" type="VmReplicaPointMountType" />
+  <xs:element name="VmReplicaPointMounts" type="VmReplicaPointMountListType" />
+  <xs:element name="FileSystemEntry" type="FileSystemEntryType" />
+  <xs:element name="FileSystemEntries" type="FileSystemEntriesType" />
+  <xs:element name="HierarchyRoot" type="HierarchyRootEntityType" />
+  <xs:element name="HierarchyRoots" type="HierarchyRootEntityListType"/>
+  <xs:element name="Repository" type="RepositoryEntityType" />
+  <xs:element name="Repositories" type="RepositoryEntityListType" />
+  <xs:element name="BackupJobSession" type="BackupJobSessionEntityType" />
+  <xs:element name="BackupJobSessions" type="BackupJobSessionEntityListType" />
+  <xs:element name="ReplicaJobSession" type="ReplicaJobSessionEntityType" />
+  <xs:element name="ReplicaJobSessions" type="ReplicaJobSessionEntityListType" />
+  <xs:element name="RestoreSession" type="RestoreSessionEntityType" />
+  <xs:element name="RestoreSessions" type="RestoreSessionEntityListType" />
+  <xs:element name="BackupTaskSession" type="BackupTaskSessionEntityType" />
+  <xs:element name="BackupTaskSessions" type="BackupTaskSessionEntityListType" />
+  <xs:element name="ReplicaTaskSession" type="ReplicaTaskSessionEntityType" />
+  <xs:element name="ReplicaTaskSessions" type="ReplicaTaskSessionEntityListType" />
+  <xs:element name="LinkedJobObject" type="LinkedJobType"/>
+  <xs:element name="LinkedJobObjects" type="LinkedJobListType"/>
+
+  <xs:element name="QueryResult" type="QueryResultType" />
+
+  <xs:element name="LoginSpec" type="LoginSpecType" />
+  <xs:element name="RestoreSpec" type="RestoreSpecType" />
+  <xs:element name="FileRestoreSpec" type="FileRestoreSpecType" />
+  <xs:element name="JobCloneSpec" type="JobCloneSpecType" />
+  <xs:element name="CreateObjectInJobSpec" type="CreateObjectInJobSpecType"/>
+
+  <xs:element name="Task" type="TaskType" />
+  <xs:element name="Tasks" type="TaskListType" />
+
+  <xs:element name="SummaryReport" type="SummaryReportType" />
+  <xs:element name="OverviewReportFrame" type="OverviewReportFrameType" />
+  <xs:element name="VmsOverviewReportFrame" type="VmsOverviewReportFrameType" />
+  <xs:element name="JobStatisticsReportFrame" type="JobStatisticsReportFrameType" />
+  <xs:element name="RepositoryReportFrame" type="RepositoryReportFrameType" />
+  <xs:element name="ProcessedVmsReportFrame" type="ProcessedVmsReportFrameType"/>
+
+  <xs:element name="Error" type="ErrorType" />
+  <xs:element name="HierarchyItem" type="HierarchyItemType"/>
+  <xs:element name="HierarchyItems" type="HierarchyItemListType"/>
+  <xs:element name="QuerySvc" type="QuerySvcType"/>
+  <xs:element name="LookupSvc" type="LookupSvcType"/>
+  <xs:element name="ReportingSvc" type="ReportingSvcType"/>
+  <xs:element name="CredentialsInfo" type="CredentialsInfoType" />
+  <xs:element name="CredentialsInfoList" type="CredentialsInfoListType" />
+  <xs:element name="CredentialsInfoSpec" type="CredentialsInfoSpecType" />
+
+  <xs:element name="PasswordKeyInfo" type="PasswordKeyInfoType" />
+  <xs:element name="PasswordKeyInfoList" type="PasswordKeyInfoListType" />
+  <xs:element name="PasswordKeyInfoSpec" type="PasswordKeyInfoSpecType" />
+
+
+
+  <xs:element name="CatalogVm" type="CatalogVmEntityType" />
+  <xs:element name="CatalogVms" type="CatalogVmEntityListType" />
+  <xs:element name="CatalogVmRestorePoint" type="CatalogVmRestorePointEntityType" />
+  <xs:element name="CatalogVmRestorePoints" type="CatalogVmRestorePointEntityListType" />
+
+  <xs:element name="EnterpriseRole" type="EnterpriseRoleEntityType" />
+  <xs:element name="EnterpriseRoles" type="EnterpriseRoleEntityListType" />
+
+
+  <xs:element name="EnterpriseAccount" type="EnterpriseAccountEntityType" />
+  <xs:element name="EnterpriseAccounts" type="EnterpriseAccountEntityListType" />
+
+  <xs:element name="EnterpriseAccountHierarchyScope" type="EnterpriseAccountHierarchyScopeType" />
+  <xs:element name="EnterpriseAccountHierarchyScopes" type="EnterpriseAccountHierarchyScopeListType" />
+
+  <xs:element name="EnterpriseAccountInRole" type="EnterpriseAccountInRoleType" />
+  <xs:element name="EnterpriseAccountInRoleList" type="EnterpriseAccountInRoleListType" />
+
+  <xs:element name="HierarchyScopeCreateSpec" type="HierarchyScopeCreateSpecType" />
+  <xs:element name="EnterpriseAccountInRoleCreateSpec" type="EnterpriseAccountInRoleCreateSpecType" />
+  <xs:element name="EnterpriseSecuritySettings" type="EnterpriseSecuritySettingsType" />
+  <xs:element name="EnterpriseAccountCreateSpec" type="EnterpriseAccountCreateSpecType" />
+  <xs:element name="RebuildScopeJobSpec" type="RebuildScopeJobSpecType" />
+
+  <xs:element name="JobManagementSpec" type="JobManagementSpecType" />
+
+  <xs:element name="BackupServerSpec" type="BackupServerSpecType" />
+  <xs:element name="VeeamZipStartupSpec" type="VeeamZipStartupSpecType" />
+  <xs:element name="QuickBackupStartupSpec" type="QuickBackupStartupSpecType" />
+
+  <xs:element name="WanAccelerator" type="WanAcceleratorEntityType" />
+  <xs:element name="WanAccelerators" type="WanAcceleratorEntityListType" />
+  <xs:element name="CloudGateway" type="CloudGatewayEntityType" />
+  <xs:element name="CloudGateways" type="CloudGatewayEntityListType" />
+  <xs:element name="CloudTenant" type="CloudTenantEntityType" />
+  <xs:element name="CloudTenants" type="CloudTenantEntityListType" />
+  <xs:element name="CloudTenantResource" type="CloudTenantResourceType" />
+  <xs:element name="CloudTenantResources" type="CloudTenantResourceListType" />
+  <xs:element name="CreateCloudGatewaySpec" type="CreateCloudGatewaySpecType" />
+  <xs:element name="CreateCloudTenantSpec" type="CreateCloudTenantSpecType" />
+  <xs:element name="CreateCloudTenantResourceSpec" type="CreateCloudTenantResourceSpecType" />
+  <xs:element name="CloudSubtenant" type="CloudSubtenantResourceType" />
+  <xs:element name="CloudSubtenants" type="CloudSubtenantResourceListType" />
+  <xs:element name="CloudSubtenantCreateSpec" type="CloudSubtenantResourceCreateSpecType" />
+
+  <xs:element name="CloudHardwarePlans" type="CloudHardwarePlanEntityListType" />
+  <xs:element name="CloudHardwarePlan" type="CloudHardwarePlanEntityType" />
+  <xs:element name="CloudHardwarePlanCreateSpec" type="CloudHardwarePlanCreateSpecType" />
+
+  <xs:element name="CloudPublicIpAddresses" type="CloudPublicIpAddressEntityListType" />
+  <xs:element name="CloudPublicIpAddress" type="CloudPublicIpAddressEntityType" />
+  <xs:element name="CloudPublicIpAddressCreateSpec" type="CloudPublicIpAddressCreateSpecType" />
+ 
+  <xs:element name="CloudTenantComputeResources" type="CloudTenantComputeResourceListType"/>
+  <xs:element name="CloudTenantComputeResource" type="CloudTenantComputeResourceType" />
+  <xs:element name="CloudTenantComputeResourceCreateSpec" type="CloudTenantComputeResourceCreateSpecType" />
+  <xs:element name="CloudVmReplicaPoints" type="CloudVmReplicaPointEntityListType" />
+  <xs:element name="CloudVmReplicaPoint" type="CloudVmReplicaPointEntityType" />
+  <xs:element name="CloudFailoverPlans" type="CloudFailoverPlanEntityListType" />
+  <xs:element name="CloudFailoverPlan" type="CloudFailoverPlanEntityType" />
+  <xs:element name="CloudFailoverPlanManagementSpec" type="CloudFailoverPlanManagementSpecType" />
+
+  <xs:element name="VlanConfigurations" type="VlanConfigurationEntityListType" />
+  <xs:element name="VlanConfiguration" type="VlanConfigurationEntityType" />
+  <xs:element name="VlanConfigurationCreateSpec" type="CloudVlanConfigurationCreateSpecType" />
+
+  <xs:element name="CloudFailoverSession" type="CloudFailoverSessionEntityType" />
+  <xs:element name="CloudFailoverSessions" type="CloudFailoverSessionEntityListType" />
+  
+  <xs:element name="CloudFailoveredVm" type="CloudFailoveredVmType" />
+  <xs:element name="CloudFailoveredVms" type="CloudFailoveredVmListType" />
+
+  <xs:element name="CloudConnectService" type ="CloudConnectServiceType" />
+  <xs:element name="CloudReplicas" type="CloudReplicaEntityListType" />
+  <xs:element name="CloudReplica" type="CloudReplicaEntityType" />
+  
+  <xs:element name="VCloudOrganizationConfigCreateSpec" type="VCloudOrganizationConfigCreateSpecType"/>
+  <xs:element name="VCloudOrganizationConfig" type="VCloudOrganizationConfigEntityType" />
+  <xs:element name="VCloudOrganizationConfigs" type="VCloudOrganizationConfigEntityListType"/>
+  <xs:element name="VCloudService" type ="VCloudServiceType" />
+  <xs:element name="VCloudOrganizationConfigBackupJobSettings" type ="VCloudOrganizationConfigBackupJobSettingsResourceType" />
+  <xs:element name="AdvancedJobSettings" type="AdvancedJobSettingsInfoType"/>
+  <xs:element name="SecondaryJobSanIntegrationSettings" type="SecondaryJobSanIntegrationSettingsInfoType"/>
+  
+  <xs:element name="BackupFile" type="BackupFileEntityType" />
+  <xs:element name="BackupFiles" type="BackupFileEntityListType" />
+  <!-- } root elements -->
+
+  <xs:complexType name="LoginSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="VMwareSSOToken" type="string" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="TenantCredentials" type="TenantCredentialsInfoType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="LogonSessionListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="LogonSession" type="LogonSessionType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LogonSessionType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="UserName" minOccurs="1" maxOccurs="1" type="string" />
+          <xs:element name="SessionId" minOccurs="1" maxOccurs="1" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- statictics and reports { -->
+
+  <xs:complexType name="SummaryReportType">
+    <xs:complexContent>
+      <xs:extension base="ReportResourceType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="OverviewReportFrameType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="BackupServers" type="int" />
+          <xs:element name="ProxyServers" type="int" />
+          <xs:element name="RepositoryServers" type="int" />
+          <xs:element name="RunningJobs" type="int" />
+          <xs:element name="ScheduledJobs" type="int" />
+          <xs:element name="SuccessfulVmLastestStates" type="int" />
+          <xs:element name="WarningVmLastestStates" type="int" />
+          <xs:element name="FailedVmLastestStates" type="int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmsOverviewReportFrameType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="ProtectedVms" type="int" />
+          <xs:element name="BackedUpVms" type="int" />
+          <xs:element name="ReplicatedVms" type="int" />
+          <xs:element name="RestorePoints" type="int" />
+          <xs:element name="FullBackupPointsSize" type="long" />
+          <xs:element name="IncrementalBackupPointsSize" type="long" />
+          <xs:element name="ReplicaRestorePointsSize" type="long" />
+          <xs:element name="SourceVmsSize" type="long" />
+          <xs:element name="SuccessBackupPercents" type="int" />
+          <xs:element name="ProtectedVmsReportLink" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobStatisticsReportFrameType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="RunningJobs" type="int" />
+          <xs:element name="ScheduledJobs" type="int" />
+          <xs:element name="ScheduledBackupJobs" type="int" />
+          <xs:element name="ScheduledReplicaJobs" type="int" />
+          <xs:element name="TotalJobRuns" type="int" />
+          <xs:element name="SuccessfulJobRuns" type="int" />
+          <xs:element name="WarningsJobRuns" type="int" />
+          <xs:element name="FailedJobRuns" type="int" />
+          <xs:element name="MaxJobDuration" type="TimeSpan" />
+          <xs:element name="MaxBackupJobDuration" type="TimeSpan" />
+          <xs:element name="MaxReplicaJobDuration" type="TimeSpan" />
+          <xs:element name="MaxDurationBackupJobName" type="string" />
+          <xs:element name="MaxDurationReplicaJobName" type="string" />
+          <xs:element name="BackupJobStatusReportLink" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="InfoType" abstract="true">
+  </xs:complexType>
+
+
+  <xs:complexType name="RepositoryReportFrameType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Period">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="Name" type="string" />
+                  <xs:element name="Capacity" type="long" />
+                  <xs:element name="FreeSpace" type="long" />
+                  <xs:element name="BackupSize" type="long" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="CapacityPlanningReportLink" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ProcessedVmsReportFrameType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Day">
+              <xs:complexType>
+                <xs:attribute name="Timestamp" type="DateTime" use="required" />
+                <xs:attribute name="ReplicatedVms" type="int" use="required" />
+                <xs:attribute name="BackupedVms" type="int" use="required" />
+              </xs:complexType>
+            </xs:element>
+          </xs:choice>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- } statictics and reports -->
+
+  <xs:complexType name="EnterpriseManagerType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="SupportedVersions" type="SupportedVersionListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SupportedVersionListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="1" maxOccurs="unbounded" >
+          <xs:element name="SupportedVersion" type="SupportedVersionType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SupportedVersionType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Links" type="LinkListType" />
+        </xs:sequence>
+        <xs:attribute name="Name" use="required" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ListType">
+  </xs:complexType>
+
+  <xs:complexType name="ReportResourceType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LinkListType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded" >
+      <xs:element name="Link" type="LinkType" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="LinkType">
+    <xs:complexContent>
+      <xs:extension base="ReferenceType">
+        <xs:attribute name="Rel" use="required" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReferenceType">
+    <xs:attribute name="Href" use="required" type="UrlType" />
+    <xs:attribute name="Name" use="optional" type="string" />
+    <xs:attribute name="Type" use="optional" type="string" />
+  </xs:complexType>
+
+  <xs:complexType name="ResourceType">
+    <xs:sequence>
+      <xs:element name="Links" type="LinkListType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="Href" use="required" type="UrlType" />
+    <xs:attribute name="Type" use="optional" type="string" />
+  </xs:complexType>
+
+  <xs:complexType name="EntityType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:attribute name="Name" use="required" type="string" />
+        <xs:attribute name="UID" use="required" type="UidType" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EntitiesType">
+    <xs:choice minOccurs="1" maxOccurs="1" >
+      <xs:element name="Jobs" type="JobEntityListType" />
+      <xs:element name="FailoverPlans" type="FailoverPlanEntityListType" />
+      <xs:element name="Backups" type="BackupEntityListType" />
+      <xs:element name="Replicas" type="ReplicaEntityListType" />
+      <xs:element name="Repositories" type="RepositoryEntityListType" />
+      <xs:element name="RestorePoints" type="RestorePointEntityListType" />
+      <xs:element name="VmRestorePoints" type="VmRestorePointEntityListType" />
+      <xs:element name="VAppRestorePoints" type="VAppRestorePointEntityListType" />
+      <xs:element name="VmReplicaPoints" type="VmReplicaPointEntityListType" />
+      <xs:element name="BackupJobSessions" type="BackupJobSessionEntityListType" />
+      <xs:element name="ReplicaJobSessions" type="ReplicaJobSessionEntityListType" />
+      <xs:element name="ReplicaTaskSessions" type="ReplicaTaskSessionEntityListType" />
+      <xs:element name="RestoreSessions" type="RestoreSessionEntityListType" />
+      <xs:element name="HierarchyRoots" type="HierarchyRootEntityListType" />
+      <xs:element name="BackupTaskSessions" type="BackupTaskSessionEntityListType" />
+      <xs:element name="BackupServers" type="BackupServerEntityListType" />
+      <xs:element name="ManagedServers" type="ManagedServerEntityListType" />
+      <xs:element name="EnterpiseRoles" type="EnterpriseRoleEntityListType" />
+      <xs:element name="EnterpiseAccounts" type="EnterpriseAccountEntityListType" />
+      <xs:element name="WanAccelerators" type="WanAcceleratorEntityListType" />
+      <xs:element name="CloudGateways" type="CloudGatewayEntityListType" />
+      <xs:element name="CloudTenants" type="CloudTenantEntityListType" />
+      <xs:element name="Passwords" type="PasswordKeyInfoListType" />
+      <xs:element name="Credentials" type="CredentialsInfoListType" />
+      <xs:element name="CloudReplicas" type="CloudReplicaEntityListType" />
+      <xs:element name="VCloudOrganizationConfigs" type="VCloudOrganizationConfigEntityListType"/>
+      <xs:element name="BackupFiles" type="BackupFileEntityListType"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="ResourcesType">
+    <xs:choice minOccurs="1" maxOccurs="1" >
+      <xs:element name="Files" type="FileEntryListType" />
+      <xs:element name="Directories" type="DirectoryEntryListType" />
+      <xs:element name="Tasks" type="TaskListType" />
+      <xs:element name="CredentialsList" type="CredentialsInfoListType" />
+      <xs:element name="sInObjectJob" type="ObjectInJobListType" />
+      <xs:element name="AccountRole" type="EnterpriseAccountInRoleListType" />
+      <xs:element name="AccountHierarchyScope" type="EnterpriseAccountHierarchyScopeListType" />
+      <xs:element name="PasswordKeyInfoList" type="PasswordKeyInfoListType" />
+      <xs:element name="CloudSubtenants" type="CloudSubtenantResourceListType" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="ParamsType">
+  </xs:complexType>
+
+  <xs:complexType name="SpecType">
+    <xs:complexContent>
+      <xs:extension base="ParamsType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EntityReferenceListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Ref" type="EntityReferenceType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EntityReferenceType">
+    <xs:sequence>
+      <xs:element name="Links" type="LinkListType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="UID" use="required" type="UidType" />
+    <xs:attribute name="Name" use="required" type="string" />
+    <xs:attribute name="Href" use="required" type="UrlType" />
+    <xs:attribute name="Type" use="required" type="string" />
+  </xs:complexType>
+
+  <xs:complexType name="BackupServerEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="BackupServer" type="BackupServerEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ManagedServerEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="ManagedServer" type="ManagedServerEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupServerEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Description" type="string" />
+          <xs:element name="Port" type="ushort" />
+          <xs:element name="Version" type="VersionType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ManagedServerEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Description" type="string" />
+          <xs:element name="ManagedServerType" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupServerSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="Description" type="string" />
+          <xs:element name="DnsNameOrIpAddress" type="string" />
+          <xs:element name="Port" type="ushort" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="Username" type="string" />
+          <xs:element name="Password" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobSessionEntityType" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="JobUid" type="UidType" />
+          <xs:element name="JobName" type="string" />
+          <xs:element name="JobType" type="string" />
+          <xs:element name="CreationTimeUTC" type="DateTime" />
+          <xs:element name="EndTimeUTC" type="DateTime" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="State" type="string" />
+          <xs:element name="Result" type="string" />
+          <xs:element name="Progress" type="int" />
+          <xs:element name="FailureMessage" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupJobSessionEntityType">
+    <xs:complexContent>
+      <xs:extension base="JobSessionEntityType">
+        <xs:sequence>
+          <xs:element name="IsRetry" type="bool" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReplicaJobSessionEntityType">
+    <xs:complexContent>
+      <xs:extension base="JobSessionEntityType">
+        <xs:sequence>
+          <xs:element name="IsRetry" type="bool" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RestoreSessionEntityType">
+    <xs:complexContent>
+      <xs:extension base="JobSessionEntityType">
+        <xs:sequence>
+          <xs:element name="RestoredObjRef" type="HierarchyObjRefType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="VmDisplayName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="BackupTaskSessionEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="JobSessionUid" type="UidType"/>
+          <xs:element name="CreationTimeUTC" type="DateTime"/>
+          <xs:element name="EndTimeUTC" type="DateTime" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="State" type="string" />
+          <xs:element name="Result" type="string" />
+          <xs:element name="Reason" type="string" />
+          <xs:element name="TotalSize" type="long" />
+        </xs:sequence>
+        <xs:attribute name="VmDisplayName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupTaskSessionEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="BackupTaskSession" type="BackupTaskSessionEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReplicaTaskSessionEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="JobSessionUid" type="UidType"/>
+          <xs:element name="CreationTimeUTC" type="DateTime"/>
+          <xs:element name="EndTimeUTC" type="DateTime" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="State" type="string" />
+          <xs:element name="Result" type="string" />
+          <xs:element name="Reason" type="string" />
+          <xs:element name="TotalSize" type="long" />
+        </xs:sequence>
+        <xs:attribute name="VmDisplayName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReplicaTaskSessionEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="ReplicaTaskSession" type="ReplicaTaskSessionEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PlainCredentialsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="UserName" type="string" />
+          <xs:element name="Password" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="CredentialsInfoType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="Id" type="string" />
+          <xs:element name="Username" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="Description" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="Password" type="string" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="CredentialsInfoListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CredentialsInfo" type="CredentialsInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CredentialsInfoSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="Username" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="Description" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="Password" type="string" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="PasswordKeyInfoType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="Id" type="string" />
+          <xs:element name="Hint" type="string" />
+          <xs:element name="LastModificationDate" type="DateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PasswordKeyInfoListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="PasswordKeyInfo" type="PasswordKeyInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PasswordKeyInfoSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="Hint" type="string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="Password" type="string" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Job" type="JobEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FailoverPlanEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="FailoverPlan" type="FailoverPlanEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="JobType" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="Platform" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="Description" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="ScheduleConfigured" type="bool" minOccurs="0" maxOccurs="1" />
+          <xs:element name="ScheduleEnabled" type="bool" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="NextRun" type="DateTime" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="JobScheduleOptions" minOccurs="0" maxOccurs="1" type="JobScheduleOptionsInfoType" />
+
+          <xs:element name="JobInfo" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element name="BackupJobInfo" type="BackupJobInfoType" />
+                <xs:element name="FileCopyJobInfo" type="FileCopyJobInfoType" />
+                <xs:element name="ReplicaJobInfo" type="ReplicaJobInfoType" />
+                <xs:element name="BackupCopyJobInfo" type="BackupCopyJobInfoType"/>
+              </xs:choice>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FailoverPlanEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Description" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="FailoverPlanInfo" type="FailoverPlanInfoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobManagementSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="Credentials" type="PlainCredentialsType" />
+          <xs:element name="Force" type="bool" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FailoverPlanManagementSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="StartNow" type="bool" />
+          <xs:element name="StartDate" type="DateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupJobInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Includes" minOccurs="0" maxOccurs="1" type="ObjectInJobListType" />
+          <xs:element name="GuestProcessingOptions" minOccurs="0" maxOccurs="1" type="GuestProcessingOptionsType" />
+          <xs:element name="AdvancedStorageOptions" minOccurs="0" maxOccurs="1" type="AdvancedStorageOptionsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupCopyJobInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Includes" minOccurs="0" maxOccurs="1" type="ObjectInJobListType" />
+          <xs:element name="LinkedJobIncludes" minOccurs="0" maxOccurs="1" type="LinkedJobListType" />
+          <xs:element name="AdvancedStorageOptions" minOccurs="0" maxOccurs="1" type="AdvancedStorageOptionsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FailoverPlanInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Includes" minOccurs="0" maxOccurs="1" type="FailoveredVmListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ObjectInJobListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="ObjectInJob" type="ObjectInJobType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LinkedJobListType">
+    <xs:complexContent>
+      <xs:extension base ="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="LinkedJobObject" type="LinkedJobType"/>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FailoveredVmListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="FailoveredVm" type="FailoveredVmType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ObjectInJobType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="ObjectInJobId" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="HierarchyObjRef" type="HierarchyObjRefType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Name" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="DisplayName" type="string" />
+          <xs:element name="Order" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="GuestProcessingOptions" type="GuestProcessingOptionsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LinkedJobType">
+    <xs:complexContent>
+      <xs:extension base ="ResourceType">
+        <xs:sequence>
+          <xs:element name="ObjectInJobId" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="LinkedJobUId" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Order" type="int" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FailoveredVmType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="FailoveredVmId" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="HierarchyObjRef" type="HierarchyObjRefType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Name" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="DisplayName" type="string" />
+          <xs:element name="Order" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="GuestProcessingOptions" type="GuestProcessingOptionsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CreateObjectInJobSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="HierarchyObjRef" type="HierarchyObjRefType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="HierarchyObjName" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Order" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="GuestProcessingOptions" type="GuestProcessingOptionsType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="JobItemVssOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Enabled" type="bool" />
+          <xs:element name="IgnoreErrors" type="bool" />
+          <xs:element name="GuestFSIndexingType" type="string" />
+          <xs:element name="Credentials" type="PlainCredentialsType" />
+          <xs:element name="TransactionLogsTruncation" type="string" />
+          <xs:element name="IsFirstUsage" type="bool" />
+          <xs:element name="IncludedIndexingFolders" type="StringListType" />
+          <xs:element name="ExcludedIndexingFolders" type="StringListType" />
+          <xs:element name="CredentialsId" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="GuestProcessingOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <!-- v1.0 -->
+          <xs:element name="AppAwareProcessingMode" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="FileSystemIndexingMode" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="IncludedIndexingFolders" minOccurs="0" maxOccurs="1" type="StringListType" />
+          <xs:element name="ExcludedIndexingFolders" minOccurs="0" maxOccurs="1" type="StringListType" />
+          <xs:element name="CredentialsId" type="string" minOccurs="0" maxOccurs="1" />
+
+          <!-- v1.1 -->
+          <xs:element name="VssSnapshotOptions" minOccurs="0" maxOccurs="1" type="VssSnapshotOptionsType" />
+          <xs:element name="WindowsGuestFSIndexingOptions" minOccurs="0" maxOccurs="1" type="WindowsGuestFSIndexingOptionsType" />
+          <xs:element name="LinuxGuestFSIndexingOptions" minOccurs="0" maxOccurs="1" type="LinuxGuestFSIndexingOptionsType" />
+          <xs:element name="SqlBackupOptions" minOccurs="0" maxOccurs="1" type="SqlBackupOptionsType" />
+          <xs:element name="WindowsCredentialsId" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="LinuxCredentialsId" type="string" minOccurs="0" maxOccurs="1" />
+          
+          <!-- v1.2 -->
+          <xs:element name="FSFileExcludeOptions" minOccurs="0" maxOccurs="1" type="FSFileExcludeOptionsType" />
+          <xs:element name="OracleBackupOptions" minOccurs="0" maxOccurs="1" type="OracleBackupOptionsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VssSnapshotOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="VssSnapshotMode" type="string" />
+          <xs:element name="IsCopyOnly" type="bool" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="WindowsGuestFSIndexingOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="FileSystemIndexingMode" type="string" />
+          <xs:element name="IncludedIndexingFolders" type="StringListType" />
+          <xs:element name="ExcludedIndexingFolders" type="StringListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LinuxGuestFSIndexingOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="FileSystemIndexingMode" type="string" />
+          <xs:element name="IncludedIndexingFolders" type="StringListType" />
+          <xs:element name="ExcludedIndexingFolders" type="StringListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SqlBackupOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="TransactionLogsProcessing" type="string" />
+          <xs:element name="BackupLogsFrequencyMin" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="UseDbBackupRetention" type="bool" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="RetainDays" type="int" minOccurs="0" maxOccurs="1" />
+          <!--<xs:element name="ProxyAutoSelect" type="bool" />-->
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="AdvancedStorageOptionsType" >
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="PasswordKeyId" type="string" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FSFileExcludeOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="BackupScope" type="int" />
+          <xs:element name="IncludeList" type="StringListType" />
+          <xs:element name="ExcludeList" type="StringListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="OracleBackupOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="BackupLogsEnabled" type="bool" />
+          <xs:element name="BackupLogsFrequencyMin" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="UseDbBackupRetention" type="bool" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="RetainDays" type="int" minOccurs="0" maxOccurs="1" />
+
+          <xs:element name="ArchivedLogsTruncation" type="string" />
+          <xs:element name="ArchivedLogsMaxAgeHours" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="ArchivedLogsMaxSizeMb" type="int" minOccurs="0" maxOccurs="1" />
+          
+          <xs:element name="SysdbaCredsId" type="string" />
+          
+          <xs:element name="ProxyAutoSelect" type="bool" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="StringListType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded" >
+      <xs:element name="Path" type="string" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="JobScheduleOptionsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="RetryOptions" minOccurs="0" maxOccurs="1" type="JobScheduleRetryOptionsType" />
+          <xs:element name="WaitForBackupCompletion" type="bool" minOccurs="0" maxOccurs="1" />
+          <xs:element name="BackupCompetitionWaitingPeriodMin" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="OptionsDaily" minOccurs="0" maxOccurs="1" type="JobScheduleDailyOptionsType" />
+          <xs:element name="OptionsMonthly" minOccurs="0" maxOccurs="1" type="JobScheduleMonthlyOptionsType" />
+          <xs:element name="OptionsPeriodically" minOccurs="0" maxOccurs="1" type="JobSchedulePeriodicallyOptionsType" />
+          <xs:element name="OptionsContinuous" minOccurs="0" maxOccurs="1" type="JobScheduleContinuousOptionsType" />
+          <xs:element name="OptionsBackupWindow" minOccurs="0" maxOccurs="1" type="JobScheduleBackupWindowOptionsType" />
+          <xs:element name="OptionsDaisyChaining" minOccurs="0" maxOccurs="1" type="JobScheduleDaisyChainingOptionsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobScheduleRetryOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="RetryTimes" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="RetryTimeout" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="RetrySpecified" type="bool" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobScheduleDailyOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Kind" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="Days" minOccurs="0" maxOccurs="unbounded" type="DaysOfWeekEnumeration" />
+          <xs:element name="Time" type="Time" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="TimeOffsetUtc" type="TimeSpan" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobScheduleMonthlyOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Time" type="Time"  minOccurs="0" maxOccurs="1"/>
+          <xs:element name="TimeOffsetUtc" type="TimeSpan"  minOccurs="0" maxOccurs="1"/>
+          <xs:element name="DayNumberInMonth" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="DayOfWeek" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="Months" minOccurs="0" maxOccurs="unbounded" type="JobScheduleMonthEnumeration" />
+          <xs:element name="DayOfMonth" type="int" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobSchedulePeriodicallyOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Kind" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="FullPeriod" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="Schedule" minOccurs="0" maxOccurs="1" type="TimePeriodsType" />
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TimePeriodsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Day">
+              <xs:complexType>
+                <xs:simpleContent>
+                  <xs:extension base="string">
+                    <xs:attribute name="Name" use="required" type="string" />
+                  </xs:extension>
+                </xs:simpleContent>
+              </xs:complexType>
+            </xs:element>
+          </xs:choice>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobScheduleContinuousOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Schedule" minOccurs="0" maxOccurs="1" type="TimePeriodsType" />
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobScheduleBackupWindowOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="TimePeriods" type="TimePeriodsType" />
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobScheduleDaisyChainingOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="PreviousJobUid" type="UidType" />
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FileCopyJobInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <!-- not implemented yet -->
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReplicaJobInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Includes" minOccurs="0" maxOccurs="1" type="ObjectInJobListType" />
+          <xs:element name="GuestProcessingOptions" minOccurs="0" maxOccurs="1" type="GuestProcessingOptionsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaskType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="TaskId" type="string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="State" type="string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="Operation" type="string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="Result" type="TaskResultInfoType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaskListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:sequence>
+          <xs:choice minOccurs="0" maxOccurs="unbounded" >
+            <xs:element name="Task" type="TaskType" />
+          </xs:choice>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="QueryResultType">
+    <xs:sequence>
+      <xs:choice minOccurs="1" maxOccurs="1">
+        <xs:element name="Refs" type="EntityReferenceListType" />
+        <xs:element name="Entities" type="EntitiesType"/>
+        <xs:element name="Resources" type="ResourcesType" />
+      </xs:choice>
+      <xs:element name="Links" minOccurs="0" maxOccurs="1" type="LinkListType" />
+      <xs:element name="PagingInfo" minOccurs="1" maxOccurs="1" type="PagingInfoType" />
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:complexType name="PagingInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Links" type="LinkListType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="PageNum" use="required" type="int" />
+        <xs:attribute name="PageSize" use="required" type="int" />
+        <xs:attribute name="PagesCount" use="required" type="int" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!--
+  <xs:complexType name="EntityListType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:any />
+    </xs:choice>
+  </xs:complexType>
+  -->
+
+  <xs:complexType name="BackupEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Ref" type="EntityReferenceType" />
+          <xs:element name="Platform" minOccurs="0" maxOccurs="1" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Backup" type="BackupEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReplicaEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Ref" type="EntityReferenceType" />
+          <xs:element name="Platform" minOccurs="0" maxOccurs="1" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReplicaEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Replica" type="ReplicaEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RestorePointEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Ref" type="EntityReferenceType" />
+          <xs:element name="BackupDateUTC" type="DateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RestorePointEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="RestorePoint" type="RestorePointEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmRestorePointEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="CreationTimeUTC" type="DateTime" />
+          <xs:element name="VmName" type="string" />
+          <xs:element name="Algorithm" type="string" />
+          <xs:element name="PointType" type="string" />
+          <xs:element name="HierarchyObjRef" type="HierarchyObjRefType" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="SqlInfo" type="VmRestorePointSqlInfoType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name="VmDisplayName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VAppRestorePointEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="CreationTimeUTC" type="DateTime" />
+          <xs:element name="VAppName" type="string" />
+          <xs:element name="Algorithm" type="string" />
+          <xs:element name="PointType" type="string" />
+          <xs:element name="HierarchyObjRef" type="HierarchyObjRefType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="VAppDisplayName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmRestorePointEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="VmRestorePoint" type="VmRestorePointEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VAppRestorePointEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="VAppRestorePoint" type="VAppRestorePointEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmReplicaPointEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="CreationTimeUTC" type="DateTime" />
+          <xs:element name="VmName" type="string" />
+          <xs:element name="Algorithm" type="string" />
+          <xs:element name="PointType" type="string" />
+        </xs:sequence>
+        <xs:attribute name="VmDisplayName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmReplicaPointEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="VmRestorePoint" type="VmReplicaPointEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmRestorePointMountType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="FSRoots" type="DirectoryEntryListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmRestorePointMountListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="VmRestorePointMount" type="VmRestorePointMountType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmReplicaPointMountType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="FSRoots" type="DirectoryEntryListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmReplicaPointMountListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="VmReplicaPointMount" type="VmReplicaPointMountType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CatalogVmEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+        </xs:sequence>
+        <xs:attribute name="VmDisplayName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="CatalogVmEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CatalogVm" type="CatalogVmEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CatalogVmRestorePointEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="BackupDateUTC" type="DateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CatalogVmRestorePointEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CatalogVmRestorePoint" type="CatalogVmRestorePointEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FileSystemEntryType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:choice>
+          <xs:element name="FileEntry" type="FileEntryType" />
+          <xs:element name="DirectoryEntry" type="DirectoryEntryType" />
+
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DirectoryEntryType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="Path" type="string"/>
+          <xs:element name="Name" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FileEntryType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="Path" type="string"/>
+          <xs:element name="Name" type="string" />
+          <xs:element name="Size" type="long" />
+          <xs:element name="Owner" type="string" />
+          <xs:element name="ModifiedDateUTC" type="DateTime" />
+          <xs:element name="Actions" type="LinkListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FileEntryListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:sequence>
+          <xs:element name="FileEntry" type="FileEntryType"  minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HierarchyRootEntityType" >
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="HierarchyRootId" type="string"  minOccurs="1" maxOccurs="1" />
+          <xs:element name="UniqueId" type="string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="HostType" type="string" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RepositoryEntityType" >
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Capacity" type="long"/>
+          <xs:element name="FreeSpace" type="long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HierarchyRootEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:sequence>
+          <xs:element name="HierarchyRoot" type="HierarchyRootEntityType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RepositoryEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:sequence >
+          <xs:element name="Repository" type="RepositoryEntityType"  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DirectoryEntryListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:sequence>
+          <xs:element name="DirectoryEntry" type="DirectoryEntryType"  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FileSystemEntriesType" >
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="Files" type="FileEntryListType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="Directories" type="DirectoryEntryListType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="PagingInfo" type="PagingInfoType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HierarchyItemListType" >
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="HierarchyItem" type="HierarchyItemType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupJobSessionEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="BackupJobSession" type="BackupJobSessionEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReplicaJobSessionEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="ReplicaJobSession" type="ReplicaJobSessionEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RestoreSessionEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="RestoreSession" type="RestoreSessionEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <xs:complexType name="FileRestoreSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:choice>
+          <xs:element name="ToOriginalLocation" type="FileRestoreToOriginalSpecInfoType" />
+          <xs:element name="ForDirectDownload">
+            <xs:complexType />
+          </xs:element>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FileRestoreToOriginalSpecInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="GuestCredentials" type="PlainCredentialsType" maxOccurs="1" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="Overwrite" type="bool" use="optional" default="false" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RestoreSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:choice>
+          <xs:element name="VmRestoreSpec" type="VmRestoreSpecInfoType"/>
+          <xs:element name="vCloudVmRestoreSpec" type="vCloudVmRestoreSpecInfoType" />
+          <xs:element name="vCloudVAppRestoreSpec" type="vCloudVAppRestoreSpecInfoType" />
+          <xs:element name="SqlItemRestoreSpec" type="SqlItemRestoreSpecInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmRestoreSpecInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="PowerOnAfterRestore" type="bool" maxOccurs="1" minOccurs="1" />
+          <xs:element name="QuickRollback" type="bool" default="false" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- vCloud restore spec elements { -->
+
+  <xs:complexType name="vCloudVmRestoreSpecInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="PowerOnAfterRestore" type="bool" minOccurs="0" maxOccurs="1" />
+          <xs:element name="HierarchyRootUid" type="UidType" minOccurs="1" maxOccurs="1" />
+          <xs:element name="vAppRef" type="HierarchyObjRefType" minOccurs="1" maxOccurs="1" />
+          <xs:element name="VmRestoreParameters" type="vCloudVmRestoreParametersInfoType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="vCloudVAppRestoreSpecInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="PowerOnAfterRestore" type="bool" minOccurs="0" maxOccurs="1" />
+          <xs:element name="HierarchyRootUid" type="UidType" minOccurs="1" maxOccurs="1" />
+          <xs:element name="OrgVdcRef" type="HierarchyObjRefType" minOccurs="1" maxOccurs="1" />
+          <xs:element name="vAppNewName" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="VmsRestoreParameters">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Vm" type="vCloudVmRestoreParametersInfoType" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="vCloudVmRestoreParametersInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="VmRestorePointUid" type="UidType" minOccurs="1" maxOccurs="1" />
+          <xs:element name="VmNewName" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="DatastoreRef" type="HierarchyObjRefType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="OrgVdcStorageProfileRef" type="HierarchyObjRefType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="LinkedCloneVmTemplateRef" type="HierarchyObjRefType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- } vcd restore spec elements -->
+
+  <xs:complexType name="BackupJobCloneInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="JobName" type="string"  maxOccurs="1" minOccurs="1" />
+          <xs:element name="FolderName" type="string"  maxOccurs="1" minOccurs="1" />
+          <xs:element name="RepositoryUid" type="UidType"  maxOccurs="1" minOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReplicaJobCloneInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="JobName" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="VmSuffix" type="string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupCopyJobCloneInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="JobName" type="string"  maxOccurs="1" minOccurs="1" />
+          <xs:element name="JobFileName" type="string"  maxOccurs="1" minOccurs="1" />
+          <xs:element name="RepositoryUid" type="UidType"  maxOccurs="1" minOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="JobCloneSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:choice maxOccurs="1" minOccurs="0">
+          <xs:element name="BackupJobCloneInfo" type="BackupJobCloneInfoType" />
+          <xs:element name="ReplicaJobCloneInfo" type="ReplicaJobCloneInfoType" />
+          <xs:element name="BackupCopyJobCloneInfo" type="BackupCopyJobCloneInfoType" /> 
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaskResultInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element name="Message" type="string" />
+        </xs:choice>
+        <xs:attribute name="Success" use="required" type="bool" />
+        <xs:attribute name="CredentialsNeeded" use="optional" default="false" type="bool" />
+        <xs:attribute name="ConfirmationNeeded" use="optional" default="false" type="bool" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ErrorType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="FirstChanceExceptionMessage" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="StackTrace" minOccurs="0" maxOccurs="1" type="string" />
+        </xs:sequence>
+        <xs:attribute name="Message" use="required" type="string" />
+        <xs:attribute name="StatusCode" use="required" type="int" />
+        <xs:attribute name="Status" use="required" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HierarchyItemType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="ObjectRef" minOccurs="1" maxOccurs="1" type="HierarchyObjRefType" />
+          <xs:element name="ObjectType" minOccurs="1" maxOccurs="1" type="string" />
+          <xs:element name="ObjectName" minOccurs="1" maxOccurs="1" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="QuerySvcType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LookupSvcType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReportingSvcType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="EnterpriseRoleEntityType" >
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseRoleEntityListType" >
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="EnterpriseRoleEntity" type="EnterpriseRoleEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="EnterpriseAccountEntityType" >
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="AccountType" type="AccountTypeEnumeration" />
+          <xs:element name="Roles" type="EnterpriseRoleEntityListType" />
+          <xs:element name="AllowRestoreAllVms" type="bool" />
+          <xs:element name="FlrSettings" type="FileRestoreSettingsInfoType" maxOccurs="1" minOccurs="0" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FileRestoreSettingsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="FlrInplaceOnly" type="bool" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="FlrExtentionRestrictions" type="string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseAccountEntityListType" >
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="EnterpriseAccountEntity" type="EnterpriseAccountEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseAccountHierarchyScopeType" >
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="Name" type="string" />
+          <xs:element name="HierarchyRootName" type="string" />
+          <xs:element name="Platform" type="string" />
+          <xs:element name="HierarchyObjectType" type="string" />
+          <xs:element name="State" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseAccountHierarchyScopeListType" >
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="EnterpriseAccountHierarchyScope" type="EnterpriseAccountHierarchyScopeType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="EnterpriseAccountInRoleType" >
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="RoleName" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseAccountInRoleListType" >
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="EnterpriseAccountInRole" type="EnterpriseAccountInRoleType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HierarchyScopeCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="1" maxOccurs="unbounded" >
+          <xs:element name="HierarchyScopeItem" type="HierarchyScopeCreateSpecItemType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HierarchyScopeCreateSpecItemType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="HierarchyObjRef" type="HierarchyObjRefType" />
+          <xs:element name="ObjectName" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseAccountInRoleCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="EnterpriseRoleUid" type="UidType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseAccountInRoleCreateSpecListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="1" maxOccurs="unbounded" >
+          <xs:element name="EnterpriseRole" type="EnterpriseAccountInRoleCreateSpecType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseSecuritySettingsType" >
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EnterpriseAccountCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="AccountType" type="AccountTypeEnumeration" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="AccountName" type="string" minOccurs="1" maxOccurs="1" />
+          <xs:element name="Roles" type="EnterpriseAccountInRoleCreateSpecListType" minOccurs="1" maxOccurs="1" />
+          <xs:element name="AllowRestoreAllVms" type="bool" default="true" minOccurs="1" maxOccurs="1" />
+          <xs:element name="HierarchyScopeObjects" type="HierarchyScopeCreateSpecType" maxOccurs="1" minOccurs="0" />
+          <xs:element name="FlrSettings" type="FileRestoreSettingsSpecsType" maxOccurs="1" minOccurs="0" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FileRestoreSettingsSpecsType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="FlrInplaceOnly" type="bool" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="FlrExtentionRestrictions" type="string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="RebuildScopeJobSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:choice>
+          <xs:element name="RebuildAll">
+            <xs:complexType />
+          </xs:element>
+          <xs:element name="RebuildUnprocessed">
+            <xs:complexType />
+          </xs:element>
+          <xs:element name="RebuildForCurrentUser">
+            <xs:complexType />
+          </xs:element>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="WanAcceleratorEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Description" type="string" />
+          <xs:element name="OutOfDate" type="bool" />
+          <xs:element name="Version" type="string" />
+          <xs:element name="Capacity" type="long" />
+          <xs:element name="TrafficPort" type="int" />
+          <xs:element name="ConnectionsCount" type="int" />
+          <xs:element name="CachePath" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="WanAcceleratorEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="WanAccelerator" type="WanAcceleratorEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- cloud { -->
+
+  <xs:complexType name="CloudGatewayEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Enabled" type="bool" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="DnsNameOrIpAddress" type="string" />
+          <xs:element name="NetworkMode" type="CloudGatewayNetworkingMode" minOccurs="1" maxOccurs="1" />
+          <xs:element name="ExternalIP" type="string" />
+          <xs:element name="ExternalPort" type="ushort" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="InternalPort" type="ushort" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="Description" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="CloudGatewayNetworkingMode">
+    <xs:restriction base="string">
+      <xs:enumeration value="Direct" />
+      <xs:enumeration value="NAT" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="CloudGatewayEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudGateway" type="CloudGatewayEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudTenant" type="CloudTenantEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Password" type="string" />
+          <xs:element name="Description" type="string"/>
+          <xs:element name="Enabled" type="bool" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="LeaseOptions" type="CloudTenantLeaseOptionsType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="Resources" type="CloudTenantResourceListType" />
+          <xs:element name="LastResult" type="string" />
+          <xs:element name="LastActive" type="DateTime" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="VmCount" type="int" minOccurs="0" maxOccurs="1"/>
+          <!-- v 1.2 -->
+          <xs:element name="ComputeResources" type="CloudTenantComputeResourceListType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="ThrottlingEnabled" type="bool" minOccurs="0" maxOccurs="1" />
+          <xs:element name="ThrottlingSpeedLimit" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="ThrottlingSpeedUnit" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="PublicIpCount" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="BackupCount" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="ReplicaCount" type="int" minOccurs="0" maxOccurs="1"/>
+          <!-- v 1.3 -->
+          <xs:element name="MaxConcurrentTasks" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="Subtenants" type="CloudSubtenantResourceListType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="WorkStationBackupCount" type="int"  minOccurs="0" maxOccurs="1"/>
+          <xs:element name="ServerBackupCount" type="int"  minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantLeaseOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:attribute name="Enabled" type="bool" />
+        <xs:attribute name="ExpirationDate" type="DateTime" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantResourceType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:choice minOccurs="1" maxOccurs="1" >
+          <xs:element name="RepositoryQuota" type="CloudTenantRepositoryQuotaInfoType" />
+        </xs:choice>
+        <xs:attribute name="Id" type="string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantResourceListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudTenantResource" type="CloudTenantResourceType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantRepositoryQuotaInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="DisplayName" type="string" />
+          <xs:element name="RepositoryUid" type="UidType" />
+          <xs:element name="WanAcceleratorUid" type="UidType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="Quota" type="long" minOccurs="0" maxOccurs="1" />
+          <xs:element name="UsedQuota" type="long" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CreateCloudGatewaySpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="BackupServerIdOrName" type="string" />
+          <xs:element name="ServerHostName" type="string" />
+          <xs:element name="Description" type="string" />
+          <xs:element name="IncomingPort" type="ushort" minOccurs="0" maxOccurs="1" />
+          <xs:element name="ExternalIp" type="string" />
+          <xs:element name="ExternalPort" type="ushort" />
+          <xs:element name="NetworkType" type="CloudGatewayNetworkingMode" minOccurs="1" maxOccurs="1" />
+          <xs:element name="InternalPort" type="ushort" maxOccurs="1"/>
+          <xs:element name="BackupServerUid" type="UidType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CreateCloudTenantSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="BackupServerIdOrName" type="string" />
+          <xs:element name="Name" type="string" />
+          <xs:element name="Description" type="string" />
+          <xs:element name="Password" type="string" />
+          <xs:element name="Enabled" type="bool" />
+          <xs:element name="LeaseExpirationDate" type="DateTime" minOccurs="0" maxOccurs="1" />
+          <!-- v 1.2 -->
+          <xs:element name="Resources" type="CreateCloudTenantResourceListType" />
+          <xs:element name="ComputeResources" type="CloudTenantComputeResourceCreateListType" />
+          <xs:element name="VmCount" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="ThrottlingEnabled" type="bool" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="ThrottlingSpeedLimit" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="ThrottlingSpeedUnit" type="string" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="PublicIpCount" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="BackupServerUid" type="UidType" minOccurs="0" maxOccurs="1" />
+          <!-- v 1.3 -->
+          <xs:element name="MaxConcurrentTasks" type="int" minOccurs="0" maxOccurs="1" /> 
+          
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="CreateCloudTenantResourceListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="BackupResource" type="CreateCloudTenantResourceSpecType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CreateCloudTenantResourceSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="Name" type="string" />
+          <xs:element name="RepositoryUid" type="UidType" />
+          <xs:element name="QuotaMb" type="int" />
+          <xs:element name="WanAcceleratorUid" type="UidType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="Folder" type="string"  />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudHardwarePlanEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudHardwarePlan" type="CloudHardwarePlanEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudHardwarePlanEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Description" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="ProcessorUsageLimitMhz" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="MemoryUsageLimitMb" type="int" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="HardwarePlanDetails" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:choice maxOccurs="1" minOccurs="1">
+                <xs:element name="ViCloudHardwarePlan" type="ViCloudHardwarePlanInfoType" />
+                <xs:element name="HvCloudHardwarePlan" type="HvCloudHardwarePlanInfoType" />
+              </xs:choice>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudHardwarePlanCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="BackupServerUid" type="UidType" />
+          <xs:element name="Name" type="string" />
+          <xs:element name="Description" type="string" />
+          <xs:element name="ProcessorUsageLimitMhz" type="int"/>
+          <xs:element name="MemoryUsageLimitMb" type="int" />
+          <xs:element name="HardwarePlanDetails" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:choice maxOccurs="1" minOccurs="1">
+                <xs:element name="ViCloudHardwarePlan" type="ViCloudHardwarePlanInfoType" />
+                <xs:element name="HvCloudHardwarePlan" type="HvCloudHardwarePlanInfoType" />
+              </xs:choice>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ViCloudHardwarePlanInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="HypervisorHostRef" type="UidType" />
+         <!-- see EViHardwarePlanParentType -->
+          <xs:element name="ParentType" type="string" />
+          <xs:element name="ParentName" type="string" />
+          <xs:element name="Datastores" type="ViCloudHardwarePlanDatastoreInfoListType" />
+          <xs:element name="Network" type="CloudHardwarePlanNetworkInfo"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ViCloudHardwarePlanDatastoreInfoListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Datastore" type="ViCloudHardwarePlanDatastoreInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ViCloudHardwarePlanDatastoreInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="FriendlyName" type="string" />
+          <xs:element name="DatastoreType" type="string" />
+          <xs:element name="Reference" type="HierarchyObjRefType" />
+          <xs:element name="RootPath" type="string" />
+          <xs:element name="QuotaGb" type="int"/>
+          <xs:element name="PbmProfileId" type="string" />
+        </xs:sequence>
+        <xs:attribute name="Id" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+
+  <xs:complexType name="HvCloudHardwarePlanInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="HypervisorHostRef" type="HierarchyObjRefType" />
+          <xs:element name="Volumes" type="HvCloudHardwarePlanVolumesInfoListType" />
+          <xs:element name="Network" type="CloudHardwarePlanNetworkInfo"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HvCloudHardwarePlanVolumesInfoListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Volume" type="HvCloudHardwarePlanVolumeInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HvCloudHardwarePlanVolumeInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="FriendlyName" type="string" />
+          <xs:element name="VolumePath" type="string" />
+          <xs:element name="QuotaGb" type="int" />
+        </xs:sequence>
+        <xs:attribute name="Id" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudHardwarePlanNetworkInfo">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="CountWithInternet" type="int" />
+          <xs:element name="CountWithoutInternet" type="int" />
+        </xs:sequence>
+        <xs:attribute name="Id" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoverSessionEntityType">
+    <xs:complexContent>
+      <xs:extension base="JobSessionEntityType">
+        <xs:sequence>
+          <xs:element name="CloudFailoverTasks" type="CloudFailoverTaskSessionInfoListType"/>
+        </xs:sequence>
+        <xs:attribute name="CloudFailoverPlanName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+    <xs:complexType name="CloudFailoverSessionEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudFailoverSession" type="CloudFailoverSessionEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+    <xs:complexType name="CloudFailoverTaskSessionInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="VmReplicaPointLink" type="LinkType" />
+          <xs:element name="CreationTimeUTC" type="DateTime" />
+          <xs:element name="EndTimeUTC" type="DateTime" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="State" type="string" />
+          <xs:element name="Result" type="string" />
+          <xs:element name="Progress" type="int" />
+          <xs:element name="FailureMessage" type="string" />
+        </xs:sequence>
+        <xs:attribute name="VmName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoverTaskSessionInfoListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudFailoverTasks" type="CloudFailoverTaskSessionInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- 
+  <xs:complexType name="CloudHardwarePlanNetworkEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudHardwarePlanNetwork" type="CloudHardwarePlanNetworkEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudHardwarePlanNetworkEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="HardwarePlan" type="UidType" />
+          <xs:element name="NetworksWithInternetAccess" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="NetworksWithoutInternentAccess" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="NetworkType" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:choice maxOccurs="1" minOccurs="1">
+                <xs:element name="ViCloudHardwarePlanNetwork" type="ViCloudHardwarePlanNetworkInfoType" />
+                <xs:element name="HvCloudHardwarePlanNetwork" type="HvCloudHardwarePlanNetworkInfoType" />
+              </xs:choice>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ViCloudHardwarePlanNetworkInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="VirtualSwitch" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HvCloudHardwarePlanNetworkInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="VirtualSwitch" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudHardwarePlanNetworkCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="HardwarePlan" type="UidType" />
+          <xs:element name="NetworksWithInternetAccess" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="NetworksWithoutInternentAccess" type="int" minOccurs="0" maxOccurs="1" />
+          <xs:element name="NetworkType" minOccurs="1" maxOccurs="1">
+            <xs:complexType>
+              <xs:choice maxOccurs="1" minOccurs="1">
+                <xs:element name="ViCloudHardwarePlanNetwork" type="ViCloudHardwarePlanNetworkInfoType" />
+                <xs:element name="HvCloudHardwarePlanNetwork" type="HvCloudHardwarePlanNetworkInfoType" />
+              </xs:choice>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  -->
+
+  <xs:complexType name="CloudPublicIpAddressEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudPublicIp" type="CloudPublicIpAddressEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="CloudPublicIpAddressEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="IpAddress" type="string" />
+          <xs:element name="TenantUid" type="UidType" />
+        </xs:sequence>
+        <xs:attribute name="BackupServerUid" type="UidType" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudPublicIpAddressCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="BackupServerUid" type="UidType" />
+          <xs:element name="IpAddressLowerBound" type="string" />
+          <xs:element name="IpAddressUpperBound" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantComputeResourceListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudTenantComputeResource" type="CloudTenantComputeResourceType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantComputeResourceType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="CloudHardwarePlanUid" type="UidType" />
+          <xs:element name="WanAcceleratorUid" type="UidType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="PlatformType" type="string" />
+          <xs:element name="UseNetworkFailoverResources" type="bool" />
+          <xs:element name="NetworkAppliance" type="NetworkApplianceInfoType" />
+          <xs:element name="ComputeResourceStats" type="ComputeResourceStatsInfoType"/>
+        </xs:sequence>
+        <xs:attribute name="Id" type="string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+   <xs:complexType name="ComputeResourceStatsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="MemoryUsageMb" type="int" />
+          <xs:element name="CPUCount" type="int" />
+          <xs:element name="StorageResourceStats" type="StorageResourceStatsListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="StorageResourceStatsListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="StorageResourceStat" type="StorageResourceStatInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+   <xs:complexType name="StorageResourceStatInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="StorageName" type="string"/>
+          <xs:element name="StorageUsageGb" type="int" />
+          <xs:element name="StorageLimitGb" type="int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+    
+  <xs:complexType name="CloudTenantComputeResourceLeaseOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:attribute name="Enabled" type="bool" />
+        <xs:attribute name="ExpirationDate" type="DateTime" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantComputeResourceCreateListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="ComputeResource" type="CloudTenantComputeResourceCreateSpecType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudTenantComputeResourceCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="CloudHardwarePlanUid" type="UidType" />
+          <xs:element name="WanAcceleratorUid" type="UidType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="PlatformType" type="string" />
+          <xs:element name="UseNetworkFailoverResources" type="bool" />
+          <xs:element name="NetworkAppliance" type="NetworkApplianceInfoType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudVmReplicaPointEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="CreationTimeUTC" type="DateTime" />
+          <xs:element name="VmName" type="string" />
+          <!--<xs:element name="Algorithm" type="string" />-->
+          <xs:element name="PointType" type="string" />
+          <xs:element name="State" type="string" />
+        </xs:sequence>
+        <xs:attribute name="VmDisplayName" type="string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudVmReplicaPointEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudReplica" type="CloudVmReplicaPointEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoverPlanEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudFailoverPlan" type="CloudFailoverPlanEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoverPlanEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="TenantUid" type="UidType" />
+          <xs:element name="TenantName" type="string" />
+          <xs:element name="Description" minOccurs="0" maxOccurs="1" type="string" />
+          <xs:element name="CloudFailoverPlanOptions" type="CloudFailoverPlanOptionsInfoType" />
+          <xs:element name="CloudFailoverPlanInfo" type="CloudFailoverPlanInfoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoverPlanManagementSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="StartNow" type="bool" />
+          <xs:element name="StartDate" type="DateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoverPlanInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Includes" minOccurs="0" maxOccurs="1" type="CloudFailoveredVmListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoveredVmType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="FailoverPlanVMId" type="string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="Name" type="string" minOccurs="1" maxOccurs="1"/>
+          <!--<xs:element name="DisplayName" type="string" />-->
+          <xs:element name="Order" type="int" minOccurs="0" maxOccurs="1"/>
+          <!--<xs:element name="GuestProcessingOptions" type="GuestProcessingOptionsType" />-->
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoveredVmListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudFailoveredVm" type="CloudFailoveredVmType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudFailoverPlanOptionsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="PostFailoverPlanCommandEnabled" type="bool" />
+          <xs:element name="PostFailoverPlanCommand" type="string" />
+          <xs:element name="PreFailoverPlanCommandEnabled" type="bool" />
+          <xs:element name="PreFailoverPlanCommand" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudReplicaEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Ref" type="EntityReferenceType" />
+          <xs:element name="Platform" minOccurs="0" maxOccurs="1" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudReplicaEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudReplica" type="CloudReplicaEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudConnectServiceType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TenantCredentialsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Username" type="string" />
+          <xs:element name="Password" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VlanConfigurationEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Vlans" type="VlanConfigurationEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VlanConfigurationEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="HostRef" type="HierarchyObjRefType" />
+          <xs:element name="PlatformType" type="string" />
+          <xs:element name="VlanIdsWithInternetLeftBound" type="int" />
+          <xs:element name="VlanIdsWithInternetRightBound" type="int" />
+          <xs:element name="VlanIdsWithoutInternetLeftBound" type="int" />
+          <xs:element name="VlanIdsWithoutInternetRightBound" type="int" />
+          <xs:element name="SwitchName" type="string" />
+          <xs:element name="SwitchId" type="string"/>
+          <xs:element name="ClusterName" type="string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="ClusterId" type="string"/>
+          <xs:element name="SwitchType" type="string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudVlanConfigurationCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="BackupServerUid" type="UidType" />
+          <xs:element name="HostRef" type="HierarchyObjRefType" />
+          <xs:element name="PlatformType" type="string" />
+          <xs:element name="VlanIdsWithInternetLeftBound" type="int" />
+          <xs:element name="VlanIdsWithInternetRightBound" type="int" />
+          <xs:element name="VlanIdsWithoutInternetLeftBound" type="int" />
+          <xs:element name="VlanIdsWithoutInternetRightBound" type="int" />
+          <xs:element name="viClusterRef" type="string"/>
+          <xs:element name="viClusterName" type="string" />
+          <xs:element name="viSwitchName" type="string" />
+          <xs:element name="viSwitchType" type="int" />
+          <xs:element name="viSwitchId" type="string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NetworkApplianceInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Name" type="string" />
+          <xs:element name="ProductionNetwork" type="string" />
+          <xs:element name="ObtainIPAddressAutomatically" type="bool" />
+          <xs:element name="ManualIpAddressSettingsInfoType" type="ManualIpAddressSettingsInfoType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="ViDistributedSwitchUuid" type="string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ManualIpAddressSettingsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="IpAddress" type="IPv4" />
+          <xs:element name="SubnetMask" type="IPv4" />
+          <xs:element name="DefaultGateway" type ="IPv4"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>  
+  
+  <xs:complexType name="CloudSubtenantResourceListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="CloudSubtenant" type="CloudSubtenantResourceType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudSubtenantResourceType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="Name" type="string" />
+          <xs:element name="Description" type="string" />
+          <xs:element name="Password" type="string" />
+          <xs:element name="Enabled" type="bool" />
+          <xs:element name="RepositoryQuota" type="CloudSubtenantRepositoryQuotaInfoType" />
+        </xs:sequence>
+        <xs:attribute name="Id" type="string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="CloudSubtenantRepositoryQuotaInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="DisplayName" type="string" />
+          <xs:element name="TenantResourceId" type="string" />
+          <xs:element name="QuotaMb" type="long" minOccurs="0" maxOccurs="1" />
+          <xs:element name="UsedQuotaMb" type="long" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="Unlimited" type="bool" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="CloudSubtenantResourceCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="Name" type="string" />
+          <xs:element name="Description" type="string" />
+          <xs:element name="Password" type="string" />
+          <xs:element name="Enabled" type="bool"/>
+          <xs:element name="TenantResourceId" type="string" />
+          <xs:element name="QuotaName" type="string"/>
+          <xs:element name="QuotaMb" type="int" />
+          <xs:element name="UnlimitedQuota" type="bool"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <!--
+
+  <xs:complexType name="CloudServiceProviderEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="Enabled" type="bool" />
+          <xs:element name="DnsNameOrIpAddress" type="string" />
+          <xs:element name="ManagementPort" type="ushort" />
+          <xs:element name="CredentialsId" type="string" />
+          <xs:element name="Resources" type="CloudServiceProviderResourcesType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CloudServiceProviderResourcesType">
+    <xs:choice minOccurs="0" maxOccurs="unbounded" >
+      <xs:element name="RepositoryQuota" type="CloudServiceProviderResourceInfoType" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="CloudServiceProviderResourceInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="DisplayName" type="string" />
+          <xs:element name="Quota" type="long" />
+          <xs:element name="AvailableSpace" type="long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  -->
+
+  <!-- } cloud -->
+
+  <!-- SQL item restore { -->
+
+  <xs:complexType name="VmRestorePointSqlInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Databases" type="VmRestorePointSqlDatabaseInfoListType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmRestorePointSqlDatabaseInfoListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Database" type="VmRestorePointSqlDatabaseInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmRestorePointSqlDatabaseInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="Items" type="VmRestorePointSqlDatabaseItemListInfoType" />
+        </xs:sequence>
+        <xs:attribute name="Instance" type="string" use="required" />
+        <xs:attribute name="InstanceName" type="string" use="required" />
+        <xs:attribute name="Name" type="string" use="required" />
+        <xs:attribute name="FullVersion" type="string" use="required" />
+        <xs:attribute name="ProductVersion" type="string" use="required" />
+        <xs:attribute name="CheckpointLsn" type="decimal" use="optional" />
+        <xs:attribute name="DatabaseBackupLsn" type="decimal" use="optional" />
+        <xs:attribute name="FirstLsn" type="decimal" use="optional" />
+        <xs:attribute name="LastLsn" type="decimal" use="optional" />
+        <xs:attribute name="StartCreationTime" type="DateTime" use="optional" />
+        <xs:attribute name="EndCreationTime" type="DateTime" use="optional" />
+        <xs:attribute name="TimeZone" type="int" use="optional" />
+        <xs:attribute name="RecoveryModel" type="string" use="required" />
+        <xs:attribute name="CompatibilityLevel" type="int" use="required" />
+        <xs:attribute name="CertName" type="string" use="optional" />
+        <xs:attribute name="CertSerialNumber" type="string" use="optional" />
+        <xs:attribute name="ReadOnly" type="string" use="required" />
+        <xs:attribute name="BindingID" type="string" use="optional" />
+        <xs:attribute name="FamilyGUID" type="string" use="optional" />
+        <xs:attribute name="DatabaseId" type="int" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VmRestorePointSqlDatabaseItemListInfoType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="Item" type="VmRestorePointSqlDatabaseItemInfoType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="VmRestorePointSqlDatabaseItemInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:attribute name="Type" type="string" use="required" />
+        <xs:attribute name="DataPath" type="string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SqlItemRestoreSpecInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="IsRestoreToOriginal" type="bool" />
+          <xs:element name="ServerName" type="string" />
+          <xs:element name="VmName" type="string" />
+          <xs:element name="InstanceName" type="string" />
+          <xs:element name="FamilyUid" type="string" />
+          <xs:element name="Credentials" type="SqlCredentialsInfoType" />
+          <xs:element name="DatabaseName" type="string" />
+          <xs:element name="SourceDatabaseName" type="string" />
+          <xs:element name="SourceInstanceName" type="string" />
+          <xs:element name="RestoreToDate" type="DateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SqlCredentialsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="SqlCredentials" type="PlainCredentialsType" minOccurs="0" maxOccurs="1" />
+          <xs:element name="ServerCredentials" type="PlainCredentialsType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="UserCredentials" type="PlainCredentialsType" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="UseSqlAuth" type="bool" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- } SQL item restore -->
+
+   <xs:complexType name="VeeamZipStartupSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="VmRef" type="HierarchyObjRefType" />
+          <xs:element name="RepositoryUid" type="UidType" />
+          <xs:element name="PasswordKeyId" type="string" />
+          <xs:element name="CompressionLevel" type="int" />
+          <xs:element name="DisableGuestQuiescence" type="bool" />
+          <xs:element name="BackupRetention" type="FreeBackupRetentionEnumType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="QuickBackupStartupSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="VmRef" type="HierarchyObjRefType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <!-- VCloud multi-tenantcy  { -->
+
+  <xs:complexType name="VCloudOrganizationConfigCreateSpecType">
+    <xs:complexContent>
+      <xs:extension base="SpecType">
+        <xs:sequence>
+          <xs:element name="OrganizationName" type="string" />
+          <xs:element name="BackupServerUid" type="UidType" />
+          <xs:element name="RepositoryUid" type="UidType" />
+          <xs:element name="QuotaGb" type="long"/>
+          <xs:element name="TemplateJobUid" type="UidType"/>
+          <xs:element name="JobSchedulerType" type="string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VCloudOrganizationConfigEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="BackupServerUid" type="UidType" />
+          <xs:element name="RepositoryUid" type="UidType"/>
+          <xs:element name="QuotaGb" type="long"/>
+          <xs:element name="IsDisabled" type="bool" />
+          <xs:element name="JobSettings">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DefaultSettings" type="bool"/>
+                <xs:element name="JobSchedulerType" type="string"/>
+                <xs:element name="TemplateJobUid" type="UidType" minOccurs="0" maxOccurs="1"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VCloudOrganizationConfigEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="VCloudOrganizationConfig" type="VCloudOrganizationConfigEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VCloudServiceType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name ="VCloudOrganizationConfigBackupJobSettingsResourceType">
+    <xs:complexContent>
+      <xs:extension base="ResourceType">
+        <xs:sequence>
+          <xs:element name="UseDefaultJobSettings" type="bool" />
+          <xs:element name="AdvancedSettings" type="AdvancedJobSettingsInfoType"/>
+          <xs:element name="SanIntegrationSettings" minOccurs="0" maxOccurs="1" type="SecondaryJobSanIntegrationSettingsInfoType"/>
+          <xs:element name="SourceProxyAutoDetect" type="bool"/>
+          <xs:element name="Proxies" minOccurs="0" maxOccurs="unbounded" type="string" />
+          <xs:element name="SecondaryJobs" minOccurs="0" maxOccurs="unbounded" type="UidType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <!-- { AdvancedJobSettings-->
+  <!-- {common options block-->
+   <xs:group name="MonthlyAndWeeklyOptions">
+    <xs:choice>
+           <xs:element name="OptionsMonthly" type="JobScheduleMonthlyOptionsType" />
+           <xs:element name="OptionsWeekly" type="JobScheduleDailyOptionsType" />
+    </xs:choice>
+  </xs:group>
+  <!-- common options block}-->
+  
+  <xs:complexType name="AdvancedJobSettingsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="BackupSettings" type="BackupSettingsOptionsType"/>
+          <xs:element name="MaintenanceSettings" type="MaintenanceSettingsOptionsType"/>
+          <xs:element name="StorageSettings" type="StorageSettingsOptionsType"/>
+          <xs:element name="NotificationsSettings" type="NotificationsSettingsOptionsType"/>
+          <xs:element name="vSphereSettings" type="vSphereSettingsOptionsType"/>
+          <xs:element name="IntegrationSettings" type="IntegrationSettingsOptionsType"/>
+          <xs:element name="ScriptsSettings" type="ScriptsSettingsOptionsType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- {backup tab-->
+  <xs:complexType name="BackupSettingsOptionsType" >
+     <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="BackupMode" type="BackupSettingsBackupModeOptionsType"/>
+          <xs:element name="ActiveFullBackup" type="BackupSettingsActiveFullBackupOptionsType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupSettingsBackupModeOptionsType">
+     <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:choice  minOccurs="1" maxOccurs="1" >
+          <xs:element name="ReverseIncremental" type="BackupSettingsReverseIncrementalOptionsType"/>
+          <xs:element name="Incremental" type="BackupSettingsIncrementalOptionsType"/>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="BackupSettingsReverseIncrementalOptionsType">
+     <xs:complexContent>
+      <xs:extension base="InfoType" />
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="BackupSettingsIncrementalOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="SyntheticFull">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="OptionsDaily" type="JobScheduleDailyOptionsType" />
+                <xs:element name="TransformPreviousBackupChains" type="bool"/>
+              </xs:sequence>
+              <xs:attribute name="Enabled" type="bool" use="required"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+    
+  <xs:complexType name="BackupSettingsActiveFullBackupOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:group ref="MonthlyAndWeeklyOptions"/>
+        <xs:attribute name="Enabled" type="bool" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- backup tab}-->
+  
+  <!-- {maintenance tab-->
+  <xs:complexType name="MaintenanceSettingsOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="BackupFilesHealthCheck" type="MaintenanceSettingsBackupFilesHealthCheckOptionsType"/>
+          <xs:element name="FullBackupFileMaintenance" type="MaintenanceSettingsFullBackupFileMaintenanceOptionsType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="MaintenanceSettingsBackupFilesHealthCheckOptionsType">
+     <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:group ref="MonthlyAndWeeklyOptions"/>
+        <xs:attribute name="Enabled" type="bool" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MaintenanceSettingsFullBackupFileMaintenanceOptionsType">
+     <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence >
+          <xs:element name="RemoveDeletedVms" type="MaintenanceSettingsRemoveDeletedVmsOptionsType"/>
+          <xs:element name="DefragmentFullBackupFile" type="MaintenanceSettingsDefragmentFullBackupFileOptionsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MaintenanceSettingsRemoveDeletedVmsOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="RemoveAfter" type="int"/>
+        </xs:sequence>
+       <xs:attribute name="Enabled" type="bool" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MaintenanceSettingsDefragmentFullBackupFileOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:group ref="MonthlyAndWeeklyOptions"/>       
+        <xs:attribute name="Enabled" type="bool" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- maintenance tab}-->
+  
+  <!-- {storage tab-->
+  <xs:complexType name="StorageSettingsOptionsType" >
+     <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="DataReduction" type="StorageSettingsDataReductionSettingsOptionType"/>
+          <xs:element name="Encryption" type="StorageSettingsEncryptionSettingsOptionType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="StorageSettingsDataReductionSettingsOptionType" >
+     <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="EnableInlineDataDeduplication" type="bool"/>
+          <xs:element name="EnableSwapFileBlocks" type="bool"/>
+          <xs:element name="EnableDeletedFileBlocks" type="bool"/>
+          <xs:element name="CompressionLevel" type="CompressionLevelEnumType"/>
+          <xs:element name="StorageOptimization" type="StorageOptimizationEnumType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="StorageSettingsEncryptionSettingsOptionType" >
+     <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="PasswordKey" type="PasswordKeyInfoType"/>
+        </xs:sequence>
+       <xs:attribute name="Enabled" type="bool" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- storage tab}-->
+  
+  <!-- {notification tab-->
+  <xs:complexType name="NotificationsSettingsOptionsType" >
+     <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="SendSnmpNotifications" type="bool"/>
+          <xs:element name="VmAttributeNotifications">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SetSuccessfulBackupDetailsToVmAttr" type="string"/>
+                <xs:element name="AppendToExistingAttrValue" type="bool"/>
+              </xs:sequence>
+              <xs:attribute name="Enabled" type="bool" use="required"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- notification tab}-->
+
+  <!-- {vSphere tab-->
+  <xs:complexType name="vSphereSettingsOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="GuestQuiescence">
+            <xs:complexType>
+              <xs:attribute name="Enabled" type="bool" use="required"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ChangedBlockTracking">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="EnableForAllProtectedVms" type="bool"/>
+              </xs:sequence>
+              <xs:attribute name="Enabled" type="bool" use="required"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+ <!-- vSphere tab}-->
+  
+  <!-- {integration tab-->
+  <xs:complexType name="IntegrationSettingsOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="BackupFromStorageSnapshots">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="LimitProcessedVmCountPerStorageSnapshot" type="int"/>
+                <xs:element name="FailoverToStandartBackup" type="bool"/>      
+              </xs:sequence>
+              <xs:attribute name="Enabled" type="bool" use="required"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- integration tab}-->
+    
+ <!-- {scripts tab-->
+  <xs:complexType name="ScriptsSettingsJobScriptOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="ScriptPath" type="string"/>
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+    
+  <xs:complexType name="ScriptsSettingsOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="PostJobScript" type="ScriptsSettingsJobScriptOptionsType"/>
+          <xs:element name="PreJobScript" type="ScriptsSettingsJobScriptOptionsType"/>
+          <xs:choice>
+            <xs:element name="RunScriptsEveryBackupSession">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="RunEveryBackupSession" type="int"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="RunScriptsOnSelectedDays">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="OptionsWeekly" type="JobScheduleDailyOptionsType" />
+                </xs:sequence>
+              </xs:complexType>
+              </xs:element>
+          </xs:choice>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <!-- scripts tab}-->
+  <!-- AdvancedJobSettings}-->
+
+  <!-- {SanIntegartionSettings-->
+  <xs:complexType name ="SecondaryJobSanIntegrationSettingsInfoType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="SanSnapshotSettings" minOccurs="0" maxOccurs="1" type="SecondaryJobSanIntegrationSanSnapshotOptionsType" />
+          <xs:element name="NimbleSnapshotSettings" minOccurs="0" maxOccurs="1" type="SecondaryJobSanIntegrationNimbleSnapshotOptionsType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SecondaryJobSanIntegrationSanSnapshotOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name ="BackupTransferSettings">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SanSnapshotBackupTransferRetention" type="int"/>
+                <xs:element name="SanSnapshotBackupTransferAsBackupSource" type="bool"/>
+              </xs:sequence>
+              <xs:attribute name="Enabled" type="bool" use="required"/>
+            </xs:complexType>
+          </xs:element>
+          
+          <xs:element name ="ReplicaTransferSettings">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SanSnapshotReplicaTransferRetention" type="int"/>
+                <xs:element name="SanSnapshotReplicaTransferAsBackupSource" type="bool"/>
+              </xs:sequence>
+              <xs:attribute name="Enabled" type="bool" use="required"/>
+            </xs:complexType>
+          </xs:element>
+          
+          <xs:element name="SanSnapshotSourceRetention" type="int"/>
+          
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+    <xs:complexType name="SecondaryJobSanIntegrationNimbleSnapshotOptionsType">
+    <xs:complexContent>
+      <xs:extension base="InfoType">
+        <xs:sequence>
+          <xs:element name="NimbleSnapshotSourceRetention" type="int"/>
+          <xs:element name="TransferSettings">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="NimbleSnapshotTransferRetention" type="int"/>
+                <xs:element name="NimbleSnapshotTransferAsBackupSource" type="bool"/>
+              </xs:sequence>
+              <xs:attribute name="Enabled" type="bool" use="required"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Enabled" type="bool" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <!-- SanIntegartionSettings}-->
+  
+  <!-- } vCloud multi-tenantcy  -->
+  
+  
+  <!-- { Storages -->
+
+  <xs:complexType name="BackupFileEntityListType">
+    <xs:complexContent>
+      <xs:extension base="ListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded" >
+          <xs:element name="BackupFile" type="BackupFileEntityType" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BackupFileEntityType">
+    <xs:complexContent>
+      <xs:extension base="EntityType">
+        <xs:sequence>
+          <xs:element name="FilePath" type="string" />
+          <xs:element name="BackupSize" type="long" />
+          <xs:element name="DataSize" type="long" />
+          <xs:element name="DeduplicationRatio" type="double" />
+          <xs:element name="CompressRatio" type="double" />
+          <xs:element name="CreationTimeUtc" type="DateTime" />
+          <xs:element name="FileType" type="string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <!-- Storages }-->
+  
+  <!-- enum types-->
+
+  <xs:simpleType name="AccountTypeEnumeration">
+    <xs:restriction base="string">
+      <xs:enumeration value="User" />
+      <xs:enumeration value="Group" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="JobScheduleMonthEnumeration">
+    <xs:restriction base="string">
+      <xs:enumeration value="January" />
+      <xs:enumeration value="February" />
+      <xs:enumeration value="March" />
+      <xs:enumeration value="April" />
+      <xs:enumeration value="May" />
+      <xs:enumeration value="June" />
+      <xs:enumeration value="July" />
+      <xs:enumeration value="August" />
+      <xs:enumeration value="September" />
+      <xs:enumeration value="October" />
+      <xs:enumeration value="November" />
+      <xs:enumeration value="December" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DaysOfWeekEnumeration">
+    <xs:restriction base="string">
+      <xs:enumeration value="Sunday" />
+      <xs:enumeration value="Monday" />
+      <xs:enumeration value="Tuesday" />
+      <xs:enumeration value="Wednesday" />
+      <xs:enumeration value="Thursday" />
+      <xs:enumeration value="Friday" />
+      <xs:enumeration value="Saturday" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="FreeBackupRetentionEnumType">
+    <xs:restriction base="string">
+      <xs:enumeration value="Never"/>
+      <xs:enumeration value="Tonight"/>
+      <xs:enumeration value="TomorrowNight"/>
+      <xs:enumeration value="In3days"/>
+      <xs:enumeration value="In1Week"/>
+      <xs:enumeration value="In2Weeks"/>
+      <xs:enumeration value="In1Month"/>
+      <xs:enumeration value="In3Months"/>
+      <xs:enumeration value="In6Months"/>
+      <xs:enumeration value="In1Year"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="CompressionLevelEnumType">
+    <xs:restriction base="string">
+      <xs:enumeration value="None"/>
+      <xs:enumeration value="DedupeFriendly"/>
+      <xs:enumeration value="Optimal"/>
+      <xs:enumeration value="High"/>
+      <xs:enumeration value="Extreme"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="StorageOptimizationEnumType">
+    <xs:restriction base="string">
+      <xs:enumeration value="LocalTargetExt"/>
+      <xs:enumeration value="LocalTarget"/>
+      <xs:enumeration value="LanTarget"/>
+      <xs:enumeration value="WanTarget"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!-- base types { -->
+
+  <xs:simpleType name="double">
+    <xs:restriction base="xs:double">
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="nonNegativeInt">
+    <xs:restriction base="int">
+      <xs:minInclusive value="0"/>
+      <xs:maxExclusive value="10"/>
+    </xs:restriction>
+  </xs:simpleType>
+    
+  <xs:simpleType name="IPv4">
+    <xs:restriction base="string" />
+  </xs:simpleType>
+  
+  <xs:simpleType name="HierarchyObjRefType">
+    <xs:restriction base="UrnType" />
+  </xs:simpleType>
+
+  <xs:simpleType name="UidType">
+    <xs:restriction base="UrnType">
+      <xs:pattern value="urn\:veeam\:[a-zA-Z_0-9\-]+\:[a-zA-Z_0-9\-]+" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="UrnType">
+    <xs:restriction base="string">
+      <xs:pattern value="urn\:[a-zA-Z_0-9\-]+\:[a-zA-Z_0-9\-]+\:[a-zA-Z_0-9\-]+" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="VersionType">
+    <xs:restriction base="string">
+      <xs:pattern value="[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="UrlType">
+    <xs:restriction base="string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="DateTime">
+    <xs:restriction base="xs:dateTime" />
+  </xs:simpleType>
+
+  <xs:simpleType name="TimeSpan">
+    <!-- xs:duration -->
+    <xs:restriction base="xs:int" />
+  </xs:simpleType>
+
+  <xs:simpleType name="Time">
+    <xs:restriction base="xs:time" />
+  </xs:simpleType>
+
+  <xs:simpleType name="string">
+    <xs:restriction base="xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="long">
+    <xs:restriction base="xs:long" />
+  </xs:simpleType>
+
+  <xs:simpleType name="ulong">
+    <xs:restriction base="xs:unsignedLong" />
+  </xs:simpleType>
+
+  <xs:simpleType name="int">
+    <xs:restriction base="xs:int" />
+  </xs:simpleType>
+
+  <xs:simpleType name="ushort">
+    <xs:restriction base="xs:unsignedShort" />
+  </xs:simpleType>
+
+  <xs:simpleType name="bool">
+    <xs:restriction base="xs:boolean" />
+  </xs:simpleType>
+
+  <xs:simpleType name="decimal">
+    <xs:restriction base="xs:decimal" />
+  </xs:simpleType>
+
+  <!-- } base types -->
+
+
+</xs:schema>

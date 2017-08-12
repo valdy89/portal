@@ -1,30 +1,22 @@
 package cz.mycom.veeam.portal;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.*;
-import com.mysql.jdbc.Driver;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import cz.mycom.veeam.portal.service.KeyStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.configuration.ConfigurationConverter;
 import org.apache.commons.configuration.DatabaseConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -32,27 +24,28 @@ import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.io.File;
 import java.util.Properties;
 
 /**
  * @author dursik
  */
 @Slf4j
-@SpringBootApplication
+@Configuration
 @ComponentScan("cz.mycom.veeam.portal")
 @EnableJpaRepositories(basePackages = "cz.mycom.veeam.portal.repository")
+@EnableTransactionManagement
 @EnableWebMvc
-@EnableCaching
-@EnableRetry
 @EnableScheduling
 public class AppConfig {
 
@@ -71,7 +64,7 @@ public class AppConfig {
     public void initializeDatabasePropertySourceUsage() {
         MutablePropertySources propertySources = ((ConfigurableEnvironment) env).getPropertySources();
         try {
-            DatabaseConfiguration config = new DatabaseConfiguration(dataSource,"portal_config", "name", "value");
+            DatabaseConfiguration config = new DatabaseConfiguration(dataSource, "portal_config", "name", "value");
             Properties dbProps = ConfigurationConverter.getProperties(config);
             PropertiesPropertySource dbPropertySource = new PropertiesPropertySource("dbPropertySource", dbProps);
             propertySources.addFirst(dbPropertySource);
@@ -109,6 +102,12 @@ public class AppConfig {
     }
 
     @Bean
+    public TransactionTemplate transactionTemplate(PlatformTransactionManager transactionManager) {
+        TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+        return transactionTemplate;
+    }
+
+    @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(jpaVendorAdapter());
@@ -138,5 +137,12 @@ public class AppConfig {
     @Bean
     public KeyStoreService keyStoreService() {
         return new KeyStoreService();
+    }
+
+    @Bean
+    public TaskScheduler taskScheduler() {
+        ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setPoolSize(10);
+        return taskScheduler;
     }
 }

@@ -8,11 +8,12 @@ import cz.mycom.veeam.portal.repository.ConfigRepository;
 import cz.mycom.veeam.portal.repository.TenantHistoryRepository;
 import cz.mycom.veeam.portal.repository.TenantRepository;
 import cz.mycom.veeam.portal.repository.UserRepository;
+import cz.mycom.veeam.portal.service.MailService;
 import cz.mycom.veeam.portal.service.VeeamService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,8 @@ public class TenantController {
     private UserRepository userRepository;
     @Autowired
     private TenantHistoryRepository tenantHistoryRepository;
+    @Autowired
+    private MailService mailService;
 
     @RequestMapping(method = RequestMethod.GET)
     public Tenant get(Principal principal) {
@@ -104,38 +107,29 @@ public class TenantController {
 
             if (StringUtils.isNotBlank(tenant.getRepositoryUid())) {
                 Repository repository = veeamService.getRepository(tenant.getRepositoryUid());
-                Integer sumQuota = tenantRepository.sumQuota(tenant.getRepositoryUid(), tenant.getUid());
-                if (sumQuota == null) {
-                    sumQuota = change.getQuota();
-                } else {
-                    sumQuota += change.getQuota();
-                }
-                if (sumQuota > (repository.getCapacity() / Math.pow(1024, 2)) * veeamService.getFilledParam()) {
-                    sendMail(tenant, tenant.getQuota());
-                    throw new RuntimeException("Tento požadavek nelze z technických důvodů momentálně splnit automaticky. Byla kontaktována podpora dodavatele. Budete kontaktováni v nejkratším možném termínu.");
+
+                checkQuota(change, tenant, repository);
+
+                CloudTenantResources cloudTenantResources = cloudTenant.getResources();
+                if (cloudTenantResources != null
+                        && !CollectionUtils.isEmpty(cloudTenantResources.getCloudTenantResources())) {
+                    CloudTenantResource cloudTenantResource = cloudTenantResources.getCloudTenantResources().get(0);
+                    cloudTenantResource.getRepositoryQuota().setQuota(Long.valueOf(change.getQuota()));
                 }
 
-                if (change.getQuota() != null) {
-                    CloudTenantResources cloudTenantResources = cloudTenant.getResources();
-                    if (cloudTenantResources != null
-                            && !CollectionUtils.isEmpty(cloudTenantResources.getCloudTenantResources())) {
-                        CloudTenantResource cloudTenantResource = cloudTenantResources.getCloudTenantResources().get(0);
-                        cloudTenantResource.getRepositoryQuota().setQuota(Long.valueOf(change.getQuota()));
-                    }
-                }
 
             } else {
                 Repository repository = veeamService.getPreferredRepository(change.getQuota());
-                if (repository == null) {
-                    sendMail(tenant, tenant.getQuota());
-                } else {
-                    CreateCloudTenantResourceSpec backupResource = new CreateCloudTenantResourceSpec();
-                    backupResource.setQuotaMb(change.getQuota());
-                    backupResource.setName(user.getUsername() + " - BackupResource");
-                    backupResource.setRepositoryUid(repository.getUID());
-                    tenant.setRepositoryUid(StringUtils.substringAfterLast(repository.getUID(), ":"));
-                    veeamService.createResource(tenant.getUid(), backupResource);
-                }
+
+                tenant.setRepositoryUid(StringUtils.substringAfterLast(repository.getUID(), ":"));
+                checkQuota(change, tenant, repository);
+
+                CreateCloudTenantResourceSpec backupResource = new CreateCloudTenantResourceSpec();
+                backupResource.setQuotaMb(change.getQuota());
+                backupResource.setName(user.getUsername() + " - BackupResource");
+                backupResource.setRepositoryUid(repository.getUID());
+                veeamService.createResource(tenant.getUid(), backupResource);
+
             }
 
             int diff = change.getQuota() - tenant.getQuota();
@@ -169,8 +163,17 @@ public class TenantController {
         return tenant;
     }
 
-    private void sendMail(Tenant tenant, int quota) {
-
+    private void checkQuota(@RequestBody Change change, Tenant tenant, Repository repository) {
+        Integer sumQuota = tenantRepository.sumQuota(tenant.getRepositoryUid(), tenant.getUid());
+        if (sumQuota == null) {
+            sumQuota = change.getQuota();
+        } else {
+            sumQuota += change.getQuota();
+        }
+        if (sumQuota > ((repository.getCapacity() / Math.pow(1024, 2)) * veeamService.getFilledParam())) {
+            String message = "Uzivatel " + tenant.getUser().getUsername() + " (" + tenant.getUsername() + ") pozaduje " + change.getQuota() + " GB, na repository " + repository.getName() + " je pouze " + (repository.getCapacity() / Math.pow(1024, 2)) + " GB";
+            mailService.sendMail(configRepository.getOne("admin.email").getValue(), "Varovani: Nedostatek mista", message);
+        }
     }
 
     @Data
