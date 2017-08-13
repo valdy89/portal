@@ -10,17 +10,17 @@
 
           <md-nav-bar md-selected-nav-item="ctrl.activeForm" nav-bar-aria-label="navigation links">
             <md-nav-item md-nav-click="ctrl.panelChange('login')" name="login">Existujíci uživatel</md-nav-item>
-            <md-nav-item md-nav-click="ctrl.panelChange('register')" name="register">Nový uživatele</md-nav-item>
+            <md-nav-item md-nav-click="ctrl.panelChange('register')" name="register">Nový uživatel</md-nav-item>
           </md-nav-bar>
 
       </div>
 
       <div ng-show="ctrl.activeForm === 'login'" layout-fill>
-        <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form"  >
+        <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form">
 
-          <md-input-container class="md-block form-group" flex-gt-sm>
+          <md-input-container class="md-block form-group"  flex-gt-sm>
             <label>Uživatelské jméno</label>
-            <input type="email" ng-model="ctrl.username"  class="md-block" placeholder="tvuj@email.cz" ng-required="true">
+            <input type="email" ng-model="ctrl.username" class="md-block" ng-required="true">
           </md-input-container>
 
           <md-input-container class="md-block form-group" flex-gt-sm>
@@ -41,7 +41,7 @@
 
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>Email</label>
-            <input type="email" ng-model="ctrl.user.username" class="form-control" ng-required="true">
+            <input type="email" ng-model="ctrl.user.username" ng-required="true">
           </md-input-container>
 
           <section layout="row" layout-sm="column">
@@ -66,19 +66,27 @@
 
 <script type="text/ng-template" id="forgotPassword.html">
   <div cg-busy="[ctrl.promise]"></div>
-  <form name="ctrl.forgotPasswordForm" role="form">
-    <div class="modal-header">
-      <h4 class="modal-title">Zapomenuté heslo</h4>
-    </div>
-    <div class="modal-body">
-      <md-input-container class="md-block form-group" flex-gt-sm>
-        <label>Uživatelské jméno</label>
-        <input type="email" ng-model="ctrl.username" class="form-control" ng-required="true">
-      </md-input-container>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="md-raised md-accent" ng-disabled="!ctrl.forgotPasswordForm.$valid" ng-click="ctrl.save()">Odeslat</button>
-      <button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</button>
-    </div>
-  </form>
+    <md-dialog>
+      <md-toolbar class="md-accent">
+        <h2 class="md-toolbar-tools">
+          Zapomenuté heslo
+        </h2>
+      </md-toolbar>
+      <md-dialog-content>
+        <div class="md-dialog-content">
+          <form name="ctrl.forgotPasswordForm" role="form">
+            <md-input-container class="md-block form-group" flex-gt-sm>
+              <label>Uživatelské jméno</label>
+              <input type="email" ng-model="ctrl.username" ng-required="true">
+            </md-input-container>
+            <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
+              <div class="modal-footer">
+                <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.forgotPasswordForm.$valid" ng-click="ctrl.save()">Odeslat</md-button>
+                <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
+              </div>
+            </md-dialog-actions>
+          </form>
+        </div>
+      </md-dialog-content>
+    </md-dialog>
 </script>

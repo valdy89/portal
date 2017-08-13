@@ -68,7 +68,7 @@
           </div>
 
           <div layout="row" layout-padding>
-            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.credit <= 0" ng-cloak>
+            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.credit < 0" ng-cloak>
               Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.
             </md-whiteframe>
           </div>
@@ -135,8 +135,8 @@
   <md-dialog flex-gt-sm="50" flex>
     <md-toolbar class="md-accent">
       <h2 class="md-toolbar-tools">
-       Koupit kredit
-     </h2>
+        Koupit kredit
+      </h2>
     </md-toolbar>
 
     <md-dialog-content>
@@ -146,70 +146,61 @@
 
             <md-input-container class="md-block form-group" layout="row">
               <label>Cena:</label>
-
               <input type="number" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
               <md-icon>Kč</md-icon>
-
             </md-input-container>
-            <md-input-container class="md-block form-group">
+            <md-input-container class="md-block form-group" layout="row">
               <label>Počet kreditů: </label>
-              <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculatePrice()" class="form-control" required="true">
-
+              <input type="number" ng-model="ctrl.credit" ng-change="ctrl.recalculatePrice()" required="true">
             </md-input-container>
           </div>
 
 
-          <h4>Způsob platby</h4>
+          <h5>Způsob platby</h5>
           <md-radio-group ng-model="ctrl.type">
-
             <md-radio-button value="0" selected>Bankovním převodem - proforma</md-radio-button>
-            <md-radio-button value="1" disabled>Kartou online</md-radio-button>
-
+            <md-radio-button value="1" disabled="true">Kartou online</md-radio-button>
           </md-radio-group>
 
-          <h4>Fakturační údaje</h4>
-
+          <h5>Fakturační údaje</h5>
           <md-input-container class="md-block form-group" flex-gt-sm>
             <label>Jméno a přijmení (název firmy)</label>
-            <input type="text" ng-model="ctrl.user.name" class="form-control">
+            <input type="text" ng-model="ctrl.user.name">
           </md-input-container>
           <div layout-gt-sm="row">
-            <md-input-container class="md-block form-group" flex-gt-sm>
+            <md-input-container class="md-block form-group" flex="60">
               <label>Ulice a číslo popisné</label>
-              <input type="text" ng-model="ctrl.user.street" class="form-control">
+              <input type="text" ng-model="ctrl.user.street">
             </md-input-container>
             <md-input-container class="md-block form-group" flex-gt-sm>
               <label>Město</label>
-              <input type="text" ng-model="ctrl.user.city" class="form-control">
+              <input type="text" ng-model="ctrl.user.city">
             </md-input-container>
             <md-input-container class="md-block form-group" flex-gt-sm>
               <label>PSČ</label>
-              <input type="text" ng-model="ctrl.user.postalCode" class="form-control">
+              <input type="text" ng-model="ctrl.user.postalCode">
             </md-input-container>
           </div>
 
           <div layout-gt-sm="row">
             <md-input-container class="md-block form-group" flex-gt-sm>
               <label>IČ</label>
-              <input type="text" ng-model="ctrl.user.ico" class="form-control">
+              <input type="text" ng-model="ctrl.user.ico">
             </md-input-container>
             <md-input-container class="md-block form-group" flex-gt-sm>
               <label>DIČ</label>
-              <input type="text" ng-model="ctrl.user.dic" class="form-control">
+              <input type="text" ng-model="ctrl.user.dic">
             </md-input-container>
           </div>
 
         </form>
-        <div ng-include="'changeInvoiceInputForm.html'"> </div>
-        </form>
       </div>
 
     </md-dialog-content>
-    <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
-      <div class="modal-footer">
-        <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Zaplatit</md-button>
+    <md-dialog-actions layout="row" layout-xs="column" layout-align="end center">
+        <span>Kliknutím na objednat souhlasíte s obchodními podmínkami</span>
+        <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Objednat</md-button>
         <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
-      </div>
     </md-dialog-actions>
 
   </md-dialog>
@@ -231,19 +222,17 @@
       <div class="md-dialog-content">
         <form name="ctrl.changeQuotaForm" role="form">
           <md-input-container class="md-block form-group">
-            <label>Nová velikost kvóty v GB: </label>
-            <input type="number" ng-model="ctrl.quota" class="form-control" required="true">
-
+            <label>Nová velikost kvóty: </label>
+            <input type="number" ng-model="ctrl.quota" required="true">
+            <md-icon>GB</md-icon>
           </md-input-container>
         </form>
       </div>
     </md-dialog-content>
 
-    <md-dialog-actions layout="row" layout-xs="column" layout-align="center center">
-      <div class="modal-footer">
+    <md-dialog-actions layout="row" layout-xs="column" layout-align="end center">
         <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.changeQuotaForm.$valid" ng-click="ctrl.save()">Změnit</md-button>
         <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
-      </div>
     </md-dialog-actions>
   </md-dialog>
 </script>

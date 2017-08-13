@@ -10,7 +10,7 @@
 
 
   /** @ngInject */
-  function LoginController($log, $cookies, $http, $base64, $rootScope, $location, $uibModal, EndpointConfigService) {
+  function LoginController($log, $cookies, $http, $base64, $rootScope, $location, $mdDialog, EndpointConfigService) {
     var ctrl = this;
     ctrl.activeForm = 'login';
     ctrl.panelLogin = 'active';
@@ -22,7 +22,7 @@
         username: ctrl.username,
         password: ctrl.password
       };
-      ctrl.dataLoading = true;
+
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/login'), user);
       ctrl.promise.then(function (response) {
         $http.defaults.headers.common.Authorization = 'Basic ' + $base64.encode(ctrl.username + ':' + ctrl.password); // jshint ignore:line
@@ -42,7 +42,6 @@
     };
 
     ctrl.register = function () {
-      $log.debug(ctrl.user);
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/register'), ctrl.user);
       ctrl.promise.then(function () {
         ctrl.panelLogin = 'active';
@@ -62,22 +61,31 @@
     };
 
     ctrl.forgotPassword = function () {
-      var modalInstance = $uibModal.open({
-        animation: false,
+      $log.debug(ctrl.username);
+      $mdDialog.show({
+        //animation: false,
         templateUrl: 'forgotPassword.html',
-        controller: 'ForgotPassworController as ctrl'
+        controller: 'ForgotPassworController as ctrl',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        fullscreen: $rootScope.customFullscreen,
+        locals: {
+          username: ctrl.username
+        }
       });
     };
   }
 
   /** @ngInject */
-  function ForgotPassworController($log, $modalInstance, $http, EndpointConfigService) {
+  function ForgotPassworController($log, $mdDialog, $http, EndpointConfigService, username) {
     var ctrl = this;
+
+    ctrl.username = username;
 
     ctrl.save = function () {
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/forgotPassword'), {username: ctrl.username});
       ctrl.promise.then(function () {
-        $modalInstance.close();
+        $mdDialog.hide();
       }, function (response) {
         alert(response.data.message);
       });
@@ -85,7 +93,7 @@
     };
 
     ctrl.cancel = function () {
-      $modalInstance.dismiss('cancel');
+      $mdDialog.hide();
     };
   }
 
@@ -101,7 +109,7 @@
 
     function clearCredential() {
       $rootScope.userData = null;
-      //$cookies.remove('userData');
+      $cookies.remove('JSESSIONID');
       $cookies.remove('userData');
       $http.defaults.headers.common.Authorization = null;
     }

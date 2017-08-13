@@ -34,12 +34,11 @@
         clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen,
         locals:{
-            subtenant: subtenant,
-            quota: 0
+            subtenant: subtenant
         }
       });
 
-      modalInstance.finally(function () {
+      modalInstance.then(function () {
         ctrl.getItems();
       });
     };
@@ -47,7 +46,7 @@
 
 
     ctrl.updateSubtenant = function(subtenant){
-      
+
       var modalInstance = $mdDialog.show({
         //animation: false,
         templateUrl: 'updateSubtenant.html',
@@ -60,7 +59,7 @@
             quota: subtenant.quota/1024
         }
       });
-      modalInstance.finally(function () {
+      modalInstance.then(function () {
         ctrl.getItems();
       });
     };
@@ -78,10 +77,9 @@
         fullscreen: $rootScope.customFullscreen,
         locals:{
             subtenant: subtenant,
-            quota: subtenant.quota/1024
         }
       });
-      modalInstance.finally(function () {
+      modalInstance.then(function () {
         ctrl.getItems();
       });
     };
@@ -90,12 +88,13 @@
   }
 
   /** @ngInject */
-  function CreateSubtenantController($log, $mdDialog, SubtenantResource,subtenant,quota, $http, EndpointConfigService) {
+  function CreateSubtenantController($log, $mdDialog, SubtenantResource,subtenant, $http, EndpointConfigService) {
     var ctrl = this;
 
     ctrl.subtenant = subtenant;
-    ctrl.quota = quota;
-
+    if (subtenant.quota) {
+      ctrl.quota = subtenant.quota/1024;
+    }
 
     ctrl.save = function () {
 
@@ -139,7 +138,7 @@
     };
 
     ctrl.cancel = function () {
-      $mdDialog.hide('cancel');
+      $mdDialog.cancel();
     };
   }
 

@@ -49,46 +49,14 @@
         }
       });
 
-      modalInstance.finally(function () {
+      modalInstance.then(function () {
         ctrl.tenant = TenantResource.get();
+      }, function () {
+        $log.debug('cancel');
       });
     };
 
     ctrl.buyCredit = function () {
-      if (!ctrl.tenant.user.name || ctrl.tenant.user.name === '') {
-        var alert = $mdDialog.alert({
-          title: 'Varování',
-          textContent: 'Nemáte vyplněné fakturační údaje!',
-          ok: 'Vyplnit nyní'
-        });
-
-        $mdDialog
-          .show(alert)
-          .finally(function () {
-            var modalInstance = $mdDialog.show({
-              // animation: false,
-              templateUrl: 'changeInvoiceInput.html',
-              controller: 'ChangeUserController as ctrl',
-              parent: angular.element(document.body),
-
-              clickOutsideToClose:true,
-              fullscreen: $rootScope.customFullscreen
-            });
-            modalInstance.finally(function () {
-              modalInstance = $mdDialog.show({
-                // animation: false,
-                templateUrl: 'buyCredit.html',
-                controller: 'BuyCreditController as ctrl',
-                parent: angular.element(document.body),
-                clickOutsideToClose: true,
-                fullscreen: $rootScope.customFullscreen
-              });
-              modalInstance.finally(function () {
-                ctrl.tenant = TenantResource.get();
-              });
-            });
-          });
-      } else {
         var modalInstance = $mdDialog.show({
           // animation: false,
           templateUrl: 'buyCredit.html',
@@ -97,11 +65,11 @@
           clickOutsideToClose: true,
           fullscreen: $rootScope.customFullscreen
         });
-        modalInstance.finally(function () {
+        modalInstance.then(function () {
           ctrl.tenant = TenantResource.get();
+        }, function () {
+          $log.debug('cancel');
         });
-      }
-
     };
   }
 
@@ -143,7 +111,7 @@
     };
 
     ctrl.cancel = function () {
-      $mdDialog.hide('cancel');
+      $mdDialog.cancel();
     };
   }
 
@@ -166,7 +134,7 @@
     };
 
     ctrl.cancel = function () {
-      $mdDialog.hide('cancel');
+      $mdDialog.cancel();
     };
   }
 
