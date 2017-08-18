@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface TenantHistoryRepository extends JpaRepository<TenantHistory, HistoryPK> {
     @Query("from TenantHistory where uid = :uid and modifier = :modifier and dateCreated >= DATE(NOW()) and dateCreated < DATE(ADDDATE(NOW(), 1))")
-    TenantHistory getTodayByModifier(@Param("uid") String uid, @Param("modifier") String modifier);
+    List<TenantHistory> getTodayByModifier(@Param("uid") String uid, @Param("modifier") String modifier);
     @Query("select max(quota) from TenantHistory where uid = :uid and dateCreated >= DATE(NOW()) and dateCreated < DATE(ADDDATE(NOW(), 1))")
     Integer getTodayMaxQuota(@Param("uid") String uid);
 

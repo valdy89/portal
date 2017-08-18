@@ -8,28 +8,24 @@
       message: 'Čekejte prosím',
       delay: 500
     })
-    .service('authInterceptor', function($q, $log) {
+    .service('authInterceptor', function($q, $log, $location) {
       var service = this;
 
       service.responseError = function(response) {
-        $log.debug(response);
-        if (response.status === 401 || response.status === -1){
-          window.location = "/login";
+        if(response.status === 401 || response.status === 403) {
+          $location.path('/login');
         }
         return $q.reject(response);
       };
     })
-    .config(function ($logProvider, $routeProvider, $mdDateLocaleProvider, $locationProvider, $httpProvider, uiSelectConfig, IdleProvider, KeepaliveProvider) {
+    .config(function ($logProvider, $routeProvider, $mdDateLocaleProvider, $locationProvider, $httpProvider, uiSelectConfig) {
 
       $logProvider.debugEnabled(true);
       uiSelectConfig.theme = 'bootstrap';
+
       $httpProvider.defaults.withCredentials = true;
-
-      IdleProvider.idle(1700); // in seconds
-      IdleProvider.timeout(100); // in seconds
-      KeepaliveProvider.interval(60); // in seconds
-
       $httpProvider.interceptors.push('authInterceptor');
+      $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
       $mdDateLocaleProvider.months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
       $mdDateLocaleProvider.shortMonths = ['Led','Úno','Bře','Dub','Kvě','Čvn','Čvc','Srp','Zář','Říj','Lis','Pro'];

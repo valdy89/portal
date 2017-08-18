@@ -36,7 +36,6 @@ public class TenantController {
     private UserDetailsService userDetailsService;
 
     @RequestMapping(method = RequestMethod.GET)
-    @Secured("ROLE_SYSTEM")
     public List<Tenant> list() {
         return tenantRepository.findAll();
     }

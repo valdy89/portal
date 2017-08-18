@@ -4,10 +4,7 @@ import com.veeam.ent.v1.*;
 import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.TenantHistory;
 import cz.mycom.veeam.portal.model.User;
-import cz.mycom.veeam.portal.repository.ConfigRepository;
-import cz.mycom.veeam.portal.repository.TenantHistoryRepository;
-import cz.mycom.veeam.portal.repository.TenantRepository;
-import cz.mycom.veeam.portal.repository.UserRepository;
+import cz.mycom.veeam.portal.repository.*;
 import cz.mycom.veeam.portal.service.MailService;
 import cz.mycom.veeam.portal.service.VeeamService;
 import lombok.Data;
@@ -46,6 +43,8 @@ public class TenantController {
     private TenantHistoryRepository tenantHistoryRepository;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public Tenant get(Principal principal) {
@@ -86,6 +85,7 @@ public class TenantController {
         } else {
             tenant.setCreditDate(new Date());
         }
+        tenant.setUnpaidOrders(orderRepository.findUnpaid(tenant.getUid()).size());
         return tenant;
     }
 
@@ -172,7 +172,7 @@ public class TenantController {
         }
         if (sumQuota > ((repository.getCapacity() / Math.pow(1024, 2)) * veeamService.getFilledParam())) {
             try {
-                String message = "Uzivatel " + tenant.getUser().getUsername() + " (" + tenant.getUsername() + ") pozaduje " + change.getQuota() + " GB, na repository " + repository.getName() + " je pouze " + (repository.getCapacity() / Math.pow(1024, 2)) + " GB";
+                String message = "Uzivatel " + tenant.getUser().getUsername() + " (" + tenant.getUsername() + ") pozaduje " + change.getQuota()/1024 + " GB, na repository " + repository.getName();
                 mailService.sendMail(configRepository.getOne("admin.email").getValue(), "Varovani: Nedostatek mista", message);
             } catch (Exception e) {
                 log.error(e.getMessage());

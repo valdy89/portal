@@ -13,6 +13,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -23,6 +24,7 @@ import java.util.Properties;
  * @author dursik
  */
 @Slf4j
+@Transactional
 @Service
 public class MailService {
 

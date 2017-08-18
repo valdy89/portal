@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * @author dursik
  */
-@Transactional
 @RestController
 public class JobsController {
 
@@ -28,7 +27,6 @@ public class JobsController {
     @Autowired
     private CountryRepository countryRepository;
 
-    @Secured("ROLE_SYSTEM")
     @RequestMapping(value = "/account", method = RequestMethod.GET)
     public HashMap<String, String> list() {
         accountingService.process();
@@ -37,8 +35,8 @@ public class JobsController {
         return ret;
     }
 
-    @Secured("ROLE_SYSTEM")
     @RequestMapping(value = "/countries", method = RequestMethod.GET)
+    @Transactional
     public HashMap<String, String> countries() {
         List<Country> countries = iDokladService.getCountries();
         if (!countries.isEmpty()) {

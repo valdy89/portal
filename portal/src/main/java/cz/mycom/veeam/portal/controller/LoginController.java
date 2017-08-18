@@ -70,6 +70,13 @@ public class LoginController {
         userEntity.setPhone(user.getPhone());
         userEntity.setPostalCode(user.getPostalCode());
         userEntity.setStreet(user.getStreet());
+        userEntity.setEmail(user.getEmail());
+    }
+
+    @RequestMapping(value = "/token", method = RequestMethod.GET)
+    public AuthResponse token(Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        return new AuthResponse(user);
     }
 
 
@@ -89,6 +96,7 @@ public class LoginController {
         if (!userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             throw new RuntimeException("Uživatel nemá přístup do portálu");
         }
+
         return new AuthResponse(user);
     }
 
@@ -99,7 +107,7 @@ public class LoginController {
             String password = RandomStringUtils.randomAlphanumeric(10);
             user.setEnabled(false);
             String text = "https://" + request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + password).getBytes("UTF-8"));
-            mailService.sendMail(user.getUsername(), "Zapomenuté heslo", text);
+            mailService.sendMail(user.getEmail(), "Zapomenuté heslo", text);
             user.setPassword(passwordEncoder.encode(password));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -137,13 +145,14 @@ public class LoginController {
             }
             user.setPassword(passwordEncoder.encode(authRequest.getPassword()));
             user.setEnabled(true);
+            user.setEmail(user.getUsername());
 
             if (user.getTenant() == null) {
 
                 LogonSession logonSession = veeamService.logonSystem();
                 try {
                     List<String> descriptionList = new ArrayList<>();
-                    descriptionList.add("Email: " + user.getUsername());
+                    descriptionList.add("Email: " + user.getEmail());
                     descriptionList.add("Portal tenant - " + DateFormatUtils.format(new Date(), "dd.MM.yyyy HH:mm:ss"));
 
                     Tenant tenant = new Tenant();
@@ -160,7 +169,7 @@ public class LoginController {
                     cloudTenant.setName(name);
                     cloudTenant.setDescription(StringUtils.join(descriptionList, IOUtils.LINE_SEPARATOR_WINDOWS));
 
-                    cloudTenant.setPassword(password);
+                    cloudTenant.setPassword(authRequest.getPassword());
                     cloudTenant.setEnabled(true);
                     cloudTenant.setThrottlingEnabled(false);
                     cloudTenant.setMaxConcurrentTasks(5);
@@ -169,7 +178,7 @@ public class LoginController {
                     CloudTenant saveTenant = veeamService.createTenant(cloudTenant);
                     tenant.setUid(StringUtils.substringAfterLast(saveTenant.getUID(), ":"));
                     tenantRepository.save(tenant);
-                } catch (Exception e) {
+                } finally {
                     veeamService.logout(logonSession);
                 }
             }
@@ -193,6 +202,7 @@ public class LoginController {
                 .build();
         ((JdbcUserDetailsManager) userDetailsService).createUser(userDetails);
         try {
+
             String text = "https://" + request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + user.getPassword()).getBytes("UTF-8"));
             mailService.sendMail(user.getUsername(), "Potvrzení registrace", text);
         } catch (Exception e) {

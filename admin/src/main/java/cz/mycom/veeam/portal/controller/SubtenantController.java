@@ -30,13 +30,11 @@ public class SubtenantController {
     private VeeamService veeamService;
 
     @RequestMapping(method = RequestMethod.GET)
-    @Secured("ROLE_SYSTEM")
     public List<Subtenant> list(@RequestParam(required = true) int userId) {
         return subtenantRepository.findByTenant_UserId(userId);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    @Secured("ROLE_SYSTEM")
     public void save(@RequestBody Subtenant subtenant) {
         LogonSession logonSession = veeamService.logonSystem();
         try {
@@ -48,7 +46,7 @@ public class SubtenantController {
             cloudSubtenant.setEnabled(subtenant.isEnabled());
 
             if (cloudSubtenant.getRepositoryQuota() != null) {
-                cloudSubtenant.getRepositoryQuota().setQuotaMb(subtenant.getQuota());
+                cloudSubtenant.getRepositoryQuota().setQuotaMb((long) subtenant.getQuota());
             }
 
             if (StringUtils.isNotBlank(subtenant.getPassword())) {

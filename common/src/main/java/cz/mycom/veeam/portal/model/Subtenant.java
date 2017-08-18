@@ -24,10 +24,10 @@ public class Subtenant {
     private String uid;
 
     @Column
-    private Long quota;
+    private int quota;
 
     @Column
-    private Long usedQuota;
+    private int usedQuota;
 
     @Column
     private boolean enabled;

@@ -43,14 +43,12 @@ public class VeeamService {
     @Autowired
     private RestTemplate veeamRestTemplate;
 
-    @Secured("ROLE_SYSTEM")
     public EntityReferences tenants() {
         EntityReferences referenceListType = veeamRestTemplate.getForObject(getUrl("cloud/tenants"), EntityReferences.class);
         log.debug("Tenants: " + referenceListType);
         return referenceListType;
     }
 
-    @Secured("ROLE_SYSTEM")
     public CloudTenant createTenant(CreateCloudTenantSpec cloudTenant) {
         Task taskType = veeamRestTemplate.postForObject(getUrl("cloud/tenants"), cloudTenant, Task.class);
         taskType = waitForTast(taskType);
@@ -119,7 +117,6 @@ public class VeeamService {
         return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{uid}/resources"), CloudTenantResources.class, uid);
     }
 
-    @Secured("ROLE_SYSTEM")
     public List<Repository> getRepositories() {
         EntityReferences referenceListType = veeamRestTemplate.getForObject(getUrl("repositories"), EntityReferences.class);
         return referenceListType.getReves()
@@ -129,7 +126,6 @@ public class VeeamService {
                 .collect(Collectors.toList());
     }
 
-    @Secured("ROLE_SYSTEM")
     public List<RepositoryReportFrame.Period> getRepositoryReport() {
         RepositoryReportFrame repositoryReportFrame = veeamRestTemplate.getForObject(getUrl("reports/summary/repository"), RepositoryReportFrame.class);
         return repositoryReportFrame.getPeriods().stream()

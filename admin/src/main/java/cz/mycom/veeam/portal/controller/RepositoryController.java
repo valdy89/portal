@@ -32,7 +32,7 @@ public class RepositoryController {
     private VeeamService veeamService;
 
     @RequestMapping(method = RequestMethod.GET)
-    @Secured("ROLE_SYSTEM")
+
     public List<Repository> list() {
         LogonSession logonSession = veeamService.logonSystem();
         try {

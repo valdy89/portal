@@ -9,34 +9,34 @@
     .controller('ChangeUserController', ChangeUserController);
 
   /** @ngInject */
-  function MainController($log, $cookies, $window, $scope, $injector, $rootScope, $location, AuthenticationService, $mdDialog) {
+  function MainController($log, $cookies, $scope, $http, $rootScope, $location, EndpointConfigService, $mdDialog) {
     var main = this;
 
     $log.debug("Main controller begin");
 
     if ($location.path() !== '/login' && !$rootScope.userData) {
-      if ($cookies.getObject('userData')) {
-        $rootScope.userData = $cookies.getObject('userData');
+      main.promise = $http.get(EndpointConfigService.getUrl('/token'));
+      main.promise.then(function (response) {
+        $rootScope.userData = response.data;
         $rootScope.$broadcast('userLoggedIn', $rootScope.userData);
-        main.userData = $rootScope.userData;
-        main.navbarUrl = 'app/main/navbar.html';
+        $location.path('/');
+      }, function (response) {
+        // $http.defaults.headers.common.Authorization = null;
+        // if (response.data) {
+        //   alert(response.data.message);
+        // } else {
+        //   alert("Server not responding, please try action again later.");
+        // }
+        // $location.path("/login");
+      });
+    } else {
+      $log.debug("Main userData: " + $rootScope.userData);
+      if (!$rootScope.userData && $location.path() !== '/verify') {
+        $location.path('/login');
       }
     }
 
-    $log.debug("Main userData: " + $rootScope.userData);
-
-    if (!$rootScope.userData && $location.path() !== '/verify') {
-      $location.path('/login');
-    }
-
-    $injector.invoke($rootScope.AlertController, main);
-
     main.hasAlert = false;
-
-    $scope.$on('IdleTimeout', function () {
-      AuthenticationService.logout();
-      $window.location.reload();
-    });
 
     $scope.$on('userLoggedIn', function () {
       $log.debug("userLoggedIn: " + $rootScope.userData);
@@ -45,8 +45,12 @@
     });
 
     main.logout = function () {
-      AuthenticationService.logout();
-      $window.location.reload();
+      $http.post(EndpointConfigService.getAppUrl('/logout'), {}).finally(function () {
+        $http.defaults.headers.common.Authorization = undefined;
+        $rootScope.userData = undefined;
+        main.navbarUrl = undefined;
+        $location.path("/login");
+      });
     };
 
     main.changePassword = function () {
@@ -55,7 +59,7 @@
         templateUrl: 'changePasswordInternal.html',
         controller: 'ChangePasswordController as ctrl',
         parent: angular.element(document.body),
-        clickOutsideToClose:true,
+        clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen
       });
 
@@ -67,7 +71,7 @@
         templateUrl: 'changeInvoiceInput.html',
         controller: 'ChangeUserController as ctrl',
         parent: angular.element(document.body),
-        clickOutsideToClose:true,
+        clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen
       });
 
@@ -76,7 +80,7 @@
   }
 
   /** @ngInject */
-  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService,$mdDialog) {
+  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService, $mdDialog) {
     var ctrl = this;
 
     ctrl.login = function () {

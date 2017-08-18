@@ -23,6 +23,9 @@ public class User {
     private String username;
 
     @Column
+    private String email;
+
+    @Column
     private String name;
 
     @Column

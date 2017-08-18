@@ -90,14 +90,14 @@ public class SubtenantController {
                 subtenantCreateSpec.setPassword(subtenant.getPassword());
                 subtenantCreateSpec.setDescription("Portal subtenant - " + DateFormatUtils.format(new Date(), "dd.MM.yyyy HH:mm:ss"));
                 subtenantCreateSpec.setQuotaName("Subtenant - " + repositoryQuota.getDisplayName());
-                subtenantCreateSpec.setQuotaMb(subtenant.getQuota().intValue());
+                subtenantCreateSpec.setQuotaMb(subtenant.getQuota());
                 subtenantCreateSpec.setEnabled(true);
                 subtenantCreateSpec.setTenantResourceId(cloudTenantResource.getId());
                 CloudSubtenant cloudSubtenant = veeamService.createSubtenant(tenantUid, subtenantCreateSpec);
 
                 subtenant.setTenant(tenant);
                 subtenant.setEnabled(true);
-                subtenant.setUsedQuota(0L);
+                subtenant.setUsedQuota(0);
                 subtenant.setUid(cloudSubtenant.getId());
                 subtenant.setDateCreated(new Date());
                 subtenantRepository.save(subtenant);
@@ -113,7 +113,7 @@ public class SubtenantController {
                 subtenantEntity.setEnabled(subtenant.isEnabled());
 
                 if (cloudSubtenant.getRepositoryQuota() != null) {
-                    cloudSubtenant.getRepositoryQuota().setQuotaMb(subtenant.getQuota());
+                    cloudSubtenant.getRepositoryQuota().setQuotaMb(Long.valueOf(subtenant.getQuota()));
                     subtenantEntity.setQuota(subtenant.getQuota());
                 }
 

@@ -69,7 +69,7 @@
 
           <div layout="row" layout-padding>
             <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.credit < 0" ng-cloak>
-              Váš Veeam účet je zablokován kvůli nedostatečnému kreditu.
+              {{ctrl.tenant.unpaidOrders>0?'Váš Veeam účet je zablokován kvůli nedostatečnému kreditu. V sekci OBJEDNÁVKY najdete přehled neuhrazených faktur.':'Váš Veeam účet je zablokován kvůli nedostatečnému kreditu. Kupte si kredit.'}}
             </md-whiteframe>
           </div>
         </md-card-content>
@@ -90,37 +90,27 @@
 
         <md-card-content>
           <div class="row">
-            <div class="col-sm-3">1000 kreditů&nbsp;=&nbsp;300 Kč</div>
+            <div class="col-sm-5">1000 kreditů&nbsp;=&nbsp;300 Kč bez DPH</div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">&nbsp;</div>
           </div>
           <div class="row">
             <div class="col-sm-3">10GB / den</div>
             <div class="col-sm-2">&nbsp;=&nbsp;1 kredit</div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-3">1GB / den</div>
-            <div class="col-sm-2">&nbsp;=&nbsp;cca 0,03 Kč</div>
           </div>
           <div class="row">
             <div class="col-sm-3">1x VM / měsíc</div>
             <div class="col-sm-2">&nbsp;=&nbsp;590 kreditů</div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-3">1x VM / měsíc</div>
-            <div class="col-sm-2">&nbsp;=&nbsp;cca 175 Kč</div>
           </div>
           <div class="row">
             <div class="col-sm-3">1x Workstation / měsíc</div>
             <div class="col-sm-2">&nbsp;=&nbsp;330 kreditů</div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-3">1x Workstation / měsíc</div>
-            <div class="col-sm-2">&nbsp;=&nbsp;cca 110 Kč</div>
           </div>
           <div class="row">
             <div class="col-sm-3">1x Server / měsíc</div>
             <div class="col-sm-2">&nbsp;=&nbsp;690 kreditů</div>
-            <div class="col-sm-1"></div>
-            <div class="col-sm-3">1x Server / měsíc</div>
-            <div class="col-sm-2">&nbsp;=&nbsp;cca 230 Kč</div>
           </div>
-
         </md-card-content>
       </md-card>
     </div>
@@ -145,7 +135,7 @@
           <div layout-gt-sm="row">
 
             <md-input-container class="md-block form-group" layout="row">
-              <label>Cena:</label>
+              <label>Cena bez DPH:</label>
               <input type="number" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
               <md-icon>Kč</md-icon>
             </md-input-container>
@@ -163,10 +153,16 @@
           </md-radio-group>
 
           <h5>Fakturační údaje</h5>
-          <md-input-container class="md-block form-group" flex-gt-sm>
-            <label>Jméno a přijmení (název firmy)</label>
-            <input type="text" ng-model="ctrl.user.name">
-          </md-input-container>
+          <div layout-gt-sm="row">
+            <md-input-container class="md-block form-group" flex="60">
+              <label>Jméno a přijmení (název firmy)</label>
+              <input type="text" ng-model="ctrl.user.name">
+            </md-input-container>
+            <md-input-container class="md-block form-group" flex-gt-sm required="true">
+              <label>Email</label>
+              <input type="text" ng-model="ctrl.user.email">
+            </md-input-container>
+          </div>
           <div layout-gt-sm="row">
             <md-input-container class="md-block form-group" flex="60">
               <label>Ulice a číslo popisné</label>
@@ -198,7 +194,6 @@
 
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-xs="column" layout-align="end center">
-        <span>Kliknutím na objednat souhlasíte s obchodními podmínkami</span>
         <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Objednat</md-button>
         <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
     </md-dialog-actions>

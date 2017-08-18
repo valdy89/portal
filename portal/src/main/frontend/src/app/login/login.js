@@ -5,12 +5,11 @@
   angular
     .module('portal')
     .controller('LoginController', LoginController)
-    .controller('ForgotPassworController', ForgotPassworController)
-    .factory('AuthenticationService', AuthenticationService);
+    .controller('ForgotPassworController', ForgotPassworController);
 
 
   /** @ngInject */
-  function LoginController($log, $cookies, $http, $base64, $rootScope, $location, $mdDialog, EndpointConfigService) {
+  function LoginController($log, $http, $rootScope, $location, $mdDialog, $base64, $cookies, EndpointConfigService) {
     var ctrl = this;
     ctrl.activeForm = 'login';
     ctrl.panelLogin = 'active';
@@ -28,8 +27,7 @@
         $http.defaults.headers.common.Authorization = 'Basic ' + $base64.encode(ctrl.username + ':' + ctrl.password); // jshint ignore:line
         var userData = response.data;
         $rootScope.userData = userData;
-        $cookies.putObject('userData', userData);
-        $rootScope.$broadcast('userLoggedIn', userData);
+        $rootScope.$broadcast('userLoggedIn', $rootScope.userData);
         $location.path('/');
       }, function (response) {
         $http.defaults.headers.common.Authorization = null;
@@ -46,7 +44,11 @@
       ctrl.promise.then(function () {
         ctrl.panelLogin = 'active';
         ctrl.panelRegister = '';
-        alert("Uživatel úspěšně zaregistrován, vyčkejte na verifikační email.");
+        var alert = $mdDialog.alert()
+          .title('Potvrzení regitrace')
+          .textContent('Uživatel úspěšně zaregistrován, vyčkejte na verifikační email.')
+          .ok('Zavřít');
+        $mdDialog.show(alert);
       }, function (response) {
         if (response.data) {
           alert(response.data.message);
@@ -95,26 +97,6 @@
     ctrl.cancel = function () {
       $mdDialog.hide();
     };
-  }
-
-  /** @ngInject */
-  function AuthenticationService($log, $cookies, $rootScope, $http, EndpointConfigService) {
-    var service = this;
-
-    service.logout = function () {
-      $log.debug('logout');
-      clearCredential();
-      $http.get(EndpointConfigService.getAppUrl('/logout'));
-    };
-
-    function clearCredential() {
-      $rootScope.userData = null;
-      $cookies.remove('JSESSIONID');
-      $cookies.remove('userData');
-      $http.defaults.headers.common.Authorization = null;
-    }
-
-    return service;
   }
 
 })();

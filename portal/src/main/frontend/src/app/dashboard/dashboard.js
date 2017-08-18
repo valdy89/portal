@@ -31,7 +31,7 @@
         });
     }
 
-    ctrl.repositoryLabels = ['Volný prostor', 'Využívany prostor'];
+    ctrl.repositoryLabels = ['Volný prostor', 'Využívaný prostor'];
     ctrl.options = {
       legend: {display: true}
     };

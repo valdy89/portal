@@ -69,4 +69,7 @@ public class Tenant {
 
     @Transient
     private Date creditDate;
+
+    @Transient
+    private int unpaidOrders;
 }
