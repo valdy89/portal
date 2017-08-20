@@ -9,6 +9,7 @@ import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.User;
 import cz.mycom.veeam.portal.repository.SubtenantRepository;
 import cz.mycom.veeam.portal.repository.TenantRepository;
+import cz.mycom.veeam.portal.repository.UserRepository;
 import cz.mycom.veeam.portal.service.VeeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,18 +28,26 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@Transactional
 @RequestMapping("/tenant")
 public class TenantController {
+
     @Autowired
     private VeeamService veeamService;
     @Autowired
     private TenantRepository tenantRepository;
     @Autowired
+    private SubtenantRepository subtenantRepository;
+    @Autowired
     private UserDetailsService userDetailsService;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Tenant> list() {
-        return tenantRepository.findAll();
+        List<Tenant> tenantList = tenantRepository.findAll();
+        for (Tenant tenant : tenantList) {
+            tenant.setSubtenantsCount(tenant.getSubtenants().size());
+        }
+        return tenantList;
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -69,9 +79,9 @@ public class TenantController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public void delete(@RequestParam(required = true) int id) {
+    public void delete(@RequestParam(required = true) String uid) {
         LogonSession logonSession = veeamService.logonSystem();
-        Tenant tenant = tenantRepository.findOne(id);
+        Tenant tenant = tenantRepository.findOne(uid);
         CloudTenant cloudTenant = null;
         try {
             cloudTenant = veeamService.getTenant(tenant.getUid());
@@ -80,7 +90,13 @@ public class TenantController {
             veeamService.logout(logonSession);
         }
         if (cloudTenant == null) {
-            ((JdbcUserDetailsManager) userDetailsService).deleteUser(tenant.getUser().getUsername());
+            if (tenant.getUser()!=null) {
+                ((JdbcUserDetailsManager) userDetailsService).deleteUser(tenant.getUser().getUsername());
+            }
+            for (Subtenant subtenant : tenant.getSubtenants()) {
+                subtenantRepository.delete(subtenant);
+            }
+            tenantRepository.delete(tenant);
         } else {
             throw new RuntimeException("Tenant musí být nejdříve smazán z Veeam Backup");
         }

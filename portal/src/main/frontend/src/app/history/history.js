@@ -1,4 +1,3 @@
-/*globals alert */
 (function () {
   'use strict';
 
@@ -7,7 +6,7 @@
     .controller('TenantHistoryController', TenantHistoryController);
 
   /** @ngInject */
-  function TenantHistoryController($log, $http, EndpointConfigService) {
+  function TenantHistoryController($log, $http, EndpointConfigService, ErrorHandlerService) {
     var ctrl = this;
 
     ctrl.dateFrom = new Date();
@@ -29,11 +28,7 @@
         ctrl.repositorySeries = response.data.repositorySeries;
         ctrl.histories = response.data.histories;
       }, function (response) {
-        if (response.data) {
-          alert(response.data.message);
-        } else {
-          alert("Server not responding, please try action again later.");
-        }
+        ErrorHandlerService.handleError(response);
       });
     };
 
@@ -59,7 +54,7 @@
           position: 'left',
           ticks: {
             beginAtZero: true,
-            callback: function (value, index, values) {
+            callback: function (value) {
               return value + 'GB';
             }
           }
@@ -77,6 +72,15 @@
 
     ctrl.creditSeries = ['Kredit'];
 
+    ctrl.creditOptions = {
+      scales: {
+        yAxes: [{
+          ticks: {
+            stepSize: 500
+          }
+        }]
+      }
+    };
     ctrl.recalculate();
   }
 

@@ -10,6 +10,7 @@ import java.util.List;
  */
 public interface SubtenantRepository extends JpaRepository<Subtenant, String> {
     List<Subtenant> findByTenant_UserId(int userId);
+    List<Subtenant> findByTenantUid(String uid);
     Subtenant findByUid(String uid);
     Subtenant findByUsernameAndTenantUid(String username, String tenantUid);
     Subtenant findByUidAndTenantUid(String uid, String tenantUid);

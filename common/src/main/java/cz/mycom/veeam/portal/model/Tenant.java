@@ -51,6 +51,9 @@ public class Tenant {
     @Column
     private boolean enabled;
 
+    @Column
+    private boolean vip;
+
     @OneToOne
     @JoinColumn(name = "userId")
     @NotFound(action = NotFoundAction.IGNORE)
@@ -72,4 +75,7 @@ public class Tenant {
 
     @Transient
     private int unpaidOrders;
+
+    @Transient
+    private int subtenantsCount;
 }

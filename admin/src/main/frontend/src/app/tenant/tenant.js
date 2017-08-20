@@ -29,7 +29,7 @@
     };
 
     ctrl.action = function (tenant) {
-      var actionKey = ctrl.actionKey[tenant.userId];
+      var actionKey = ctrl.actionKey[tenant.uid];
       $log.debug(actionKey + " " + tenant);
       if (actionKey === 'changePassword') {
         var modalInstance = $uibModal.open({
@@ -109,7 +109,7 @@
           alert(response.data.message);
         });
       } else if (actionKey === 'delete') {
-        ctrl.promise = TenantResource.delete({id: tenant.id}).$promise;
+        ctrl.promise = TenantResource.delete({uid: tenant.uid}).$promise;
         ctrl.promise.then(function (response) {
           ctrl.getItems();
         }, function (response) {
@@ -173,7 +173,7 @@
   function SubtenantsController($log, $uibModal, $routeParams, SubtenantResource, TenantResource) {
     var ctrl = this;
 
-    ctrl.selected = $routeParams.id;
+    ctrl.selected = $routeParams.uid;
     ctrl.tenants = TenantResource.query();
     ctrl.tenants.$promise.then(
       function () {
@@ -186,7 +186,7 @@
 
     ctrl.getItems = function () {
       if (ctrl.selected) {
-        ctrl.subtenants = SubtenantResource.query({userId: ctrl.selected});
+        ctrl.subtenants = SubtenantResource.query({uid: ctrl.selected});
         ctrl.subtenants.$promise.then(
           function () {
           },

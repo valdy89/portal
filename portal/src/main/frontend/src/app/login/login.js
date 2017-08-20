@@ -1,4 +1,4 @@
-/*globals alert */
+/*globals document */
 (function () {
   'use strict';
 
@@ -9,7 +9,7 @@
 
 
   /** @ngInject */
-  function LoginController($log, $http, $rootScope, $location, $mdDialog, $base64, $cookies, EndpointConfigService) {
+  function LoginController($log, $http, $rootScope, $location, $mdDialog, $base64, $cookies, EndpointConfigService, ErrorHandlerService) {
     var ctrl = this;
     ctrl.activeForm = 'login';
     ctrl.panelLogin = 'active';
@@ -31,11 +31,7 @@
         $location.path('/');
       }, function (response) {
         $http.defaults.headers.common.Authorization = null;
-        if (response.data) {
-          alert(response.data.message);
-        } else {
-          alert("Server not responding, please try action again later.");
-        }
+        ErrorHandlerService.handleError(response);
       });
     };
 
@@ -50,11 +46,7 @@
           .ok('Zavřít');
         $mdDialog.show(alert);
       }, function (response) {
-        if (response.data) {
-          alert(response.data.message);
-        } else {
-          alert("Server not responding, please try action again later.");
-        }
+        ErrorHandlerService.handleError(response);
       });
     };
 
@@ -79,7 +71,7 @@
   }
 
   /** @ngInject */
-  function ForgotPassworController($log, $mdDialog, $http, EndpointConfigService, username) {
+  function ForgotPassworController($log, $mdDialog, $http, EndpointConfigService, ErrorHandlerService, username) {
     var ctrl = this;
 
     ctrl.username = username;
@@ -89,7 +81,7 @@
       ctrl.promise.then(function () {
         $mdDialog.hide();
       }, function (response) {
-        alert(response.data.message);
+        ErrorHandlerService.handleError(response);
       });
 
     };

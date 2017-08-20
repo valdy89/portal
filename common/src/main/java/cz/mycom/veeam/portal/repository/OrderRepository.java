@@ -18,4 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Order findByTenantUidAndId(String uid, Integer id);
     @Query(value = "from Order where tenantUid = :tenantUid and (paymentStatus is null or paymentStatus not in (1,3))")
     List<Order> findUnpaid(@Param("tenantUid") String uid);
+    @Query(value = "select min(proformaId) from Order where (paymentStatus is null or paymentStatus not in (1,3))")
+    Integer findMinUnpaidProformaId();
+    Order findByProformaId(Integer proformaId);
 }

@@ -36,7 +36,7 @@ public class HistoryController {
     @RequestMapping(method = RequestMethod.POST)
     public HistoryResponse create(@RequestBody HistoryRequest historyRequest, Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
-        List<TenantHistory> tenantHistoryList = tenantHistoryRepository.findByUidAndDateCreatedBetweenOrderByDateCreated(user.getTenant().getUid(), historyRequest.getFrom(), historyRequest.getTo());
+        List<TenantHistory> tenantHistoryList = tenantHistoryRepository.findByUidAndDateCreatedBetweenOrderByDateCreated(user.getTenant().getUid(), DateUtils.addDays(historyRequest.getFrom(), -1), historyRequest.getTo());
 
 
         List<Integer[]> repositoryChange = new ArrayList<>();

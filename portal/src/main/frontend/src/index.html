@@ -30,9 +30,11 @@
   <![endif]-->
 
 
+  <div cg-busy="{promise:main.promise,delay:0}"></div>
+
   <header ng-include="main.navbarUrl"></header>
 
-  <main flex>
+  <main flex ng-cloak>
     <div ng-view=""></div>
   </main>
 

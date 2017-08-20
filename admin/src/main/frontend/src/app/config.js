@@ -10,7 +10,9 @@
 
       $logProvider.debugEnabled(true);
       uiSelectConfig.theme = 'bootstrap';
+
       $httpProvider.defaults.withCredentials = true;
+      $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
       //routing
       $routeProvider

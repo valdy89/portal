@@ -50,9 +50,6 @@ public class User {
     private String dic;
 
     @Column
-    private boolean vip;
-
-    @Column
     @JsonIgnore
     private boolean enabled;
 

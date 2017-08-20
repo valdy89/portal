@@ -1,4 +1,4 @@
-/*globals window, moment */
+/*globals moment */
 (function () {
   'use strict';
 
@@ -15,7 +15,27 @@
         if(response.status === 401 || response.status === 403) {
           $location.path('/login');
         }
+
         return $q.reject(response);
+      };
+    })
+    .service('ErrorHandlerService', function ($mdDialog) {
+      var service = this;
+
+      service.handleError = function(response) {
+        if(response.status === 401 || response.status === 403) {
+          $location.path('/login');
+          return;
+        }
+
+        var message = '';
+        if (response.data) {
+          message = response.data.message;
+        } else {
+          message = "Došlo k chybě při komunikaci se servrem, zkuste akci později";
+        }
+        var alert = $mdDialog.alert().title('Chyba').textContent(message).ok('Zavřít');
+        $mdDialog.show(alert);
       };
     })
     .config(function ($logProvider, $routeProvider, $mdDateLocaleProvider, $locationProvider, $httpProvider, uiSelectConfig) {
@@ -24,7 +44,7 @@
       uiSelectConfig.theme = 'bootstrap';
 
       $httpProvider.defaults.withCredentials = true;
-      $httpProvider.interceptors.push('authInterceptor');
+      //$httpProvider.interceptors.push('authInterceptor');
       $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
       $mdDateLocaleProvider.months = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];

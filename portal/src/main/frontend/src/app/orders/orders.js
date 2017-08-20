@@ -1,4 +1,3 @@
-/*globals alert */
 (function () {
   'use strict';
 
@@ -7,7 +6,7 @@
     .controller('OrdersController', OrdersController);
 
   /** @ngInject */
-  function OrdersController($log, InvoiceResource) {
+  function OrdersController($log, InvoiceResource, ErrorHandlerService) {
     var ctrl = this;
 
     ctrl.orders = InvoiceResource.query();
@@ -15,8 +14,8 @@
     ctrl.orders.$promise.then(
       function () {
       },
-      function (error) {
-        alert(error.data.message);
+      function (response) {
+        ErrorHandlerService.handleError(response);
       });
   }
 

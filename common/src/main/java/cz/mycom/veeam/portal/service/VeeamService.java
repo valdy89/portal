@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -39,16 +40,17 @@ public class VeeamService {
     private ConfigRepository configRepository;
     @Autowired
     private TenantRepository tenantRepository;
-
     @Autowired
     private RestTemplate veeamRestTemplate;
 
+    @Retryable(maxAttempts = 10)
     public EntityReferences tenants() {
         EntityReferences referenceListType = veeamRestTemplate.getForObject(getUrl("cloud/tenants"), EntityReferences.class);
         log.debug("Tenants: " + referenceListType);
         return referenceListType;
     }
 
+    @Retryable(maxAttempts = 10)
     public CloudTenant createTenant(CreateCloudTenantSpec cloudTenant) {
         Task taskType = veeamRestTemplate.postForObject(getUrl("cloud/tenants"), cloudTenant, Task.class);
         taskType = waitForTast(taskType);
@@ -56,11 +58,13 @@ public class VeeamService {
         return veeamRestTemplate.getForObject(url, CloudTenant.class);
     }
 
+    @Retryable(maxAttempts = 10)
     public void saveTenant(String uid, CloudTenant tenant) {
         ResponseEntity<Task> taskType = veeamRestTemplate.exchange(getUrl("cloud/tenants/{tenantUid}"), HttpMethod.PUT, new HttpEntity<CloudTenant>(tenant), Task.class, uid);
         waitForTast(taskType.getBody());
     }
 
+    @Retryable(maxAttempts = 10)
     public CloudSubtenant createSubtenant(String tenantUid, CloudSubtenantCreateSpec subtenantCreateSpec) {
         Task taskType = veeamRestTemplate.postForObject(getUrl("cloud/tenants/" + tenantUid + "/subtenants"), subtenantCreateSpec, Task.class);
         waitForTast(taskType);
@@ -82,20 +86,24 @@ public class VeeamService {
         }
     }
 
+    @Retryable(maxAttempts = 10)
     public void saveSubtenant(String tenantUid, String subtenantUid, CloudSubtenant subtenant) {
         ResponseEntity<Task> taskType = veeamRestTemplate.exchange(getUrl("cloud/tenants/{tenantUid}/subtenants/{subtenantUid}"), HttpMethod.PUT, new HttpEntity<CloudSubtenant>(subtenant), Task.class, tenantUid, subtenantUid);
         waitForTast(taskType.getBody());
     }
 
+    @Retryable(maxAttempts = 10)
     public void deteleSubtenant(String tenantUid, String uid) {
         ResponseEntity<Task> taskType = veeamRestTemplate.exchange(getUrl("cloud/tenants/{tenantUid}/subtenants/{uid}"), HttpMethod.DELETE, null, Task.class, tenantUid, uid);
         waitForTast(taskType.getBody());
     }
 
+    @Retryable(maxAttempts = 10)
     public CloudSubtenant getSubtenant(String tenantUid, String subtenantUid) {
         return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{tenantUid}/subtenants/{subtenantUid}"), CloudSubtenant.class, tenantUid, subtenantUid);
     }
 
+    @Retryable(maxAttempts = 10)
     public List<CloudTenant> getTenants() {
         EntityReferences referenceListType = veeamRestTemplate.getForObject(getUrl("cloud/tenants"), EntityReferences.class);
         return referenceListType.getReves()
@@ -104,19 +112,22 @@ public class VeeamService {
                 .collect(Collectors.toList());
     }
 
+    @Retryable(maxAttempts = 10)
     public CloudTenant getTenant(String uid) {
         return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{uid}?format=Entity"), CloudTenant.class, uid);
     }
 
+    @Retryable(maxAttempts = 10)
     public List<CloudSubtenant> getSubtenants(String uid) {
         return veeamRestTemplate.getForObject(getUrl("/cloud/tenants/{uid}/subtenants"), CloudSubtenants.class, uid).getCloudSubtenants();
     }
 
-
+    @Retryable(maxAttempts = 10)
     public CloudTenantResources getTenantResources(String uid) {
         return veeamRestTemplate.getForObject(getUrl("cloud/tenants/{uid}/resources"), CloudTenantResources.class, uid);
     }
 
+    @Retryable(maxAttempts = 10)
     public List<Repository> getRepositories() {
         EntityReferences referenceListType = veeamRestTemplate.getForObject(getUrl("repositories"), EntityReferences.class);
         return referenceListType.getReves()
@@ -126,6 +137,7 @@ public class VeeamService {
                 .collect(Collectors.toList());
     }
 
+    @Retryable(maxAttempts = 10)
     public List<RepositoryReportFrame.Period> getRepositoryReport() {
         RepositoryReportFrame repositoryReportFrame = veeamRestTemplate.getForObject(getUrl("reports/summary/repository"), RepositoryReportFrame.class);
         return repositoryReportFrame.getPeriods().stream()
@@ -133,11 +145,13 @@ public class VeeamService {
                 .collect(Collectors.toList());
     }
 
+    @Retryable(maxAttempts = 10)
     public void createResource(String tenantUid, CreateCloudTenantResourceSpec backupResource) {
         Task taskType = veeamRestTemplate.postForObject(getUrl("cloud/tenants/" + tenantUid + "/resources"), backupResource, Task.class);
         waitForTast(taskType);
     }
 
+    @Retryable(maxAttempts = 10)
     public Repository getPreferredRepository(int quota) {
         List<Repository> repositories = getRepositories();
         if (repositories.isEmpty()) {
@@ -164,6 +178,7 @@ public class VeeamService {
         return fallback;
     }
 
+    @Retryable(maxAttempts = 10)
     public Repository getRepository(String uid) {
         return veeamRestTemplate.getForObject(getUrl("repositories/{uid}?format=Entity"), Repository.class, uid);
     }
@@ -178,6 +193,7 @@ public class VeeamService {
         return filledParam;
     }
 
+    @Retryable(maxAttempts = 10)
     public String getBackupServerUUID() {
         EntityReferences referenceListType = veeamRestTemplate.getForObject(getUrl("backupServers"), EntityReferences.class);
         return referenceListType.getReves()
@@ -185,6 +201,7 @@ public class VeeamService {
                 .findFirst().get().getUID();
     }
 
+    @Retryable(maxAttempts = 10)
     public LogonSession logonSystem() {
         try {
             return logonSession(Base64.encodeBase64String((veeamApiUser + ":" + keyStoreService.readData("veeam.api.password")).getBytes("UTF-8")));
@@ -203,6 +220,9 @@ public class VeeamService {
     }
 
     public void logout(LogonSession logonSession) {
+        if (logonSession == null) {
+            return;
+        }
         logout(logonSession.getSessionId());
     }
 
@@ -230,8 +250,12 @@ public class VeeamService {
             } catch (InterruptedException e) {
                 log.warn(e.getMessage());
             }
-            taskType = veeamRestTemplate.getForObject(taskType.getHref(), Task.class);
-            log.debug("TaskType: " + taskType.getState());
+            try {
+                taskType = veeamRestTemplate.getForObject(taskType.getHref(), Task.class);
+                log.debug("TaskType: " + taskType.getState());
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
             if (++i > 1000) {
                 throw new IllegalStateException(taskType.getResult().getMessage());
             }

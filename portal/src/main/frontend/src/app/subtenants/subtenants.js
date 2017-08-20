@@ -1,4 +1,4 @@
-/*globals alert, document */
+/*globals document */
 (function () {
   'use strict';
 
@@ -8,7 +8,7 @@
     .controller('CreateSubtenantController', CreateSubtenantController);
 
   /** @ngInject */
-  function SubtenantsController($log, $rootScope, SubtenantResource, $mdDialog) {
+  function SubtenantsController($log, $rootScope, $mdDialog, SubtenantResource, ErrorHandlerService) {
     var ctrl = this;
 
     ctrl.getItems = function () {
@@ -17,8 +17,8 @@
         function () {
 
         },
-        function (error) {
-          alert(error.data.message);
+        function (response) {
+          ErrorHandlerService.handleError(response);
         });
     };
 
@@ -33,8 +33,8 @@
         parent: angular.element(document.body),
         clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen,
-        locals:{
-            subtenant: subtenant
+        locals: {
+          subtenant: subtenant
         }
       });
 
@@ -44,8 +44,7 @@
     };
 
 
-
-    ctrl.updateSubtenant = function(subtenant){
+    ctrl.updateSubtenant = function (subtenant) {
 
       var modalInstance = $mdDialog.show({
         //animation: false,
@@ -54,9 +53,9 @@
         parent: angular.element(document.body),
         clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen,
-        locals:{
-            subtenant: subtenant,
-            quota: subtenant.quota/1024
+        locals: {
+          subtenant: subtenant,
+          quota: subtenant.quota / 1024
         }
       });
       modalInstance.then(function () {
@@ -65,8 +64,7 @@
     };
 
 
-
-    ctrl.deleteSubtenant = function(subtenant){
+    ctrl.deleteSubtenant = function (subtenant) {
       //console.log(subtenant);
       var modalInstance = $mdDialog.show({
         //animation: false,
@@ -75,8 +73,8 @@
         parent: angular.element(document.body),
         clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen,
-        locals:{
-            subtenant: subtenant,
+        locals: {
+          subtenant: subtenant,
         }
       });
       modalInstance.then(function () {
@@ -88,12 +86,12 @@
   }
 
   /** @ngInject */
-  function CreateSubtenantController($log, $mdDialog, SubtenantResource,subtenant, $http, EndpointConfigService) {
+  function CreateSubtenantController($log, $mdDialog, SubtenantResource, subtenant, $http, EndpointConfigService, ErrorHandlerService) {
     var ctrl = this;
 
     ctrl.subtenant = subtenant;
     if (subtenant.quota) {
-      ctrl.quota = subtenant.quota/1024;
+      ctrl.quota = subtenant.quota / 1024;
     }
 
     ctrl.save = function () {
@@ -104,34 +102,33 @@
         function () {
           $mdDialog.hide('success');
         },
-        function (error) {
-          alert(error.data.message);
+        function (response) {
+          ErrorHandlerService.handleError(response);
         });
 
     };
 
-    ctrl.update = function(){
+    ctrl.update = function () {
       ctrl.subtenant.quota = ctrl.quota * 1024;
       ctrl.promise = SubtenantResource.save(ctrl.subtenant);
       ctrl.promise.$promise.then(
         function () {
           $mdDialog.hide('success');
         },
-        function (error) {
-          alert(error.data.message);
+        function (response) {
+          ErrorHandlerService.handleError(response);
         });
 
 
     };
-    ctrl.delete = function(){
-       ctrl.promise = $http.delete(EndpointConfigService.getUrl('/subtenant/'+ctrl.subtenant.uid));
-  //    ctrl.promise = SubtenantResource.delete(ctrl.subtenant.uid);
+    ctrl.delete = function () {
+      ctrl.promise = $http.delete(EndpointConfigService.getUrl('/subtenant/' + ctrl.subtenant.uid));
       ctrl.promise.then(
         function () {
           $mdDialog.hide('success');
         },
-        function (error) {
-          alert(error.data.message);
+        function (response) {
+          ErrorHandlerService.handleError(response);
         });
 
 

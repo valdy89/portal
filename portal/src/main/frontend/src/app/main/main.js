@@ -9,34 +9,23 @@
     .controller('ChangeUserController', ChangeUserController);
 
   /** @ngInject */
-  function MainController($log, $cookies, $scope, $http, $rootScope, $location, EndpointConfigService, $mdDialog) {
+  function MainController($log, $cookies, $scope, $http, $rootScope, $location, $mdDialog, EndpointConfigService, ErrorHandlerService) {
     var main = this;
 
     $log.debug("Main controller begin");
 
-    if ($location.path() !== '/login' && !$rootScope.userData) {
+    if ($location.path() !== '/login' && $location.path() !== '/verify' && !$rootScope.userData) {
       main.promise = $http.get(EndpointConfigService.getUrl('/token'));
       main.promise.then(function (response) {
         $rootScope.userData = response.data;
         $rootScope.$broadcast('userLoggedIn', $rootScope.userData);
-        $location.path('/');
       }, function (response) {
-        // $http.defaults.headers.common.Authorization = null;
-        // if (response.data) {
-        //   alert(response.data.message);
-        // } else {
-        //   alert("Server not responding, please try action again later.");
-        // }
-        // $location.path("/login");
+        main.navbarUrl = null;
+        $http.defaults.headers.common.Authorization = null;
+        $cookies.remove('JSESSIONID');
+        $location.path("/login");
       });
-    } else {
-      $log.debug("Main userData: " + $rootScope.userData);
-      if (!$rootScope.userData && $location.path() !== '/verify') {
-        $location.path('/login');
-      }
     }
-
-    main.hasAlert = false;
 
     $scope.$on('userLoggedIn', function () {
       $log.debug("userLoggedIn: " + $rootScope.userData);
@@ -46,15 +35,16 @@
 
     main.logout = function () {
       $http.post(EndpointConfigService.getAppUrl('/logout'), {}).finally(function () {
-        $http.defaults.headers.common.Authorization = undefined;
-        $rootScope.userData = undefined;
-        main.navbarUrl = undefined;
+        $http.defaults.headers.common.Authorization = null;
+        $cookies.remove('JSESSIONID');
+        $rootScope.userData = null;
+        main.navbarUrl = null;
         $location.path("/login");
       });
     };
 
     main.changePassword = function () {
-      var modalInstance = $mdDialog.show({
+      $mdDialog.show({
         // animation: false,
         templateUrl: 'changePasswordInternal.html',
         controller: 'ChangePasswordController as ctrl',
@@ -62,11 +52,10 @@
         clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen
       });
-
-
     };
+
     main.changeInvoiceInput = function () {
-      var modalInstance = $mdDialog.show({
+      $mdDialog.show({
         // animation: false,
         templateUrl: 'changeInvoiceInput.html',
         controller: 'ChangeUserController as ctrl',
@@ -74,8 +63,6 @@
         clickOutsideToClose: true,
         fullscreen: $rootScope.customFullscreen
       });
-
-
     };
   }
 
@@ -112,7 +99,7 @@
         oldPassword: ctrl.oldPassword
       };
       ctrl.promise = $http.post(EndpointConfigService.getUrl('/changePassword'), user);
-      ctrl.promise.then(function (response) {
+      ctrl.promise.then(function () {
         $mdDialog.hide('cancel');
       }, function (response) {
         if (response.data) {
@@ -133,7 +120,7 @@
     var ctrl = this;
 
     ctrl.user = UserResource.get();
-    ctrl.user.$promise.then(function (response) {
+    ctrl.user.$promise.then(function () {
     }, function (response) {
       if (response.data) {
         alert(response.data.message);
@@ -145,7 +132,7 @@
     // save function
     ctrl.change = function () {
       ctrl.user = UserResource.save(ctrl.user);
-      ctrl.user.$promise.then(function (response) {
+      ctrl.user.$promise.then(function () {
         $mdDialog.hide('cancel');
       }, function (response) {
         if (response.data) {

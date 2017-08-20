@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@Transactional
 @RequestMapping("/subtenant")
 public class SubtenantController {
     @Autowired
@@ -30,8 +32,8 @@ public class SubtenantController {
     private VeeamService veeamService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Subtenant> list(@RequestParam(required = true) int userId) {
-        return subtenantRepository.findByTenant_UserId(userId);
+    public List<Subtenant> list(@RequestParam String uid) {
+        return subtenantRepository.findByTenantUid(uid);
     }
 
     @RequestMapping(method = RequestMethod.POST)

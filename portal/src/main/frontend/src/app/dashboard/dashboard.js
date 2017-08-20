@@ -1,4 +1,4 @@
-/*globals alert, document */
+/*globals document */
 (function () {
   'use strict';
 
@@ -9,27 +9,27 @@
     .controller('BuyCreditController', BuyCreditController);
 
   /** @ngInject */
-  function DashboardController($log, $rootScope, TenantResource, $mdDialog) {
+  function DashboardController($log, $rootScope, TenantResource, $mdDialog, ErrorHandlerService) {
     var ctrl = this;
 
     $log.debug("user data: " + $rootScope.userData);
     ctrl.userData = $rootScope.userData;
 
-    if (ctrl.userData) {
-      ctrl.tenant = TenantResource.get();
 
-      ctrl.tenant.$promise.then(
-        function () {
-          var pom = ctrl.tenant.quota - ctrl.tenant.usedQuota - 1;
-          if (pom < 0) {
-            pom = 0;
-          }
-          ctrl.repositoryData = [(pom / 1024).toFixed(1), (ctrl.tenant.usedQuota / 1024).toFixed(1)];
-        },
-        function (error) {
-          alert(error.data.message);
-        });
-    }
+    ctrl.tenant = TenantResource.get();
+
+    ctrl.tenant.$promise.then(
+      function () {
+        var pom = ctrl.tenant.quota - ctrl.tenant.usedQuota - 1;
+        if (pom < 0) {
+          pom = 0;
+        }
+        ctrl.repositoryData = [(pom / 1024).toFixed(1), (ctrl.tenant.usedQuota / 1024).toFixed(1)];
+      },
+      function (response) {
+        ErrorHandlerService.handleError(response);
+      });
+
 
     ctrl.repositoryLabels = ['Volný prostor', 'Využívaný prostor'];
     ctrl.options = {
@@ -57,24 +57,24 @@
     };
 
     ctrl.buyCredit = function () {
-        var modalInstance = $mdDialog.show({
-          // animation: false,
-          templateUrl: 'buyCredit.html',
-          controller: 'BuyCreditController as ctrl',
-          parent: angular.element(document.body),
-          clickOutsideToClose: true,
-          fullscreen: $rootScope.customFullscreen
-        });
-        modalInstance.then(function () {
-          ctrl.tenant = TenantResource.get();
-        }, function () {
-          $log.debug('cancel');
-        });
+      var modalInstance = $mdDialog.show({
+        // animation: false,
+        templateUrl: 'buyCredit.html',
+        controller: 'BuyCreditController as ctrl',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        fullscreen: $rootScope.customFullscreen
+      });
+      modalInstance.then(function () {
+        ctrl.tenant = TenantResource.get();
+      }, function () {
+        $log.debug('cancel');
+      });
     };
   }
 
   /** @ngInject */
-  function BuyCreditController($log, $mdDialog, $http, EndpointConfigService, UserResource) {
+  function BuyCreditController($log, $mdDialog, $http, EndpointConfigService, ErrorHandlerService, UserResource) {
     var ctrl = this;
 
     ctrl.credit = 1000;
@@ -82,14 +82,9 @@
     ctrl.user = UserResource.get();
     ctrl.type = 0;
 
-
-    ctrl.user.$promise.then(function (response) {
+    ctrl.user.$promise.then(function () {
     }, function (response) {
-      if (response.data) {
-        alert(response.data.message);
-      } else {
-        alert("Server not responding, please try action again later.");
-      }
+      ErrorHandlerService.handleError(response);
     });
 
     ctrl.recalculatePrice = function () {
@@ -105,7 +100,7 @@
       ctrl.promise.then(function () {
         $mdDialog.hide();
       }, function (response) {
-        alert(response.data.message);
+        ErrorHandlerService.handleError(response);
       });
 
     };
@@ -116,7 +111,7 @@
   }
 
   /** @ngInject */
-  function ChangeQuotaController($log, $mdDialog, $http, tenant, EndpointConfigService) {
+  function ChangeQuotaController($log, $mdDialog, $http, tenant, EndpointConfigService, ErrorHandlerService) {
     var ctrl = this;
 
     ctrl.tenant = tenant;
@@ -128,7 +123,7 @@
       ctrl.promise.then(function () {
         $mdDialog.hide();
       }, function (response) {
-        alert(response.data.message);
+        ErrorHandlerService.handleError(response);
       });
 
     };

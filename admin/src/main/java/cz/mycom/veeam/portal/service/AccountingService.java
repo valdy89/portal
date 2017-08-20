@@ -3,8 +3,8 @@ package cz.mycom.veeam.portal.service;
 import com.opencsv.CSVReader;
 import com.veeam.ent.v1.CloudTenant;
 import com.veeam.ent.v1.LogonSession;
+import cz.mycom.veeam.portal.idoklad.ProformaInvoice;
 import cz.mycom.veeam.portal.model.Order;
-import cz.mycom.veeam.portal.model.PaymentStatusEnum;
 import cz.mycom.veeam.portal.repository.ConfigRepository;
 import cz.mycom.veeam.portal.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.File;
@@ -37,6 +38,8 @@ public class AccountingService {
     private OrderRepository orderRepository;
     @Autowired
     private AccountingHelperService accountingHelperService;
+    @Autowired
+    private IDokladService iDokladService;
 
 
     @Scheduled(cron = "0/5 * * * * ?")
@@ -57,10 +60,19 @@ public class AccountingService {
 
     @Scheduled(cron = "0 0/10 * * * ?")
     public void checkPaid() {
-        List<Order> orders = orderRepository.findByPaymentStatusIn(PaymentStatusEnum.Unpaid, PaymentStatusEnum.PartialPaid);
-        for (Order order : orders) {
+        List<ProformaInvoice> proformaPaid = null;
+        try {
+            proformaPaid = iDokladService.getProformaPaid(orderRepository.findMinUnpaidProformaId());
+        } catch (Exception e) {
+            mailService.sendError("idoklad checkPaid", e);
+        }
+        if (CollectionUtils.isEmpty(proformaPaid)) {
+            log.debug("No paid invoices.");
+            return;
+        }
+        for (ProformaInvoice proformaInvoice : proformaPaid) {
             try {
-                accountingHelperService.checkPaid(order);
+                accountingHelperService.checkPaid(proformaInvoice);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 mailService.sendError("checkPaid", e);

@@ -3,12 +3,15 @@ package cz.mycom.veeam.portal.service;
 import cz.mycom.veeam.portal.idoklad.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ public class IDokladService {
     @Autowired
     private OAuth2RestTemplate iDokladRestTemplate;
 
+    @Retryable(maxAttempts = 10)
     public Country getCountry(String code) {
         Assert.isTrue(StringUtils.isNotBlank(code), "code is required");
         CountryData data = iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/Countries?filter=Code~eq~" + code, CountryData.class);
@@ -32,11 +36,13 @@ public class IDokladService {
         return data.getData().get(0);
     }
 
+    @Retryable(maxAttempts = 10)
     public List<Country> getCountries() {
         CountryData data = iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/Countries?pagesize=1000", CountryData.class);
         return data.getData();
     }
 
+    @Retryable(maxAttempts = 10)
     public Contact saveContact(Contact contact) {
         if (contact.getId() != null) {
             //update, PATCH nefungoval
@@ -48,6 +54,7 @@ public class IDokladService {
         return contact;
     }
 
+    @Retryable(maxAttempts = 10)
     public Contact findContact(String email) {
         Assert.isTrue(StringUtils.isNotBlank(email), "email is required");
         ContactData data = iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/Contacts?filter=email~eq~" + email, ContactData.class);
@@ -59,10 +66,12 @@ public class IDokladService {
         return data.getData().get(0);
     }
 
+    @Retryable(maxAttempts = 10)
     public void deleteContact(int id) {
         iDokladRestTemplate.delete(IDOKLAD_URL + "api/v2/Contacts/{id}", id);
     }
 
+    @Retryable(maxAttempts = 10)
     public ProformaInvoiceInsert proformaDefault() {
         try {
             return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices/Default", ProformaInvoiceInsert.class);
@@ -72,6 +81,7 @@ public class IDokladService {
         }
     }
 
+    @Retryable(maxAttempts = 10)
     public ProformaInvoice proforma(ProformaInvoiceInsert proformaInvoiceInsert) {
         try {
             ProformaInvoice invoice = iDokladRestTemplate.postForObject(IDOKLAD_URL + "api/v2/ProformaInvoices", proformaInvoiceInsert, ProformaInvoice.class);
@@ -82,6 +92,7 @@ public class IDokladService {
         }
     }
 
+    @Retryable(maxAttempts = 10)
     public ProformaInvoice getProformaInvoice(Integer proformaId) {
         try {
             return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices/{id}", ProformaInvoice.class, proformaId);
@@ -91,6 +102,28 @@ public class IDokladService {
         }
     }
 
+    @Retryable(maxAttempts = 10)
+    public void exportProforma(int proformaId) {
+        try {
+            iDokladRestTemplate.put(IDOKLAD_URL + "api/v2/ProformaInvoices/{id}/Exported/1", null, proformaId);
+        } catch (HttpStatusCodeException e) {
+            log.error("Error: {}", e.getResponseBodyAsString());
+            throw e;
+        }
+    }
+
+    @Retryable(maxAttempts = 10)
+    public List<ProformaInvoice> getProformaPaid(int lastUnpaidProformaId) {
+        try {
+            ProformaInvoiceData proformaInvoiceData = iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices?pagesize=1000&filter=ispaid~eq~true|exported~eq~0|id~gte~" + lastUnpaidProformaId, ProformaInvoiceData.class);
+            return proformaInvoiceData.getData();
+        } catch (HttpStatusCodeException e) {
+            log.error("Error: {}", e.getResponseBodyAsString());
+            throw e;
+        }
+    }
+
+    @Retryable(maxAttempts = 10)
     public IssuedInvoiceInsert invoiceDefault() {
         try {
             return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/IssuedInvoices/Default", IssuedInvoiceInsert.class);
@@ -101,6 +134,7 @@ public class IDokladService {
 
     }
 
+    @Retryable(maxAttempts = 10)
     public IssuedInvoice invoice(IssuedInvoiceInsert issuedInvoiceInsert) {
         try {
             IssuedInvoice invoice = iDokladRestTemplate.postForObject(IDOKLAD_URL + "api/v2/IssuedInvoices", issuedInvoiceInsert, IssuedInvoice.class);
@@ -111,6 +145,7 @@ public class IDokladService {
         }
     }
 
+    @Retryable(maxAttempts = 10)
     public IssuedInvoice getInvoice(Integer invoiceId) {
         try {
             return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/IssuedInvoices/{id}", IssuedInvoice.class, invoiceId);
@@ -120,10 +155,12 @@ public class IDokladService {
         }
     }
 
+    @Retryable(maxAttempts = 10)
     public String getProformaPdf(Integer id) {
         return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices/{id}/GetPdf", String.class, id);
     }
 
+    @Retryable(maxAttempts = 10)
     public String getInvoicePdf(Integer id) {
         return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/IssuedInvoices/{id}/GetPdf", String.class, id);
     }

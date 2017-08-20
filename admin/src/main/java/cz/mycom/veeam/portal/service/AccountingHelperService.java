@@ -133,69 +133,81 @@ public class AccountingHelperService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void checkPaid(Order order) {
-        if (order.getProformaId() != null) {
-            ProformaInvoice proforma = iDokladService.getProformaInvoice(order.getProformaId());
-            order.setPaymentStatus(proforma.getPaymentStatus());
+    public void checkPaid(ProformaInvoice proforma) {
+        Order order = orderRepository.findByProformaId(proforma.getId());
+        if (order == null) {
+            log.error("Order not found, proforma document number: " + proforma.getDocumentNumber());
+            return;
+        }
+        if (order.getInvoiceId() != null) {
+            iDokladService.exportProforma(order.getProformaId());
+            return;
+        }
 
-            if (order.getPaymentStatus() == PaymentStatusEnum.Paid || order.getPaymentStatus() == PaymentStatusEnum.Overpaid) {
-                IssuedInvoiceInsert issuedInvoiceInsert = iDokladService.invoiceDefault();
-                issuedInvoiceInsert.setOrderNumber(StringUtils.leftPad(String.valueOf(order.getId()), 8, '0'));
-                issuedInvoiceInsert.setDateOfPayment(proforma.getDateOfPayment());
-                InvoiceItem invoiceItem = issuedInvoiceInsert.getIssuedInvoiceItems().get(0);
-                InvoiceItem proformaItem = proforma.getProformaInvoiceItems()
-                        .stream()
-                        .filter(i -> !i.getName().equals("Rounding"))
-                        .findFirst().get();
-                invoiceItem.setUnitPrice(proformaItem.getUnitPrice());
-                invoiceItem.setUnit(proformaItem.getUnit());
-                invoiceItem.setName(proformaItem.getName());
-                invoiceItem.setVatRateType(proformaItem.getVatRateType());
-                invoiceItem.setPriceType(proformaItem.getPriceType());
-                issuedInvoiceInsert.setDateOfMaturity(DateFormatUtils.ISO_DATETIME_FORMAT.format(DateUtils.addDays(new Date(), 1)));
-                issuedInvoiceInsert.setPurchaserId(proforma.getPurchaserId());
-                IssuedInvoice invoice = iDokladService.invoice(issuedInvoiceInsert);
-                order.setInvoiceId(invoice.getId());
-                order.setDocumentNumber(invoice.getDocumentNumber());
+        order.setPaymentStatus(proforma.getPaymentStatus());
 
-                Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
-                tenant.setCredit(tenant.getCredit() + order.getCredit());
-                tenantRepository.save(tenant);
+        if (order.getPaymentStatus() == PaymentStatusEnum.Paid || order.getPaymentStatus() == PaymentStatusEnum.Overpaid) {
+            IssuedInvoiceInsert issuedInvoiceInsert = iDokladService.invoiceDefault();
+            issuedInvoiceInsert.setOrderNumber(StringUtils.leftPad(String.valueOf(order.getId()), 8, '0'));
+            issuedInvoiceInsert.setDateOfPayment(proforma.getDateOfPayment());
+            InvoiceItem invoiceItem = issuedInvoiceInsert.getIssuedInvoiceItems().get(0);
+            InvoiceItem proformaItem = proforma.getProformaInvoiceItems()
+                    .stream()
+                    .filter(i -> !i.getName().equals("Rounding"))
+                    .findFirst().get();
+            invoiceItem.setUnitPrice(proformaItem.getUnitPrice());
+            invoiceItem.setUnit(proformaItem.getUnit());
+            invoiceItem.setName(proformaItem.getName());
+            invoiceItem.setVatRateType(proformaItem.getVatRateType());
+            invoiceItem.setPriceType(proformaItem.getPriceType());
+            issuedInvoiceInsert.setDateOfMaturity(DateFormatUtils.ISO_DATETIME_FORMAT.format(DateUtils.addDays(new Date(), 1)));
+            issuedInvoiceInsert.setPurchaserId(proforma.getPurchaserId());
+            IssuedInvoice invoice = iDokladService.invoice(issuedInvoiceInsert);
+            iDokladService.exportProforma(order.getProformaId());
 
-                if (tenant.getCredit() > 0 && !tenant.isEnabled()) {
-                    tenant.setEnabled(true);
-                    LogonSession logonSession = veeamService.logonSystem();
-                    try {
-                        CloudTenant cloudTenant = veeamService.getTenant(tenant.getUid());
-                        cloudTenant.setEnabled(true);
-                        cloudTenant.setPassword(null);
-                        veeamService.saveTenant(tenant.getUid(), cloudTenant);
-                    } catch (Exception e) {
-                        log.error(e.getMessage(), e);
-                    } finally {
-                        veeamService.logout(logonSession);
-                    }
-                }
+            order.setInvoiceId(invoice.getId());
+            order.setDocumentNumber(invoice.getDocumentNumber());
 
-                TenantHistory tenantHistory = new TenantHistory(tenant, "Fakturace");
-                tenantHistoryRepository.save(tenantHistory);
+            Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
+            tenant.setCredit(tenant.getCredit() + order.getCredit());
+            tenantRepository.save(tenant);
 
+            if (tenant.getCredit() > 0 && !tenant.isEnabled()) {
+                tenant.setEnabled(true);
+                LogonSession logonSession = null;
                 try {
-                    String pdf = iDokladService.getInvoicePdf(order.getInvoiceId());
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-                    IOUtils.write(Base64.decodeBase64(pdf), output);
-                    mailService.sendMail(tenant.getUser().getEmail(), "Faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
+                    logonSession = veeamService.logonSystem();
+                    CloudTenant cloudTenant = veeamService.getTenant(tenant.getUid());
+                    cloudTenant.setEnabled(true);
+                    cloudTenant.setPassword(null);
+                    veeamService.saveTenant(tenant.getUid(), cloudTenant);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
+                } finally {
+                    veeamService.logout(logonSession);
                 }
             }
-            orderRepository.save(order);
+
+            TenantHistory tenantHistory = new TenantHistory(tenant, "Fakturace");
+            tenantHistoryRepository.save(tenantHistory);
+
+            try {
+                String pdf = iDokladService.getInvoicePdf(order.getInvoiceId());
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                IOUtils.write(Base64.decodeBase64(pdf), output);
+                mailService.sendMail(tenant.getUser().getEmail(), "Faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
+        orderRepository.save(order);
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void process(CloudTenant cloudTenant, Map<String, Integer[]> countMap) {
         log.info("Tenant: {} - {}", cloudTenant.getName(), cloudTenant.getUID());
+        log.info("W: {}, VM: {}, S: {}", cloudTenant.getWorkStationBackupCount(), cloudTenant.getVmCount(), cloudTenant.getServerBackupCount());
         String tenantUid = StringUtils.substringAfterLast(cloudTenant.getUID(), ":");
         Tenant tenant = tenantRepository.findByUid(tenantUid);
         if (tenant == null) {
@@ -290,7 +302,7 @@ public class AccountingHelperService {
             credit -= Math.ceil(((float) tenant.getQuota() / 1024 / 10) * priceQuota);
             tenant.setCredit(credit);
 
-            if (tenant.getCredit() < 0 && !tenant.getUser().isVip() && cloudTenant.isEnabled()) {
+            if (tenant.getCredit() < 0 && !tenant.isVip() && cloudTenant.isEnabled()) {
                 log.warn("Disabling cloud tenant, no credit");
                 tenant.setEnabled(false);
                 cloudTenant.setEnabled(false);
