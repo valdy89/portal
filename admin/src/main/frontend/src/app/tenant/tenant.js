@@ -36,6 +36,7 @@
           animation: false,
           templateUrl: 'tenantChangePassword.html',
           controller: 'ChangeTenantController as ctrl',
+          size: 'sm',
           resolve: {
             tenant: function () {
               return tenant;
@@ -51,6 +52,7 @@
           animation: false,
           templateUrl: 'tenantChangeQuota.html',
           controller: 'ChangeQuotaController as ctrl',
+          size: 'sm',
           resolve: {
             tenant: function () {
               return tenant;
@@ -66,6 +68,7 @@
           animation: false,
           templateUrl: 'tenantChangeCredit.html',
           controller: 'ChangeTenantController as ctrl',
+          size: 'sm',
           resolve: {
             tenant: function () {
               return tenant;
@@ -197,8 +200,8 @@
     };
 
     ctrl.action = function (subtenant) {
-      $log.debug(ctrl.actionKey);
-      if (ctrl.actionKey === 'changeQuota') {
+      var actionKey = ctrl.actionKey[subtenant.uid];
+      if (actionKey === 'changeQuota') {
         var modalInstance = $uibModal.open({
           animation: false,
           templateUrl: 'subtenantChangeQuota.html',
@@ -214,7 +217,7 @@
         modalInstance.result.then(function () {
           ctrl.getItems();
         });
-      } else if (ctrl.actionKey === 'changePassword') {
+      } else if (actionKey === 'changePassword') {
         var modalInstance = $uibModal.open({
           animation: false,
           templateUrl: 'subtenantChangePassword.html',
@@ -230,7 +233,7 @@
         modalInstance.result.then(function () {
           ctrl.getItems();
         });
-      } else if (ctrl.actionKey === 'enable') {
+      } else if (actionKey === 'enable') {
         subtenant.enabled = true;
         ctrl.promise = SubtenantResource.save(subtenant).$promise;
         ctrl.promise.then(function (response) {
@@ -238,7 +241,7 @@
         }, function (response) {
           alert(response.data.message);
         });
-      } else if (ctrl.actionKey === 'disable') {
+      } else if (actionKey === 'disable') {
         subtenant.enabled = false;
         ctrl.promise = SubtenantResource.save(subtenant).$promise;
         ctrl.promise.then(function (response) {

@@ -53,8 +53,8 @@
               <option value="changePassword">změna hesla</option>
               <option value="changeQuota">změna velikosti kvóty</option>
               <option value="changeCredit">manuální změna kreditů</option>
-              <option ng-show="!tenant.user.vip" value="addVip">zařadit do VIP</option>
-              <option ng-show="tenant.user.vip" value="removeVip">vyřadit z VIP</option>
+              <option ng-show="!tenant.vip" value="addVip">zařadit do VIP</option>
+              <option ng-show="tenant.vip" value="removeVip">vyřadit z VIP</option>
               <option value="delete">smazat z portálu</option>
             </select>
             <button class="form-control input-sm btn-mycom" ng-click="ctrl.action(tenant)"><i class="fa fa-play-circle"></i></button>
@@ -80,7 +80,7 @@
     <div class="modal-body">
       <div class="form-group form-group-sm">
         <label>Nová velikost kvóty v GB: </label>
-        <input type="number" ng-model="ctrl.quota" required="true">
+        <input type="number" class="form-control" ng-model="ctrl.quota" required="true">
       </div>
     </div>
     <div class="modal-footer">
@@ -100,7 +100,7 @@
     <div class="modal-body">
       <div class="form-group form-group-sm">
         <label>Nové heslo: </label>
-        <input type="text" ng-model="ctrl.tenant.password" required="true">
+        <input type="text" class="form-control" ng-model="ctrl.tenant.password" required="true">
       </div>
     </div>
     <div class="modal-footer">
@@ -120,7 +120,7 @@
     <div class="modal-body">
       <div class="form-group form-group-sm">
         <label>Kredit: </label>
-        <input type="number" ng-model="ctrl.tenant.credit" required="true">
+        <input type="number" class="form-control" ng-model="ctrl.tenant.credit" required="true">
       </div>
     </div>
     <div class="modal-footer">

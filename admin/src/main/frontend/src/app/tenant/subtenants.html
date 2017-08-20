@@ -44,7 +44,7 @@
               <td>{{::subtenant.dateCreated | portalDateTime}}</td>
               <td>
                 <div class="form-inline input-group-sm">
-                  <select class="form-control" ng-model="ctrl.actionKey">
+                  <select class="form-control" ng-model="ctrl.actionKey[subtenant.uid]">
                     <option></option>
                     <option ng-show="subtenant.enabled" value="disable">zakázát</option>
                     <option ng-show="!subtenant.enabled" value="enable">povolit</option>
