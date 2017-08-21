@@ -19,7 +19,7 @@
         return $q.reject(response);
       };
     })
-    .service('ErrorHandlerService', function ($mdDialog) {
+    .service('ErrorHandlerService', function ($location, $mdDialog) {
       var service = this;
 
       service.handleError = function(response) {

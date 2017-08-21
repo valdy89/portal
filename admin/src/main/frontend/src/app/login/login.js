@@ -15,7 +15,6 @@
 
     login.login = function () {
       login.dataLoading = true;
-      $log.debug("Login roles");
       var userData = {username: login.username, authdata: $base64.encode(login.username + ':' + login.password)};
       $http.defaults.headers.common['Authorization'] = 'Basic ' + userData.authdata; // jshint ignore:line
       $http.get(EndpointConfigService.getUrl('/login')).then(function (response) {
@@ -28,10 +27,14 @@
       }, function (response) {
         login.dataLoading = false;
         $log.debug(response);
-        if (response.data) {
-          alert(response.data.message);
+        if (response.status === 401) {
+          alert("Nesprávne jméno nebo heslo.");
         } else {
-          alert("Server not responding, please try action again later.");
+          if (response.data) {
+            alert(response.data.message);
+          } else {
+            alert("Server not responding, please try action again later.");
+          }
         }
       });
     };

@@ -8,6 +8,7 @@ import cz.mycom.veeam.portal.idoklad.CountryData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.InputStream;
 
@@ -24,5 +25,10 @@ public class SimpleTest {
         //objectMapper.configure(MapperFeature.USE_STD_BEAN_NAMING, true);
         CountryData countryData = objectMapper.readValue(IOUtils.toByteArray(resourceAsStream), CountryData.class);
         log.info("CountryData: " + countryData);
+    }
+
+    @Test
+    public void encode() throws Exception {
+        System.out.println(new BCryptPasswordEncoder().encode("dursik@gmail.com"));
     }
 }

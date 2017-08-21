@@ -9,7 +9,7 @@
     .controller('ChangeUserController', ChangeUserController);
 
   /** @ngInject */
-  function MainController($log, $cookies, $scope, $http, $rootScope, $location, $mdDialog, EndpointConfigService, ErrorHandlerService) {
+  function MainController($log, $cookies, $scope, $http, $rootScope, $location, $mdDialog, EndpointConfigService) {
     var main = this;
 
     $log.debug("Main controller begin");
@@ -19,7 +19,7 @@
       main.promise.then(function (response) {
         $rootScope.userData = response.data;
         $rootScope.$broadcast('userLoggedIn', $rootScope.userData);
-      }, function (response) {
+      }, function () {
         main.navbarUrl = null;
         $http.defaults.headers.common.Authorization = null;
         $cookies.remove('JSESSIONID');
@@ -67,7 +67,7 @@
   }
 
   /** @ngInject */
-  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, EndpointConfigService, $mdDialog) {
+  function ChangePasswordController($log, $routeParams, $cookies, $http, $base64, $rootScope, $location, $mdDialog, EndpointConfigService, ErrorHandlerService) {
     var ctrl = this;
 
     ctrl.login = function () {
@@ -84,11 +84,7 @@
         $rootScope.$broadcast('userLoggedIn', userData);
         $location.path('/');
       }, function (response) {
-        if (response.data) {
-          alert(response.data.message);
-        } else {
-          alert("Server not responding, please try action again later.");
-        }
+        ErrorHandlerService.handleError(response);
       });
     };
 
@@ -102,11 +98,7 @@
       ctrl.promise.then(function () {
         $mdDialog.hide('cancel');
       }, function (response) {
-        if (response.data) {
-          alert(response.data.message);
-        } else {
-          alert("Server not responding, please try action again later.");
-        }
+        ErrorHandlerService.handleError(response);
       });
     };
 
@@ -116,17 +108,13 @@
   }
 
   /** @ngInject */
-  function ChangeUserController($log, UserResource, $mdDialog) {
+  function ChangeUserController($log, $mdDialog, UserResource, ErrorHandlerService) {
     var ctrl = this;
 
     ctrl.user = UserResource.get();
     ctrl.user.$promise.then(function () {
     }, function (response) {
-      if (response.data) {
-        alert(response.data.message);
-      } else {
-        alert("Server not responding, please try action again later.");
-      }
+      ErrorHandlerService.handleError(response);
     });
 
     // save function
@@ -135,11 +123,7 @@
       ctrl.user.$promise.then(function () {
         $mdDialog.hide('cancel');
       }, function (response) {
-        if (response.data) {
-          alert(response.data.message);
-        } else {
-          alert("Server not responding, please try action again later.");
-        }
+        ErrorHandlerService.handleError(response);
       });
     };
 

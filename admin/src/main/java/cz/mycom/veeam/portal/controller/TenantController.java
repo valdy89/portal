@@ -6,21 +6,21 @@ import com.veeam.ent.v1.CloudTenantResources;
 import com.veeam.ent.v1.LogonSession;
 import cz.mycom.veeam.portal.model.Subtenant;
 import cz.mycom.veeam.portal.model.Tenant;
-import cz.mycom.veeam.portal.model.User;
+import cz.mycom.veeam.portal.model.TenantHistory;
 import cz.mycom.veeam.portal.repository.SubtenantRepository;
+import cz.mycom.veeam.portal.repository.TenantHistoryRepository;
 import cz.mycom.veeam.portal.repository.TenantRepository;
-import cz.mycom.veeam.portal.repository.UserRepository;
 import cz.mycom.veeam.portal.service.VeeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -40,6 +40,8 @@ public class TenantController {
     private SubtenantRepository subtenantRepository;
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private TenantHistoryRepository tenantHistoryRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Tenant> list() {
@@ -51,7 +53,7 @@ public class TenantController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Tenant save(@RequestBody Tenant tenant) {
+    public Tenant save(@RequestBody Tenant tenant, Principal principal) {
         LogonSession logonSession = veeamService.logonSystem();
         try {
             CloudTenant cloudTenant = veeamService.getTenant(tenant.getUid());
@@ -68,12 +70,16 @@ public class TenantController {
                 cloudTenantResource.getRepositoryQuota().setQuota((long) tenant.getQuota());
             }
             veeamService.saveTenant(tenant.getUid(), cloudTenant);
-            tenantRepository.save(tenant);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw e;
         } finally {
             veeamService.logout(logonSession);
+        }
+        Tenant tenantEntity = tenantRepository.findByUid(tenant.getUid());
+        if (tenantEntity == null || tenant.getCredit() != tenantEntity.getCredit() || tenant.getQuota() != tenantEntity.getQuota()) {
+            log.debug("Saving tenant history");
+            tenantHistoryRepository.save(new TenantHistory(tenant, principal.getName()));
         }
         return tenantRepository.save(tenant);
     }
@@ -90,7 +96,7 @@ public class TenantController {
             veeamService.logout(logonSession);
         }
         if (cloudTenant == null) {
-            if (tenant.getUser()!=null) {
+            if (tenant.getUser() != null) {
                 ((JdbcUserDetailsManager) userDetailsService).deleteUser(tenant.getUser().getUsername());
             }
             for (Subtenant subtenant : tenant.getSubtenants()) {
