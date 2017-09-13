@@ -7,7 +7,6 @@
     "angular-resource": "~1.6.0",
     "angular-route": "~1.6.0",
     "angular-cookies": "~1.6.0",
-  
     "moment": "~2.10.3",
     "angular-bootstrap": "~0.14.0",
     "angular-busy": "~4.1.3",
