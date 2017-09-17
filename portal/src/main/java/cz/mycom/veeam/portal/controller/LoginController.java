@@ -5,6 +5,7 @@ import com.veeam.ent.v1.CreateCloudTenantSpec;
 import com.veeam.ent.v1.LogonSession;
 import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.User;
+import cz.mycom.veeam.portal.repository.ConfigRepository;
 import cz.mycom.veeam.portal.repository.TenantRepository;
 import cz.mycom.veeam.portal.repository.UserRepository;
 import cz.mycom.veeam.portal.service.MailService;
@@ -17,6 +18,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -51,6 +53,8 @@ public class LoginController {
     private VeeamService veeamService;
     @Autowired
     private TenantRepository tenantRepository;
+    @Autowired
+    private ConfigRepository configRepository;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -106,8 +110,11 @@ public class LoginController {
             User user = userRepository.findByUsername(authRequest.getUsername());
             String password = RandomStringUtils.randomAlphanumeric(10);
             user.setEnabled(false);
-            String text = "https://" + request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + password).getBytes("UTF-8"));
-            mailService.sendMail(user.getEmail(), "Zapomenuté heslo", text);
+            String from = configRepository.getOne("support.email").getValue();
+            ClassPathResource classPathResource = new ClassPathResource("reset_hesla.txt");
+            String text = IOUtils.toString(classPathResource.getInputStream(), "UTF-8");
+            text = text.replace("%LINK%", "https://" + request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + password).getBytes("UTF-8")));
+            mailService.sendMail(from, user.getEmail(), "Veeam CloudConnect portál – reset hesla", text);
             user.setPassword(passwordEncoder.encode(password));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -202,9 +209,11 @@ public class LoginController {
                 .build();
         ((JdbcUserDetailsManager) userDetailsService).createUser(userDetails);
         try {
-
-            String text = "https://" + request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + user.getPassword()).getBytes("UTF-8"));
-            mailService.sendMail(user.getUsername(), "Potvrzení registrace", text);
+            String from = configRepository.getOne("support.email").getValue();
+            ClassPathResource classPathResource = new ClassPathResource("portvzeni_registrace.txt");
+            String text = IOUtils.toString(classPathResource.getInputStream(), "UTF-8");
+            text = text.replace("%LINK%", "https://" + request.getServerName() + "/verify?code=" + Base64.encodeBase64URLSafeString((user.getUsername() + ":" + user.getPassword()).getBytes("UTF-8")));
+            mailService.sendMail(from, user.getUsername(), "Veeam CloudConnect portál – potvrzení registrace", text);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

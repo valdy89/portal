@@ -12,13 +12,15 @@ import java.util.List;
  * @author dursik
  */
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-    List<Order> findByPaymentStatusIn(PaymentStatusEnum... status);
+    List<Order> findByTransIdIsNotNullAndInvoiceIdIsNullAndPaymentStatusIn(PaymentStatusEnum... status);
     List<Order> findByPaymentStatusIsNull();
     List<Order> findByTenantUidOrderByDateCreatedDesc(String uid);
     Order findByTenantUidAndId(String uid, Integer id);
-    @Query(value = "from Order where tenantUid = :tenantUid and (paymentStatus is null or paymentStatus not in (1,3))")
+    Order findByTransId(String transId);
+    Order findByTenantUidAndTransId(String uid, String transId);
+    @Query(value = "from Order where tenantUid = :tenantUid and (paymentStatus is null or paymentStatus not in (1,3,5))")
     List<Order> findUnpaid(@Param("tenantUid") String uid);
-    @Query(value = "select min(proformaId) from Order where (paymentStatus is null or paymentStatus not in (1,3))")
+    @Query(value = "select min(proformaId) from Order where (paymentStatus is null or paymentStatus not in (1,3,5))")
     Integer findMinUnpaidProformaId();
     Order findByProformaId(Integer proformaId);
 }

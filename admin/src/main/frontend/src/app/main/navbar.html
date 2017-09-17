@@ -10,6 +10,7 @@
         <li><a href="index.html"><span class="fa fa-home"></span>&nbsp;Dashboard</a></li>
         <li><a href="tenants"><span class="fa fa-user"></span>&nbsp;Seznam tenantů</a></li>
         <li><a href="subtenants"><span class="fa fa-users"></span>&nbsp;Seznam sub-tenantů</a></li>
+        <li><a href="settings"><span class="fa fa-cogs"></span>&nbsp;Nastavení</a></li>
         <li uib-dropdown>
           <a role="button" uib-dropdown-toggle>Historie&nbsp;<b class="caret"></b></a>
           <ul class="uib-dropdown-menu">
@@ -17,12 +18,14 @@
             <li><a href="tenantHistory"><span class="glyphicon glyphicon-user"></span>Tenantů</a></li>
           </ul>
         </li>
+
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
         <li uib-dropdown>
           <a role="button" uib-dropdown-toggle>{{::main.userData.username}}&nbsp;<b class="caret"></b></a>
           <ul class="uib-dropdown-menu">
+            <li><a href="" ng-click="main.changePassword()"><span class="fa fa-unlock-alt"></span>Změnit heslo</a></li>
             <li><a href="" ng-click="main.logout()"><span class="fa fa-key"></span>Odhlásit</a></li>
           </ul>
         </li>
@@ -35,3 +38,23 @@
 <div class="container-fluid">
   <uib-alert ng-repeat="alert in main.alerts" type="{{alert.type}}" close="main.closeAlert($index)">{{alert.msg}}</uib-alert>
 </div>
+
+<script type="text/ng-template" id="changePassword.html">
+  <div cg-busy="[ctrl.promise]"></div>
+  <form name="ctrl.changePasswordForm" role="form">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="ctrl.cancel()">×</button>
+      <h4 class="modal-title">Změna hesla</h4>
+    </div>
+    <div class="modal-body">
+      <div class="form-group form-group-sm">
+        <label>Nové heslo: </label>
+        <input type="password" class="form-control" ng-model="ctrl.password" required="true">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-mycom" ng-disabled="!ctrl.changePasswordForm.$valid" ng-click="ctrl.save()">Uložit</button>
+      <button type="button" class="btn btn-default" ng-click="ctrl.cancel()">Zavřít</button>
+    </div>
+  </form>
+</script>

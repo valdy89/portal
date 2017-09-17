@@ -7,20 +7,24 @@ import com.veeam.ent.v1.LogonSession;
 import cz.mycom.veeam.portal.model.Subtenant;
 import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.TenantHistory;
+import cz.mycom.veeam.portal.model.User;
 import cz.mycom.veeam.portal.repository.SubtenantRepository;
 import cz.mycom.veeam.portal.repository.TenantHistoryRepository;
 import cz.mycom.veeam.portal.repository.TenantRepository;
+import cz.mycom.veeam.portal.repository.UserRepository;
 import cz.mycom.veeam.portal.service.VeeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +46,10 @@ public class TenantController {
     private UserDetailsService userDetailsService;
     @Autowired
     private TenantHistoryRepository tenantHistoryRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Tenant> list() {
@@ -52,6 +60,20 @@ public class TenantController {
         return tenantList;
     }
 
+    @RequestMapping(path = "/nocredit", method = RequestMethod.GET)
+    public List<Tenant> nocredit() {
+        ArrayList<Tenant> ret = new ArrayList<>();
+        List<Tenant> tenantList = tenantRepository.findAll();
+        for (Tenant tenant : tenantList) {
+            if (tenant.getCredit() > 0 || tenant.getUser() == null) {
+                continue;
+            }
+            tenant.setSubtenantsCount(tenant.getSubtenants().size());
+            ret.add(tenant);
+        }
+        return ret;
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     public Tenant save(@RequestBody Tenant tenant, Principal principal) {
         LogonSession logonSession = veeamService.logonSystem();
@@ -60,6 +82,10 @@ public class TenantController {
             cloudTenant.setEnabled(tenant.isEnabled());
             if (StringUtils.isNotBlank(tenant.getPassword())) {
                 cloudTenant.setPassword(tenant.getPassword());
+                User user = userRepository.findByTenantUid(tenant.getUid());
+                if (user != null) {
+                    user.setPassword(passwordEncoder.encode(tenant.getPassword()));
+                }
             } else {
                 cloudTenant.setPassword(null);
             }

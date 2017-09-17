@@ -1,4 +1,4 @@
-/*globals alert, document */
+/*globals document */
 (function () {
   'use strict';
 
@@ -9,7 +9,7 @@
     .controller('ChangeUserController', ChangeUserController);
 
   /** @ngInject */
-  function MainController($log, $cookies, $scope, $http, $rootScope, $location, $mdDialog, EndpointConfigService) {
+  function MainController($log, $cookies, $http, $rootScope, $location, $mdDialog, EndpointConfigService) {
     var main = this;
 
     $log.debug("Main controller begin");
@@ -27,10 +27,17 @@
       });
     }
 
-    $scope.$on('userLoggedIn', function () {
+    $rootScope.$on('userLoggedIn', function () {
       $log.debug("userLoggedIn: " + $rootScope.userData);
       main.userData = $rootScope.userData;
       main.navbarUrl = 'app/main/navbar.html';
+    });
+
+    $rootScope.$on('userLoggedOut', function () {
+      $log.debug("userLoggedOut");
+      $rootScope.userData = null;
+      main.userData = null;
+      main.navbarUrl = null;
     });
 
     main.logout = function () {

@@ -8,14 +8,11 @@
     "angular-route": "~1.6.0",
     "angular-cookies": "~1.6.0",
     "moment": "~2.10.3",
-    "angular-bootstrap": "~0.14.0",
     "angular-busy": "~4.1.3",
     "components-font-awesome": "~4.4.0",
-    "ui-select": "angular-ui-select#~0.19.8",
     "angular-base64": "~2.0.5",
     "angular-chart.js": "1.1.1",
     "angular-recaptcha": "^4.1.0",
-    "ng-idle": "^1.3.2",
     "angular-material": "^1.1.4",
     "angular-material-data-table": "^0.10.10"
   },
@@ -25,7 +22,7 @@
   "authors": [
     "dursik <dursik@gmail.com>"
   ],
-  "description": "Veeam poral application",
+  "description": "Veeam portal application",
   "main": "index.html",
   "private": true,
   "ignore": [

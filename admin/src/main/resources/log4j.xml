@@ -4,17 +4,17 @@
 
     <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="Append" value="true"/>
-        <param name="File" value="/tmp/mycom-admin.log"/>
+        <param name="File" value="/app/log/mycom-admin.log"/>
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <param name="ImmediateFlush" value="true"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="conversionPattern" value="%d %p [%t %c] - %m%n"/>
+            <param name="conversionPattern" value="%d %p [%t %c:%L] - %m%n"/>
         </layout>
     </appender>
 
     <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="conversionPattern" value="%d %p [%t %c] - %m%n"/>
+            <param name="conversionPattern" value="%d %p [%t %c:%L] - %m%n"/>
         </layout>
     </appender>
 

@@ -6,12 +6,25 @@
     .value('cgBusyDefaults', {
       message: 'Čekejte prosím'
     })
+    .service('authInterceptor', function($q, $log, $location, $rootScope) {
+      var service = this;
+
+      service.responseError = function(response) {
+        if(response.status === 401 || response.status === 403) {
+          $rootScope.$broadcast('userLoggedOut', null);
+          $location.path('/login');
+        }
+
+        return $q.reject(response);
+      };
+    })
     .config(function ($logProvider, $routeProvider, $locationProvider, $httpProvider, uiSelectConfig) {
 
       $logProvider.debugEnabled(true);
       uiSelectConfig.theme = 'bootstrap';
 
       $httpProvider.defaults.withCredentials = true;
+      $httpProvider.interceptors.push('authInterceptor');
       $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 
       //routing
@@ -39,6 +52,10 @@
         .when('/tenantHistory', {
           templateUrl: 'app/history/tenantHistory.html',
           controller: 'TenantHistoryController as ctrl'
+        })
+        .when('/settings', {
+          templateUrl: 'app/settings/settings.html',
+          controller: 'SettingsController as ctrl'
         })
         .otherwise({
           redirectTo: '/'

@@ -3,7 +3,7 @@
 <md-card>
   <md-card-title>
     <md-card-title-text>
-      <span class="md-headline">Objednávky</span>
+      <span class="md-headline">Přehled objednávek</span>
     </md-card-title-text>
   </md-card-title>
   <md-card-content>
@@ -13,9 +13,11 @@
           <th md-column>Číslo objednávky</th>
           <th md-column>Datum vytvoření</th>
           <th md-column>Cena bez DPH</th>
-          <th md-column>Kredit</th>
+          <th md-column>Cena s DPH</th>
+          <th md-column>Zakoupený kredit</th>
           <th md-column>Stav</th>
           <th md-column>Doklad</th>
+          <th md-column></th>
         </tr>
         </thead>
         <tbody md-body>
@@ -23,9 +25,16 @@
           <td md-cell>{{::("0000000"+order.id).slice(-8)}}</td>
           <td md-cell>{{::order.dateCreated | portalDateTime}}</td>
           <td md-cell>{{::order.price}} Kč</td>
+          <td md-cell>{{::order.priceWithVat}} Kč</td>
           <td md-cell>{{::order.credit}}</td>
           <td md-cell>{{::order.paymentStatus | portalEnum:'PAYMENT_STATUS'}}</td>
           <td md-cell><a target="_blank" href="api/invoice/{{::order.id}}">{{::order.documentNumber}}</a></td>
+          <td md-cell>
+            <md-button ng-show="order.paymentStatus === 'Unpaid'" type="button" class="md-warn md-icon-button launch" ng-click="ctrl.delete(order)">
+              <md-icon md-font-icon="fa-trash" class="fa fa-2"></md-icon>
+              <md-tooltip>Zrušit objednávku</md-tooltip>
+            </md-button>
+          </td>
         </tr>
         </tbody>
       </table>

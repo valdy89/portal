@@ -1,0 +1,61 @@
+<div cg-busy="[ctrl.mypromise]"></div>
+<div class="panel panel-primary">
+  <div class="panel-heading clearfix">
+    <div class="title pull-left">Nastavení</div>
+  </div>
+  <div class="panel-body" ng-cloak>
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        <div class="title pull-left">Obecné</div>
+      </div>
+      <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+          <th width="30%">Jméno</th>
+          <th width="30%">Hodnota</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="(key,value) in ctrl.configs">
+          <td>{{key}}</td>
+          <td><input type="text" class="form-control" ng-model="ctrl.configs[key]"/></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        <div class="title pull-left">Zabezpečené</div>
+      </div>
+      <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+          <th width="30%">Jméno</th>
+          <th width="30%">Hodnota</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>veeam.api.password</td>
+          <td><input type="password" class="form-control" ng-model="ctrl.secure['veeam.api.password']"/></td>
+        </tr>
+        <tr>
+          <td>mail.smtp.password</td>
+          <td><input type="password" class="form-control" ng-model="ctrl.secure['mail.smtp.password']"/></td>
+        </tr>
+        <tr>
+          <td>idoklad.client.id</td>
+          <td><input type="password" class="form-control" ng-model="ctrl.secure['idoklad.client.id']"/></td>
+        </tr>
+        <tr>
+          <td>idoklad.client.secret</td>
+          <td><input type="password" class="form-control" ng-model="ctrl.secure['idoklad.client.secret']"/></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-mycom" ng-click="ctrl.save()">Uložit</button>
+    </div>
+  </div>
+</div>

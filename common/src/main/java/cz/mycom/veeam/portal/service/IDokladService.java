@@ -1,6 +1,7 @@
 package cz.mycom.veeam.portal.service;
 
 import cz.mycom.veeam.portal.idoklad.*;
+import cz.mycom.veeam.portal.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -24,6 +25,64 @@ public class IDokladService {
 
     @Autowired
     private OAuth2RestTemplate iDokladRestTemplate;
+
+    @Retryable(maxAttempts = 10)
+    public Contact getContact(User user) {
+        Contact contact = null;
+        if (StringUtils.isBlank(user.getName())) {
+            contact = findContact("support@mycombackup.cz");
+            if (contact == null) {
+                contact = new Contact();
+                contact.setCompanyName("Koncový zákazník");
+                contact.setEmail("support@mycombackup.cz");
+                contact.setCountryId(getCountry("cz").getId());
+                contact = saveContact(contact);
+            }
+        } else {
+            contact = findContact(user.getEmail());
+            if (contact == null) {
+                contact = new Contact();
+                contact.setCountryId(getCountry("cz").getId());
+                contact.setDefaultBankAccount(null);
+            }
+            contact.setCompanyName(user.getName());
+            contact.setEmail(user.getEmail());
+
+            if (StringUtils.isBlank(user.getStreet())) {
+                contact.setStreet("");
+            } else {
+                contact.setStreet(user.getStreet());
+            }
+            if (StringUtils.isBlank(user.getIco())) {
+                contact.setIdentificationNumber("");
+            } else
+                contact.setIdentificationNumber(user.getIco());
+            if (StringUtils.isBlank(user.getDic())) {
+                contact.setVatIdentificationNumber("");
+            } else
+                contact.setVatIdentificationNumber(user.getDic());
+            if (StringUtils.isBlank(user.getPostalCode())) {
+                contact.setPostalCode("");
+            } else
+                contact.setPostalCode(user.getPostalCode());
+            if (StringUtils.isBlank(user.getCity())) {
+                contact.setCity("");
+            } else
+                contact.setCity(user.getCity());
+            if (StringUtils.isBlank(user.getPhone())) {
+                contact.setPhone("");
+            } else
+                contact.setPhone(user.getPhone());
+
+            if (contact.getDefaultBankAccount() != null) {
+                contact.getDefaultBankAccount().setBankId("");
+            }
+
+            contact = saveContact(contact);
+            user.setCreditCheck(contact.getCreditCheck());
+        }
+        return contact;
+    }
 
     @Retryable(maxAttempts = 10)
     public Country getCountry(String code) {
@@ -76,7 +135,7 @@ public class IDokladService {
         try {
             return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices/Default", ProformaInvoiceInsert.class);
         } catch (HttpStatusCodeException e) {
-            log.error("Error: {}", e.getResponseBodyAsString());
+            log.error("{}: {}",e.getMessage(), e.getResponseBodyAsString());
             throw e;
         }
     }
@@ -97,7 +156,7 @@ public class IDokladService {
         try {
             return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices/{id}", ProformaInvoice.class, proformaId);
         } catch (HttpStatusCodeException e) {
-            log.error("Error: {}", e.getResponseBodyAsString());
+            log.error("{}: {}",e.getMessage(), e.getResponseBodyAsString());
             throw e;
         }
     }
@@ -107,7 +166,7 @@ public class IDokladService {
         try {
             iDokladRestTemplate.put(IDOKLAD_URL + "api/v2/ProformaInvoices/{id}/Exported/1", null, proformaId);
         } catch (HttpStatusCodeException e) {
-            log.error("Error: {}", e.getResponseBodyAsString());
+            log.error("{}: {}",e.getMessage(), e.getResponseBodyAsString());
             throw e;
         }
     }
@@ -118,7 +177,7 @@ public class IDokladService {
             ProformaInvoiceData proformaInvoiceData = iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/ProformaInvoices?pagesize=1000&filter=ispaid~eq~true|exported~eq~0|id~gte~" + lastUnpaidProformaId, ProformaInvoiceData.class);
             return proformaInvoiceData.getData();
         } catch (HttpStatusCodeException e) {
-            log.error("Error: {}", e.getResponseBodyAsString());
+            log.error("{}: {}",e.getMessage(), e.getResponseBodyAsString());
             throw e;
         }
     }
@@ -128,7 +187,7 @@ public class IDokladService {
         try {
             return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/IssuedInvoices/Default", IssuedInvoiceInsert.class);
         } catch (HttpStatusCodeException e) {
-            log.error("Error: {}", e.getResponseBodyAsString());
+            log.error("{}: {}",e.getMessage(), e.getResponseBodyAsString());
             throw e;
         }
 
@@ -140,7 +199,7 @@ public class IDokladService {
             IssuedInvoice invoice = iDokladRestTemplate.postForObject(IDOKLAD_URL + "api/v2/IssuedInvoices", issuedInvoiceInsert, IssuedInvoice.class);
             return invoice;
         } catch (HttpStatusCodeException e) {
-            log.error("Error: {}", e.getResponseBodyAsString());
+            log.error("{}: {}",e.getMessage(), e.getResponseBodyAsString());
             throw e;
         }
     }
@@ -150,7 +209,7 @@ public class IDokladService {
         try {
             return iDokladRestTemplate.getForObject(IDOKLAD_URL + "api/v2/IssuedInvoices/{id}", IssuedInvoice.class, invoiceId);
         } catch (HttpStatusCodeException e) {
-            log.error("Error: {}", e.getResponseBodyAsString());
+            log.error("{}: {}",e.getMessage(), e.getResponseBodyAsString());
             throw e;
         }
     }

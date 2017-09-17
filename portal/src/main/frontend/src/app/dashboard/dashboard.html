@@ -7,15 +7,15 @@
       <md-card>
         <md-card-title>
           <md-card-title-text>
-            <span class="md-headline">Aktuální využití</span>
+            <span class="md-headline">Aktuální využití prostředků</span>
           </md-card-title-text>
         </md-card-title>
         <md-card-content>
-          <div layout="row" layout-xs="column">
-            <div flex-xs="40" flex="40">
-              <canvas class="chart chart-doughnut" chart-data="ctrl.repositoryData" chart-labels="ctrl.repositoryLabels" chart-options="ctrl.options"></canvas>
+          <div layout="row" layout="column">
+            <div flex="50">
+              <canvas class="chart chart-doughnut" height="250px" chart-data="ctrl.repositoryData" chart-labels="ctrl.repositoryLabels" chart-options="ctrl.options"></canvas>
             </div>
-            <div flex="60">
+            <div flex="50">
               <div layout="row">
                 <div flex><label>Využívaná velikost</label></div>
                 <div flex>{{ctrl.tenant.usedQuota/1024 | number:1}} GB - {{(ctrl.tenant.usedQuota/ctrl.tenant.quota)*100 | number:2}} %</div>
@@ -34,6 +34,9 @@
               </div>
             </div>
           </div>
+          <div layout="column" layout-align="center end">
+            <small>Data se aktualizují 1x za 4 hodiny.</small>
+          </div>
         </md-card-content>
       </md-card>
     </div>
@@ -51,11 +54,11 @@
         <md-card-content>
 
           <div layout="row">
-            <div flex><label>Jméno uživatele</label></div>
+            <div flex><label>Veeam username</label></div>
             <div flex>{{ctrl.tenant.username}}</div>
           </div>
           <div layout="row">
-            <div flex><label>Zakoupená alokace</label></div>
+            <div flex><label>Zakoupený prostor</label></div>
             <div flex>{{ctrl.tenant.quota/1024 | number:1}} GB</div>
           </div>
           <div layout="row">
@@ -68,14 +71,14 @@
           </div>
 
           <div layout="row" layout-padding>
-            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.credit < 0" ng-cloak>
+            <md-whiteframe class="md-whiteframe-2dp warningFrame" flex layout-align="center center" ng-show="ctrl.tenant.disabled" ng-cloak>
               {{ctrl.tenant.unpaidOrders>0?'Váš Veeam účet je zablokován kvůli nedostatečnému kreditu. V sekci OBJEDNÁVKY najdete přehled neuhrazených faktur.':'Váš Veeam účet je zablokován kvůli nedostatečnému kreditu. Kupte si kredit.'}}
             </md-whiteframe>
           </div>
         </md-card-content>
 
         <md-card-actions layout="row" layout-xs="column" layout-align="end center" layout-wrap>
-          <md-button ng-click="ctrl.changeQuota()" class="md-raised md-accent">Změnit alokaci</md-button>
+          <md-button ng-click="ctrl.changeQuota()" class="md-raised md-accent" ng-disabled="ctrl.tenant.credit <= 0">Změnit prostor</md-button>
           <md-button ng-click="ctrl.buyCredit()" class="md-raised md-accent">Koupit kredit</md-button>
         </md-card-actions>
       </md-card>
@@ -89,16 +92,22 @@
         </md-card-title>
 
         <md-card-content>
-          <div layout="row">
+          <div layout="row" layout-margin>
             <div flex="30">
-              <span>1000 kreditů</span> <br>
+              <span>1000 kreditů</span>
+            </div>
+            <div flex>
+              =&nbsp;300 Kč bez DPH
+            </div>
+          </div>
+          <div layout="row" layout-margin>
+            <div flex="30">
               10GB / den <br>
               1x VM / měsíc <br>
               1x Workstation / měsíc <br>
               1x Server / měsíc <br>
             </div>
             <div flex>
-              =&nbsp;300 Kč bez DPH <br>
               =&nbsp;1 kredit <br>
               =&nbsp;590 kreditů <br>
               =&nbsp;330 kreditů <br>
@@ -129,8 +138,8 @@
     <md-dialog-content>
       <div class="md-dialog-content">
         <form name="ctrl.buyCreditForm" role="form" ng-cloak>
-          <div layout-gt-sm="row">
 
+          <div layout-gt-sm="row">
             <md-input-container class="md-block form-group" layout="row">
               <label>Cena bez DPH:</label>
               <input type="number" ng-model="ctrl.price" required="true" ng-change="ctrl.recalculateCredit()">
@@ -142,11 +151,10 @@
             </md-input-container>
           </div>
 
-
           <h5>Způsob platby</h5>
-          <md-radio-group ng-model="ctrl.type">
-            <md-radio-button value="0" selected>Bankovním převodem - proforma</md-radio-button>
-            <md-radio-button value="1" disabled="true">Kartou online</md-radio-button>
+          <md-radio-group ng-model="ctrl.type" ng-change="ctrl.changeButtonLabel()">
+            <md-radio-button value="0">Kartou online</md-radio-button>
+            <md-radio-button value="1">Bankovním převodem - proforma</md-radio-button>
           </md-radio-group>
 
           <h5>Fakturační údaje</h5>
@@ -155,9 +163,9 @@
               <label>Jméno a přijmení (název firmy)</label>
               <input type="text" ng-model="ctrl.user.name">
             </md-input-container>
-            <md-input-container class="md-block form-group" flex-gt-sm required="true">
+            <md-input-container class="md-block form-group" flex-gt-sm >
               <label>Email</label>
-              <input type="text" ng-model="ctrl.user.email">
+              <input type="text" ng-model="ctrl.user.email" required="true">
             </md-input-container>
           </div>
           <div layout-gt-sm="row">
@@ -185,13 +193,12 @@
               <input type="text" ng-model="ctrl.user.dic">
             </md-input-container>
           </div>
-
         </form>
       </div>
 
     </md-dialog-content>
     <md-dialog-actions layout="row" layout-xs="column" layout-align="end center">
-        <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">Objednat</md-button>
+        <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.buyCreditForm.$valid" ng-click="ctrl.save()">{{ctrl.buttonLabel}}</md-button>
         <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>
     </md-dialog-actions>
 

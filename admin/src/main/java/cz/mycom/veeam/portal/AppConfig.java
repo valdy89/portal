@@ -18,7 +18,7 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -78,12 +78,9 @@ public class AppConfig {
 
     @Bean
     public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://portal.cjgvultbz6oy.eu-west-1.rds.amazonaws.com:3306/portal");
-        dataSource.setPassword("wDZCtKhNMz68Fhrk");
-        dataSource.setUsername("portal");
-        return dataSource;
+        JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
+        dataSourceLookup.setResourceRef(true);
+        return dataSourceLookup.getDataSource("jdbc/PortalDB");
     }
 
     @Bean

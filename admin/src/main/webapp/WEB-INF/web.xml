@@ -80,7 +80,12 @@
         <async-supported>true</async-supported>
     </servlet>
 
-
+    <resource-ref>
+        <description>DB Connection</description>
+        <res-ref-name>jdbc/PortalDB</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
 
     <servlet-mapping>
         <servlet-name>springapp</servlet-name>

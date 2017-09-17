@@ -1,5 +1,5 @@
 <div cg-busy="[ctrl.repositories]"></div>
-<div class="panel panel-primary" ng-show="ctrl.userData">
+<div class="panel panel-primary">
   <div class="panel-heading clearfix">
     <div class="title pull-left">Dashboard</div>
   </div>
@@ -36,6 +36,53 @@
               <td>{{::repository.serverCount}}</td>
               <td>{{::repository.workstationCount}}</td>
               <td>{{::repository.tenantCount}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row" ng-show="ctrl.tenants.length > 0">
+      <div class="col-sm-12">
+        <div class="panel panel-info">
+          <div class="panel-heading clearfix">
+            <div class="title pull-left">Neplatiči</div>
+          </div>
+          <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+              <th>Uzivatelské jméno</th>
+              <th>Zakoupená alokace GB</th>
+              <th>Využívaná velikost GB</th>
+              <th>Využívaná velikost %</th>
+              <th>Počet VM</th>
+              <th>Počet Server</th>
+              <th>Počet Workstation</th>
+              <th>Počet subtenantů</th>
+              <th>Kredit</th>
+              <th>Povolen</th>
+              <th>VIP</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="tenant in ctrl.tenants">
+              <td>{{::tenant.username}}</td>
+              <td>{{::tenant.quota/1024 | number:1}}</td>
+              <td>{{::tenant.usedQuota/1024 | number:1}}</td>
+              <td>{{::(tenant.usedQuota/tenant.quota)*100 | number:2}}%</td>
+              <td>{{::tenant.vmCount}}</td>
+              <td>{{::tenant.serverCount}}</td>
+              <td>{{::tenant.workstationCount}}</td>
+              <td>{{::tenant.subtenantsCount}}</td>
+              <td>{{::tenant.credit}}</td>
+              <td>
+                <span class="fa fa-check" style="color: green" ng-if="tenant.enabled"></span>
+                <span class="fa fa-remove red" style="color: red" ng-if="!tenant.enabled"></span>
+              </td>
+              <td>
+                <span class="fa fa-check" style="color: green" ng-if="tenant.vip"></span>
+                <span class="fa fa-remove red" style="color: red" ng-if="!tenant.vip"></span>
+              </td>
             </tr>
             </tbody>
           </table>

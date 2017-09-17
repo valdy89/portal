@@ -55,8 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .requiresChannel().anyRequest().requiresSecure().and()
                 .authorizeRequests()
-                .antMatchers("/api/register", "/api/login", "/api/verify", "/api/forgotPassword").permitAll()
+                .antMatchers("/api/ping", "/api/register", "/api/login", "/api/verify", "/api/forgotPassword").permitAll()
                 .antMatchers("/api/*").hasRole("USER").and()
                 .httpBasic().and()
                 .logout().logoutSuccessUrl("/").and()

@@ -41,8 +41,17 @@ public class Order {
     private BigDecimal price;
 
     @Column
+    private BigDecimal priceWithVat;
+
+    @Column
     private int credit;
 
     @Column
     private String documentNumber;
+
+    @Column
+    private String transId;
+
+    @Column
+    private String result;
 }

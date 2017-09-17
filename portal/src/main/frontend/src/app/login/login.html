@@ -2,10 +2,10 @@
 <div layout-align="center center" flex>
   <md-content class="md-padding" layout-align="center center" flex layout="column">
     <md-card>
-      <md-card-title>
-        <img src="assets/logo.png"/>
-      </md-card-title>
       <md-card-content class="md-padding">
+        <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+          <img src="assets/logo.png"/>
+        </section>
         <div layout="row" flex>
 
           <md-nav-bar md-selected-nav-item="ctrl.activeForm" nav-bar-aria-label="navigation links">
@@ -19,7 +19,7 @@
           <form name="ctrl.formLogin" ng-submit="ctrl.login()" role="form">
 
             <md-input-container class="md-block form-group" flex-gt-sm>
-              <label>Uživatelské jméno</label>
+              <label>Registrační e-mail</label>
               <input type="email" ng-model="ctrl.username" class="md-block" ng-required="true">
             </md-input-container>
 
@@ -40,16 +40,16 @@
           <form name="ctrl.registerForm" ng-submit="ctrl.register()" role="form" flex>
 
             <md-input-container class="md-block form-group" flex-gt-sm>
-              <label>Email</label>
+              <label>Registrační e-mail</label>
               <input type="email" ng-model="ctrl.user.username" ng-required="true">
             </md-input-container>
 
-            <section layout="row" layout-sm="column">
+            <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
               <div vc-recaptcha key="'6Lcg1yoUAAAAAGenfhvyKUiE0sB8dU28b-L623s_'" lang="cs"></div>
             </section>
 
             <section layout="row" layout-sm="column">
-              <span style="font-size: 11px; font-weight: bold">Kliknutím na registrovat souhlasíte s obchodními podmínkami</span>
+              <span style="font-size: 11px; font-weight: bold">Kliknutím na "Registrovat se" souhlasíte s obchodními podmínkami</span>
             </section>
 
             <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
@@ -76,9 +76,14 @@
       <div class="md-dialog-content">
         <form name="ctrl.forgotPasswordForm" role="form">
           <md-input-container class="md-block form-group" flex-gt-sm>
-            <label>Uživatelské jméno</label>
+            <label>Registrační e-mail</label>
             <input type="email" ng-model="ctrl.username" ng-required="true">
           </md-input-container>
+
+          <section layout="row" layout-sm="column">
+            <span>Na registrační e-mail Vám bude během několika minut zaslán odkaz pro reset hesla.</span>
+          </section>
+
           <md-dialog-actions layout="row" layout-xs="column" layout-align="end center">
             <md-button type="button" class="md-raised md-accent" ng-disabled="!ctrl.forgotPasswordForm.$valid" ng-click="ctrl.save()">Odeslat</md-button>
             <md-button type="button" class="md-raised" ng-click="ctrl.cancel()">Zavřít</md-button>

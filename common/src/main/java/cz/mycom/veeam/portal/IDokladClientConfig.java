@@ -3,6 +3,7 @@ package cz.mycom.veeam.portal;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import cz.mycom.veeam.portal.service.KeyStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,8 @@ public class IDokladClientConfig {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private KeyStoreService keyStoreService;
 
     @Bean
     public OAuth2RestTemplate iDokladRestTemplate() {
@@ -41,8 +44,8 @@ public class IDokladClientConfig {
 
     private OAuth2ProtectedResourceDetails iDoklad() {
         ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-        resourceDetails.setClientId("6008ec7c-73ab-40b7-858e-0ba20b430f78");
-        resourceDetails.setClientSecret("48aef37e-8de6-4db0-8dfa-442c7d14a068");
+        resourceDetails.setClientId(keyStoreService.readData("idoklad.client.id"));
+        resourceDetails.setClientSecret(keyStoreService.readData("idoklad.client.secret"));
         resourceDetails.setScope(Arrays.asList("idoklad_api"));
         resourceDetails.setAccessTokenUri("https://app.idoklad.cz/identity/server/connect/token");
         resourceDetails.setTokenName("my_token");

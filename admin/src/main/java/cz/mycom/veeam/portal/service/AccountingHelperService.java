@@ -11,13 +11,19 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
-import java.util.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author dursik
@@ -43,68 +49,16 @@ public class AccountingHelperService {
     private OrderRepository orderRepository;
 
     private static final String SYSTEM = "System";
+    private NumberFormat numberFormat = new DecimalFormat("#.00");
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void checkOrder(Order order) {
         Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
         User user = tenant.getUser();
-        Contact contact = null;
-        if (StringUtils.isBlank(user.getName())) {
-            contact = iDokladService.findContact("support@mycom.cz");
-            if (contact == null) {
-                contact = new Contact();
-                contact.setCompanyName("Koncový zákazník");
-                contact.setEmail("support@mycom.cz");
-                contact.setCountryId(iDokladService.getCountry("cz").getId());
-                contact = iDokladService.saveContact(contact);
-            }
-        } else {
-            contact = iDokladService.findContact(user.getEmail());
-            if (contact == null) {
-                contact = new Contact();
-                contact.setCountryId(iDokladService.getCountry("cz").getId());
-                contact.setDefaultBankAccount(null);
-            }
-            contact.setCompanyName(user.getName());
-            contact.setEmail(user.getEmail());
-
-            if (StringUtils.isBlank(user.getStreet())) {
-                contact.setStreet("");
-            } else {
-                contact.setStreet(user.getStreet());
-            }
-            if (StringUtils.isBlank(user.getIco())) {
-                contact.setIdentificationNumber("");
-            } else
-                contact.setIdentificationNumber(user.getIco());
-            if (StringUtils.isBlank(user.getDic())) {
-                contact.setVatIdentificationNumber("");
-            } else
-                contact.setVatIdentificationNumber(user.getDic());
-            if (StringUtils.isBlank(user.getPostalCode())) {
-                contact.setPostalCode("");
-            } else
-                contact.setPostalCode(user.getPostalCode());
-            if (StringUtils.isBlank(user.getCity())) {
-                contact.setCity("");
-            } else
-                contact.setCity(user.getCity());
-            if (StringUtils.isBlank(user.getPhone())) {
-                contact.setPhone("");
-            } else
-                contact.setPhone(user.getPhone());
-
-            if (contact.getDefaultBankAccount() != null) {
-                contact.getDefaultBankAccount().setBankId("");
-            }
-
-            contact = iDokladService.saveContact(contact);
-            user.setCreditCheck(contact.getCreditCheck());
-        }
 
         ProformaInvoiceInsert proformaInvoice = iDokladService.proformaDefault();
         proformaInvoice.setOrderNumber(StringUtils.leftPad(String.valueOf(order.getId()), 8, '0'));
-        proformaInvoice.setPurchaserId(contact.getId());
+        proformaInvoice.setPurchaserId(iDokladService.getContact(user).getId());
         proformaInvoice.setProformaInvoiceItems(new ArrayList<>());
         InvoiceItem invoiceItem = new InvoiceItem();
         invoiceItem.setAmount(BigDecimal.ONE);
@@ -126,7 +80,12 @@ public class AccountingHelperService {
             String pdf = iDokladService.getProformaPdf(order.getProformaId());
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             IOUtils.write(Base64.decodeBase64(pdf), output);
-            mailService.sendMail(user.getEmail(), "Zálohová faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
+            String from = configRepository.getOne("fakturace.email").getValue();
+            ClassPathResource classPathResource = new ClassPathResource("zalohova_faktura.txt");
+            String text = IOUtils.toString(classPathResource.getInputStream(), "UTF-8");
+            text = text.replace("%DATE%", DateFormatUtils.format(order.getDateCreated(), "dd.MM.yyyy"));
+            text = text.replace("%PRICE%", numberFormat.format(order.getPriceWithVat()));
+            mailService.sendMail(from, user.getEmail(), "Veeam CloudConnect portál – zálohová faktura č. " + order.getDocumentNumber(), text, order.getDocumentNumber() + ".pdf", output);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -191,23 +150,90 @@ public class AccountingHelperService {
             TenantHistory tenantHistory = new TenantHistory(tenant, "Fakturace");
             tenantHistoryRepository.save(tenantHistory);
 
-            try {
-                String pdf = iDokladService.getInvoicePdf(order.getInvoiceId());
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                IOUtils.write(Base64.decodeBase64(pdf), output);
-                mailService.sendMail(tenant.getUser().getEmail(), "Faktura č. " + order.getDocumentNumber(), "", order.getDocumentNumber() + ".pdf", output);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
+            sendInvoice(tenant.getUser().getEmail(), order);
         }
         orderRepository.save(order);
 
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void process(CloudTenant cloudTenant, Map<String, Integer[]> countMap) {
+    public void update(CloudTenant cloudTenant) {
+        Tenant tenant = updateTenant(cloudTenant);
+        tenantRepository.save(tenant);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void process(CloudTenant cloudTenant) {
+        Tenant tenant = updateTenant(cloudTenant);
+
+        //jestli jiz dnes neprobehlo uctovani
+        List<TenantHistory> todaySystem = tenantHistoryRepository.getTodayByModifier(tenant.getUid(), SYSTEM);
+        if (tenant.getUser() != null && todaySystem.isEmpty()) {
+            Calendar now = Calendar.getInstance();
+            int credit = tenant.getCredit();
+            int priceVm = Integer.parseInt(configRepository.getOne("price.vm").getValue());
+            int priceServer = Integer.parseInt(configRepository.getOne("price.server").getValue());
+            int priceWorkstation = Integer.parseInt(configRepository.getOne("price.workstation").getValue());
+
+            Integer[] counts = new Integer[]{cloudTenant.getBackupCount(), cloudTenant.getServerBackupCount(), cloudTenant.getWorkStationBackupCount()};
+            //kontrola jestli se nezmenil pocet VM
+            if (now.get(Calendar.DAY_OF_MONTH) != 1 && counts != null) {
+                if (counts[0] > tenant.getVmCount()) {
+                    credit -= (counts[0] - tenant.getVmCount()) * priceVm;
+                }
+                if (counts[1] > tenant.getServerCount()) {
+                    credit -= (counts[1] - tenant.getServerCount()) * priceServer;
+                }
+                if (counts[2] > tenant.getWorkstationCount()) {
+                    credit -= (counts[2] - tenant.getWorkstationCount()) * priceWorkstation;
+                }
+            }
+
+            if (counts != null) {
+                tenant.setVmCount(counts[0]);
+                tenant.setServerCount(counts[1]);
+                tenant.setWorkstationCount(counts[2]);
+            }
+
+            //na zacatku mesice zkasni vsechny
+            if (now.get(Calendar.DAY_OF_MONTH) == 1) {
+                credit -= tenant.getVmCount() * priceVm;
+                credit -= tenant.getServerCount() * priceServer;
+                credit -= tenant.getWorkstationCount() * priceWorkstation;
+            }
+
+            //kazdy den za quotu
+            int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
+            credit -= Math.ceil(((float) tenant.getQuota() / 1024 / 10) * priceQuota);
+            tenant.setCredit(credit);
+
+            if (tenant.getCredit() < 0 && !tenant.isVip() && cloudTenant.isEnabled()) {
+                log.warn("Disabling cloud tenant, no credit");
+                tenant.setEnabled(false);
+                cloudTenant.setEnabled(false);
+                cloudTenant.setPassword(null);
+                veeamService.saveTenant(tenant.getUid(), cloudTenant);
+                try {
+                    String from = configRepository.getOne("support.email").getValue();
+                    ClassPathResource classPathResource = new ClassPathResource("zablokovany_ucet.txt");
+                    String text = IOUtils.toString(classPathResource.getInputStream(), "UTF-8");
+                    mailService.sendMail(from, tenant.getUser().getEmail(), "Veeam CloudConnect portál – účet " + tenant.getUsername() + " byl zablokován", text);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+        tenantRepository.save(tenant);
+
+        if (todaySystem.isEmpty()) {
+            TenantHistory tenantHistory = new TenantHistory(tenant, SYSTEM);
+            tenantHistoryRepository.save(tenantHistory);
+        }
+    }
+
+    private Tenant updateTenant(CloudTenant cloudTenant) {
         log.info("Tenant: {} - {}", cloudTenant.getName(), cloudTenant.getUID());
-        log.info("W: {}, VM: {}, S: {}", cloudTenant.getWorkStationBackupCount(), cloudTenant.getVmCount(), cloudTenant.getServerBackupCount());
+        log.info("W: {}, VM: {}, S: {}", cloudTenant.getWorkStationBackupCount(), cloudTenant.getBackupCount(), cloudTenant.getServerBackupCount());
         String tenantUid = StringUtils.substringAfterLast(cloudTenant.getUID(), ":");
         Tenant tenant = tenantRepository.findByUid(tenantUid);
         if (tenant == null) {
@@ -260,63 +286,53 @@ public class AccountingHelperService {
                 }
             }
         }
-
-        //jestli jiz dnes neprobehlo uctovani
-        List<TenantHistory> todaySystem = tenantHistoryRepository.getTodayByModifier(tenantUid, SYSTEM);
-        if (tenant.getUser() != null && todaySystem.isEmpty()) {
-            Calendar now = Calendar.getInstance();
-            int credit = tenant.getCredit();
-            int priceVm = Integer.parseInt(configRepository.getOne("price.vm").getValue());
-            int priceServer = Integer.parseInt(configRepository.getOne("price.server").getValue());
-            int priceWorkstation = Integer.parseInt(configRepository.getOne("price.workstation").getValue());
-
-            Integer[] counts = countMap.get(tenant.getUsername());
-            //kontrola jestli se nezmenil pocet VM
-            if (now.get(Calendar.DAY_OF_MONTH) != 1 && counts != null) {
-                if (counts[0] > tenant.getVmCount()) {
-                    credit -= (counts[0] - tenant.getVmCount()) * priceVm;
-                }
-                if (counts[1] > tenant.getServerCount()) {
-                    credit -= (counts[1] - tenant.getServerCount()) * priceServer;
-                }
-                if (counts[2] > tenant.getWorkstationCount()) {
-                    credit -= (counts[2] - tenant.getWorkstationCount()) * priceWorkstation;
-                }
-            }
-
-            if (counts != null) {
-                tenant.setVmCount(counts[0]);
-                tenant.setServerCount(counts[1]);
-                tenant.setWorkstationCount(counts[2]);
-            }
-
-            //na zacatku mesice zkasni vsechny
-            if (now.get(Calendar.DAY_OF_MONTH) == 1) {
-                credit -= tenant.getVmCount() * priceVm;
-                credit -= tenant.getServerCount() * priceServer;
-                credit -= tenant.getWorkstationCount() * priceWorkstation;
-            }
-
-            //kazdy den za quotu
-            int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
-            credit -= Math.ceil(((float) tenant.getQuota() / 1024 / 10) * priceQuota);
-            tenant.setCredit(credit);
-
-            if (tenant.getCredit() < 0 && !tenant.isVip() && cloudTenant.isEnabled()) {
-                log.warn("Disabling cloud tenant, no credit");
-                tenant.setEnabled(false);
-                cloudTenant.setEnabled(false);
-                cloudTenant.setPassword(null);
-                veeamService.saveTenant(tenantUid, cloudTenant);
-                mailService.sendMail(tenant.getUser().getEmail(), "Účet " + tenant.getUsername() + " byl zablokován", "Váš účet byl zablokován z důvodu nedostatečného kreditu.");
-            }
-        }
-        tenantRepository.save(tenant);
-
-        if (todaySystem.isEmpty()) {
-            TenantHistory tenantHistory = new TenantHistory(tenant, SYSTEM);
-            tenantHistoryRepository.save(tenantHistory);
-        }
+        tenant.setVmCount(cloudTenant.getBackupCount());
+        tenant.setServerCount(cloudTenant.getServerBackupCount());
+        tenant.setWorkstationCount(cloudTenant.getWorkStationBackupCount());
+        return tenant;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void checkPaidOnline(Order order) {
+        Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
+        User user = tenant.getUser();
+
+        IssuedInvoiceInsert issuedInvoiceInsert = iDokladService.invoiceDefault();
+        issuedInvoiceInsert.setOrderNumber(StringUtils.leftPad(String.valueOf(order.getId()), 8, '0'));
+        issuedInvoiceInsert.setDateOfPayment(DateFormatUtils.ISO_DATETIME_FORMAT.format(new Date()));
+        InvoiceItem invoiceItem = issuedInvoiceInsert.getIssuedInvoiceItems().get(0);
+        invoiceItem.setAmount(BigDecimal.ONE);
+        invoiceItem.setName("Nákup kreditů: " + order.getCredit() + "ks");
+        invoiceItem.setUnit("");
+        invoiceItem.setUnitPrice(order.getPrice());
+        invoiceItem.setPriceType(PriceTypeEnum.WithoutVat);
+        invoiceItem.setVatRateType(VatRateTypeEnum.Basic);
+        issuedInvoiceInsert.setDateOfMaturity(DateFormatUtils.ISO_DATETIME_FORMAT.format(DateUtils.addDays(new Date(), 1)));
+        issuedInvoiceInsert.setPurchaserId(iDokladService.getContact(user).getId());
+        IssuedInvoice invoice = iDokladService.invoice(issuedInvoiceInsert);
+
+        order.setInvoiceId(invoice.getId());
+        order.setDocumentNumber(invoice.getDocumentNumber());
+
+        orderRepository.save(order);
+
+        sendInvoice(tenant.getUser().getEmail(), order);
+
+    }
+
+    private void sendInvoice(String email, Order order) {
+        try {
+            String pdf = iDokladService.getInvoicePdf(order.getInvoiceId());
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            IOUtils.write(Base64.decodeBase64(pdf), output);
+            String from = configRepository.getOne("fakturace.email").getValue();
+            ClassPathResource classPathResource = new ClassPathResource("faktura.txt");
+            String text = IOUtils.toString(classPathResource.getInputStream(), "UTF-8");
+            text = text.replace("%DATE%", DateFormatUtils.format(order.getDateCreated(), "dd.MM.yyyy"));
+            text = text.replace("%PRICE%", numberFormat.format(order.getPriceWithVat()));
+            mailService.sendMail(from, email, "Veeam CloudConnect portál – faktura č. " + order.getDocumentNumber(), text, order.getDocumentNumber() + ".pdf", output);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 }

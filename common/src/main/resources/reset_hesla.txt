@@ -1,0 +1,15 @@
+Vážený uživateli,
+
+Tento e-mail Vám byl zaslán na základě žádosti o zapomenuté heslo z portálu https://veeamportal.mycombackup.cz.
+Po kliknutí na níže uvedený odkaz budete vyzváni k vyplnění nového hesla.
+
+%LINK%
+
+Pokud jste o reset hesla nepožádal Vy, e-mail prosím ignorujte.
+
+Tento e-mail je generován automaticky, prosíme, neodpovídejte na něj.
+
+S pozdravem
+Tým MyCom CloudConnect
+support@mycombackup.cz
+222 200 686

@@ -52,7 +52,7 @@
 
     function clearCredential() {
       $rootScope.userData = null;
-      //$cookies.remove('userData');
+      $cookies.remove('JSESSIONID');
       $cookies.remove('userData');
       $http.defaults.headers.common.Authorization = null;
     }

@@ -85,9 +85,12 @@ public final class KeyStoreService {
             try {
                 SecretKey secretKey = new SecretKeySpec(entry.getBytes(), ALGORITHM);
                 KeyStore.SecretKeyEntry skEntry = new KeyStore.SecretKeyEntry(secretKey);
-                loadKeyStore().setEntry(alias, skEntry, new KeyStore.PasswordProtection(enumeration));
+                KeyStore keyStore = loadKeyStore();
+                keyStore.setEntry(alias, skEntry, new KeyStore.PasswordProtection(enumeration));
                 log.debug("Entry [" + alias + "] successfully stored to the key store.");
-            } catch (KeyStoreException e) {
+                FileOutputStream fos = new FileOutputStream(keyStoreFile);
+                keyStore.store(fos, enumeration);
+            } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 throw new IllegalStateException(e.getMessage(), e);
             }
@@ -107,16 +110,5 @@ public final class KeyStoreService {
         } finally {
             IOUtils.closeQuietly(fis);
         }
-    }
-
-    private void saveKeyStore() throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(keyStoreFile);
-            loadKeyStore().store(fos, enumeration);
-        } finally {
-            IOUtils.closeQuietly(fos);
-        }
-        log.debug("Key store successfully saved.");
     }
 }

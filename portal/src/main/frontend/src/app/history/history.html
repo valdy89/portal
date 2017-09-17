@@ -4,10 +4,14 @@
 <md-content class="md-padding">
   <div layout="row" flex>
     <md-card flex>
-
+      <md-card-title>
+        <md-card-title-text>
+          <span class="md-title">Zvolte časové období</span>
+        </md-card-title-text>
+      </md-card-title>
       <md-card-content>
-        <md-datepicker md-placeholder="Datum od" ng-model="ctrl.dateFrom" md-min-date="ctrl.minDate" md-max-date="ctrl.maxDate" ng-change="ctrl.recalculate()"></md-datepicker>
-        <md-datepicker md-placeholder="Datum do" ng-model="ctrl.dateTo" md-min-date="ctrl.minDate" md-max-date="ctrl.maxDate" ng-change="ctrl.recalculate()"></md-datepicker>
+        Od<md-datepicker md-placeholder="Datum od" ng-model="ctrl.dateFrom" md-min-date="ctrl.minDate" md-max-date="ctrl.maxDate" ng-change="ctrl.recalculate()"></md-datepicker>
+        &nbsp;Do<md-datepicker md-placeholder="Datum do" ng-model="ctrl.dateTo" md-min-date="ctrl.minDate" md-max-date="ctrl.maxDate" ng-change="ctrl.recalculate()"></md-datepicker>
       </md-card-content>
     </md-card>
   </div>
@@ -22,7 +26,6 @@
         </md-card-title>
         <md-card-content>
           <div layout="row" flex>
-
             <canvas class="chart chart-bar" chart-data="ctrl.repositoryData" chart-dataset-override="ctrl.repositoryOverride" chart-labels="ctrl.repositoryLabels" chart-series="ctrl.repositorySeries"
                     chart-options="ctrl.repositoryOptions">
             </canvas>
@@ -38,7 +41,7 @@
       <md-card>
         <md-card-title>
           <md-card-title-text>
-            <span class="md-headline">Kredit</span>
+            <span class="md-headline">Přehled stavu kreditu</span>
           </md-card-title-text>
         </md-card-title>
         <md-card-content>
@@ -66,7 +69,7 @@
           <thead md-head>
           <tr md-row>
             <th md-column>Datum</th>
-            <th md-column>Zakoupená alokace GB</th>
+            <th md-column>Zakoupená velikost GB</th>
             <th md-column>Využívaná velikost GB</th>
             <th md-column>Počet VM</th>
             <th md-column>Počet Server</th>

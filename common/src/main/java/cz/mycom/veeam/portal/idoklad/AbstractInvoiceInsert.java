@@ -15,8 +15,6 @@ public class AbstractInvoiceInsert extends AbstractObject {
     int PurchaserId;
     String VariableSymbol;
     String OrderNumber;
-    List<InvoiceItem> ProformaInvoiceItems = new ArrayList<InvoiceItem>();
-
     String AccountNumber;
     Integer BankId;
     String BankName;

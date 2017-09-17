@@ -73,6 +73,11 @@
     ctrl.creditSeries = ['Kredit'];
 
     ctrl.creditOptions = {
+      elements: {
+        line: {
+          tension: 0
+        }
+      },
       scales: {
         yAxes: [{
           ticks: {

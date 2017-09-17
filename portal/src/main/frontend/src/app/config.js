@@ -6,25 +6,28 @@
     .module('portal')
     .value('cgBusyDefaults', {
       message: 'Čekejte prosím',
+      //backdrop: false,
+      templateUrl: 'circular-busy.html',
       delay: 500
     })
-    .service('authInterceptor', function($q, $log, $location) {
+    .service('authInterceptor', function($q, $log, $location, $rootScope) {
       var service = this;
 
       service.responseError = function(response) {
         if(response.status === 401 || response.status === 403) {
+          $rootScope.$broadcast('userLoggedOut', null);
           $location.path('/login');
         }
 
         return $q.reject(response);
       };
     })
-    .service('ErrorHandlerService', function ($location, $mdDialog) {
+    .service('ErrorHandlerService', function ($location, $window, $mdDialog) {
       var service = this;
 
       service.handleError = function(response) {
         if(response.status === 401 || response.status === 403) {
-          $location.path('/login');
+          $window.location.reload();
           return;
         }
 
@@ -38,10 +41,12 @@
         $mdDialog.show(alert);
       };
     })
-    .config(function ($logProvider, $routeProvider, $mdDateLocaleProvider, $locationProvider, $httpProvider, uiSelectConfig) {
+    .config(function ($logProvider, $routeProvider, $mdDateLocaleProvider, $locationProvider, $httpProvider, $mdThemingProvider) {
 
       $logProvider.debugEnabled(true);
-      uiSelectConfig.theme = 'bootstrap';
+
+      $mdThemingProvider.theme('red').primaryPalette('red');
+      $mdThemingProvider.theme('green').primaryPalette('green');
 
       $httpProvider.defaults.withCredentials = true;
       //$httpProvider.interceptors.push('authInterceptor');

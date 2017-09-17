@@ -15,7 +15,6 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Immutable
 @Table(name = "countries")
 public class Country {
     @Id

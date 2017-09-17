@@ -3,10 +3,11 @@
 
   angular
     .module('portal')
-    .controller('MainController', MainController);
+    .controller('MainController', MainController)
+    .controller('ChangePasswordController', ChangePasswordController);
 
   /** @ngInject */
-  function MainController($log, $cookies, $http, $window, $scope, $injector, $rootScope, $location, AuthenticationService, EndpointConfigService) {
+  function MainController($log, $cookies, $uibModal, $window, $rootScope, $location, AuthenticationService) {
     var main = this;
 
     $log.debug("Main controller begin");
@@ -26,19 +27,50 @@
       $location.path('/login');
     }
 
-    $injector.invoke($rootScope.AlertController, main);
-
-    main.hasAlert = false;
-
-    $scope.$on('userLoggedIn', function () {
+    $rootScope.$on('userLoggedIn', function () {
       $log.debug("userLoggedIn: " + $rootScope.userData);
       main.userData = $rootScope.userData;
       main.navbarUrl = 'app/main/navbar.html';
     });
 
+    $rootScope.$on('userLoggedOut', function () {
+      main.userData =null;
+      main.navbarUrl = null;
+    });
+
     main.logout = function () {
       AuthenticationService.logout();
       $window.location.reload();
+    };
+
+    main.changePassword = function () {
+      var modalInstance = $uibModal.open({
+        animation: false,
+        templateUrl: 'changePassword.html',
+        controller: 'ChangePasswordController as ctrl',
+        size: 'sm'
+      });
+    };
+  }
+
+  function ChangePasswordController($log, $http, $modalInstance, EndpointConfigService) {
+    var ctrl = this;
+
+
+    ctrl.save = function () {
+      ctrl.promise = $http.post(EndpointConfigService.getUrl('/login'), ctrl.password);
+      ctrl.promise.then(
+        function () {
+          $modalInstance.close();
+        },
+        function (error) {
+          alert(error.data.message);
+        }
+      );
+    };
+
+    ctrl.cancel = function () {
+      $modalInstance.dismiss('cancel');
     };
   }
 

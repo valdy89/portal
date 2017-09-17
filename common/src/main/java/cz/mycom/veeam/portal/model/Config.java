@@ -15,7 +15,6 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @Entity
-@Immutable
 @Table(name = "portal_config")
 public class Config {
     @Id

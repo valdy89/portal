@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.Principal;
 import java.util.*;
 
@@ -30,7 +32,7 @@ public class HistoryController {
     private TenantHistoryRepository tenantHistoryRepository;
 
     private static String[] labels = new String[]{
-            "Zakoupená alokace GB", "Využívaná velikost GB", "Počet VM", "Počet Server", "Počet Workstation"
+            "Zakoupená velikost GB", "Využívaná velikost GB", "Počet VM", "Počet Server", "Počet Workstation"
     };
 
     @RequestMapping(method = RequestMethod.POST)
@@ -39,12 +41,14 @@ public class HistoryController {
         List<TenantHistory> tenantHistoryList = tenantHistoryRepository.findByUidAndDateCreatedBetweenOrderByDateCreated(user.getTenant().getUid(), DateUtils.addDays(historyRequest.getFrom(), -1), historyRequest.getTo());
 
 
-        List<Integer[]> repositoryChange = new ArrayList<>();
+        List<Float[]> repositoryChange = new ArrayList<>();
         List<Integer> creditChange = new ArrayList<>();
         List<Date> repositoryDates = new ArrayList<>();
         List<Date> creditDates = new ArrayList<>();
         for (TenantHistory tenantHistory : tenantHistoryList) {
-            Integer[] repositoryValues = {tenantHistory.getQuota() / 1024, tenantHistory.getUsedQuota() / 1024, tenantHistory.getVmCount(), tenantHistory.getServerCount(), tenantHistory.getWorkstationCount()};
+            BigDecimal quota = BigDecimal.valueOf(tenantHistory.getQuota()).divide(new BigDecimal("1024"), 2, RoundingMode.HALF_UP);
+            BigDecimal usedQuota = BigDecimal.valueOf(tenantHistory.getUsedQuota()).divide(new BigDecimal("1024"), 2, RoundingMode.HALF_UP);
+            Float[] repositoryValues = {quota.floatValue(), usedQuota.floatValue(), (float) tenantHistory.getVmCount(), (float) tenantHistory.getServerCount(), (float) tenantHistory.getWorkstationCount()};
             int credit = tenantHistory.getCredit();
 
             if (repositoryChange.isEmpty() || creditChange.isEmpty()) {
@@ -70,7 +74,7 @@ public class HistoryController {
                     if (currentDate.equals(lastDate)) {
                         creditChange.set(creditChange.size() - 1, credit);
                         creditDates.set(creditDates.size() - 1, tenantHistory.getDateCreated());
-                    } else{
+                    } else {
                         creditChange.add(credit);
                         creditDates.add(tenantHistory.getDateCreated());
                     }
@@ -79,8 +83,10 @@ public class HistoryController {
         }
         HistoryResponse ret = new HistoryResponse();
         ret.histories = tenantHistoryList;
+        Collections.sort(ret.histories, Comparator.comparing(TenantHistory::getDateCreated).reversed());
 
-        List<Integer[]> pomRepoValues = new ArrayList<>();
+
+        List<Float[]> pomRepoValues = new ArrayList<>();
         if (repositoryChange.isEmpty()) {
             ret.repositoryLabels.add(format(historyRequest.getFrom()));
             ret.repositoryLabels.add(format(historyRequest.getTo()));
@@ -110,13 +116,13 @@ public class HistoryController {
         }
 
         if (!pomRepoValues.isEmpty()) {
-            List<List<Integer>> repositoryData = new ArrayList<>(5);
+            List<List<Float>> repositoryData = new ArrayList<>(5);
             for (int i = 0; i < 5; i++) {
                 repositoryData.add(new ArrayList<>());
             }
-            for (Integer[] pom : pomRepoValues) {
+            for (Float[] pom : pomRepoValues) {
                 for (int i = 0; i < 5; i++) {
-                    List<Integer> list = repositoryData.get(i);
+                    List<Float> list = repositoryData.get(i);
                     if (list == null) {
                         list = new ArrayList<>();
                         repositoryData.add(list);
@@ -126,11 +132,11 @@ public class HistoryController {
             }
 
             for (int i = 0; i < repositoryData.size(); i++) {
-                List<Integer> list = repositoryData.get(i);
+                List<Float> list = repositoryData.get(i);
                 boolean forRemove = false;
                 if (i >= 2) {
                     forRemove = true;
-                    for (Integer pom : list) {
+                    for (Float pom : list) {
                         if (pom > 0) {
                             forRemove = false;
                             break;
@@ -157,7 +163,7 @@ public class HistoryController {
         private List<TenantHistory> histories = new ArrayList<>();
         private List<String> repositoryLabels = new ArrayList<>();
         private List<String> creditLabels = new ArrayList<>();
-        private List<List<Integer>> repositoryData = new ArrayList<>();
+        private List<List<Float>> repositoryData = new ArrayList<>();
         private List<Integer> creditData = new ArrayList<>();
         private List<String> repositorySeries = new ArrayList<>();
     }

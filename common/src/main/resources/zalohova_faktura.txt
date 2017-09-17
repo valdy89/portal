@@ -1,0 +1,10 @@
+Vážený uživateli,
+
+Zasíláme Vám zálohovou fakturu k Vaší provedené objednávce ze dne %DATE% na částku %PRICE% Kč, objednanou na portálu https://veeamportal.mycombackup.cz/
+
+Tento e-mail je generován automaticky, prosíme, neodpovídejte na něj.
+
+S pozdravem
+Tým MyCom CloudConnect
+support@mycombackup.cz
+222 200 686

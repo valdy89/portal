@@ -8,13 +8,10 @@
       'ngSanitize',
       'ngResource',
       'ngCookies',
-      'ui.select',
-      'ui.bootstrap',
       'base64',
       'cgBusy',
       'chart.js',
       'vcRecaptcha',
-      'ngIdle',
       'ngMaterial',
       'md.data.table'
     ]).config(function ($mdThemingProvider) {
@@ -29,16 +26,15 @@
       {id: 'Unpaid', name: 'Neuhrazená'},
       {id: 'Paid', name: 'Uhrazená'},
       {id: 'PartialPaid', name: 'Uhrazená částečně'},
-      {id: 'Overpaid', name: 'Uhrazená'}
+      {id: 'Overpaid', name: 'Uhrazená'},
+      {id: 'Canceled', name: 'Zrušena'}
     ]
   });
 
   portalModule.run(runBlock);
 
   /** @ngInject */
-  function runBlock($log, $rootScope, Idle) {
-
-    Idle.watch();
+  function runBlock($log, $rootScope) {
 
     $rootScope.AlertController = function () {
       var ctrl = this;
