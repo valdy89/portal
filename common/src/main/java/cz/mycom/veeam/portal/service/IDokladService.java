@@ -33,6 +33,7 @@ public class IDokladService {
             contact = findContact("support@mycombackup.cz");
             if (contact == null) {
                 contact = new Contact();
+                contact.setDefaultBankAccount(null);
                 contact.setCompanyName("Koncový zákazník");
                 contact.setEmail("support@mycombackup.cz");
                 contact.setCountryId(getCountry("cz").getId());

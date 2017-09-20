@@ -13,6 +13,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -28,14 +29,16 @@ public class VeeamClientConfig {
     public RestTemplate veeamRestTemplate() {
         HttpComponentsClientHttpRequestFactory requestFactory = null;
         try {
-            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(new SSLContextBuilder().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(), new NoopHostnameVerifier());
+            SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
+                    new SSLContextBuilder().loadTrustMaterial(new File("c:/app/conf/IO160383.jks"), "pWM5W8AQn".toCharArray(),
+                            new TrustSelfSignedStrategy()).build(), new NoopHostnameVerifier());
 
             CloseableHttpClient httpClient = HttpClients.custom()
                     .setSSLSocketFactory(socketFactory)
                     .build();
             requestFactory = new HttpComponentsClientHttpRequestFactory();
             requestFactory.setHttpClient(httpClient);
-        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+        } catch (Exception e) {
             log.error("SSL init exception: " + e.getMessage());
             throw new IllegalStateException(e);
         }

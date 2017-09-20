@@ -1,6 +1,7 @@
 package cz.mycom.veeam.portal.controller;
 
 import cz.mycom.veeam.portal.model.Order;
+import cz.mycom.veeam.portal.model.PaymentStatusEnum;
 import cz.mycom.veeam.portal.model.User;
 import cz.mycom.veeam.portal.repository.OrderRepository;
 import cz.mycom.veeam.portal.repository.UserRepository;
@@ -64,5 +65,15 @@ public class InvoiceController {
             throw new RuntimeException(e.getMessage());
         }
 
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public void delete(@PathVariable("id") Integer id, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        Order order = orderRepository.findByTenantUidAndId(user.getTenant().getUid(), id);
+        if (order == null) {
+            throw new RuntimeException("WTF");
+        }
+        order.setPaymentStatus(PaymentStatusEnum.Canceled);
     }
 }

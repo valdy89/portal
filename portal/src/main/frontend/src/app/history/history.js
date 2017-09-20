@@ -54,6 +54,7 @@
           position: 'left',
           ticks: {
             beginAtZero: true,
+            stepSize: 1,
             callback: function (value) {
               return value + 'GB';
             }

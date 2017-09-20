@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -49,7 +50,7 @@ public class MerchantService implements InitializingBean {
     public void afterPropertiesSet() {
         try {
             Properties merchantProperties = new Properties();
-            merchantProperties.load(MerchantService.class.getResourceAsStream("/merchant.properties"));
+            merchantProperties.load(new FileInputStream("c:/app/conf/merchant.properties"));
             merchant = new Merchant(merchantProperties);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
