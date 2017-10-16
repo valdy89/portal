@@ -101,7 +101,7 @@
     var ctrl = this;
 
     ctrl.credit = 1000;
-    ctrl.price = ctrl.credit / 10 * 3;
+    ctrl.price = ctrl.credit / 10 * 2.5;
     ctrl.user = UserResource.get();
     ctrl.type = '0';
     ctrl.buttonLabel = 'Zaplatit';
@@ -112,11 +112,11 @@
     });
 
     ctrl.recalculatePrice = function () {
-      ctrl.price = Math.ceil(ctrl.credit / 10 * 3);
+      ctrl.price = Math.ceil(ctrl.credit / 10 * 2.5);
     };
 
     ctrl.recalculateCredit = function () {
-      ctrl.credit = Math.floor(ctrl.price / 3 * 10);
+      ctrl.credit = Math.floor(ctrl.price / 2.5 * 10);
     };
 
     ctrl.changeButtonLabel = function () {

@@ -91,7 +91,7 @@ public class PaymentController {
         BigDecimal dph = new BigDecimal(configRepository.getOne("dph.percent").getValue()).divide(HUNDRED);
         BigDecimal finalPrice = price.add(price.multiply(dph)).setScale(0, RoundingMode.HALF_UP);
         order.setPriceWithVat(finalPrice);
-        BigDecimal creditCount = price.divide(new BigDecimal("3"), BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
+        BigDecimal creditCount = price.divide(new BigDecimal("2.5"), BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
         order.setCredit(creditCount.setScale(0, BigDecimal.ROUND_FLOOR).intValue());
         order.setDateCreated(new Date());
         if (orderRequest.getType() == 0) {
