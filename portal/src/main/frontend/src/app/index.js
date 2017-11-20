@@ -34,7 +34,9 @@
   portalModule.run(runBlock);
 
   /** @ngInject */
-  function runBlock($log, $rootScope) {
+  function runBlock($log, $rootScope, $locale) {
+
+    $locale.NUMBER_FORMATS.GROUP_SEP = '';
 
     $rootScope.AlertController = function () {
       var ctrl = this;

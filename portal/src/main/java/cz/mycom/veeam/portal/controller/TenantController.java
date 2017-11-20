@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.Date;
@@ -86,6 +87,10 @@ public class TenantController {
             tenant.setCreditDate(new Date());
         }
         tenant.setUnpaidOrders(orderRepository.findUnpaid(tenant.getUid()).size());
+        tenant.setPriceQuota(new BigDecimal(configRepository.getOne("price.quota").getValue()));
+        tenant.setPriceServer(new BigDecimal(configRepository.getOne("price.server").getValue()));
+        tenant.setPriceVm(new BigDecimal(configRepository.getOne("price.vm").getValue()));
+        tenant.setPriceWorkstation(new BigDecimal(configRepository.getOne("price.workstation").getValue()));
         return tenant;
     }
 

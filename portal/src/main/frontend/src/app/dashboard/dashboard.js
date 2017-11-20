@@ -94,6 +94,24 @@
         $log.debug('cancel');
       });
     };
+
+    ctrl.recalculate = function () {
+      ctrl.credit = 0;
+
+      if (ctrl.vm && ctrl.vm > 0) {
+        ctrl.credit += ctrl.vm * ctrl.tenant.priceVm;
+      }
+      if (ctrl.workstation && ctrl.workstation > 0) {
+        ctrl.credit += ctrl.workstation * ctrl.tenant.priceWorkstation;
+      }
+      if (ctrl.server && ctrl.server > 0) {
+        ctrl.credit += ctrl.server * ctrl.tenant.priceServer;
+      }
+      if (ctrl.quota && ctrl.quota > 0) {
+        ctrl.credit += Math.ceil(ctrl.quota * ctrl.tenant.priceQuota / 10) * 31;
+      }
+      ctrl.price = ctrl.credit / 10 * 2.5;
+    };
   }
 
   /** @ngInject */
