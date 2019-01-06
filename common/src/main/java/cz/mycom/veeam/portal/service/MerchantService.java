@@ -12,10 +12,12 @@ import lv.konts.ecomm.merchant.Merchant;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.StringReader;
@@ -119,6 +121,8 @@ public class MerchantService implements InitializingBean {
         return transId;
     }
 
+    @Retryable(maxAttempts = 5)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void closeDay() {
         String result = merchant.closeDay();
         log.debug("Result: {}", result);

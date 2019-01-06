@@ -8,6 +8,7 @@ import cz.mycom.veeam.portal.model.PaymentStatusEnum;
 import cz.mycom.veeam.portal.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,10 +46,7 @@ public class AccountingService {
                 accountingHelperService.checkOrder(order);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                if (e instanceof HttpClientErrorException) {
-                    log.error(((HttpClientErrorException) e).getResponseBodyAsString());
-                }
-                mailService.sendError("checkOrders", e);
+                httpException("checkOrders", e);
             }
         }
     }
@@ -61,10 +59,7 @@ public class AccountingService {
                 accountingHelperService.checkPaidOnline(order);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                if (e instanceof HttpClientErrorException) {
-                    log.error(((HttpClientErrorException) e).getResponseBodyAsString());
-                }
-                mailService.sendError("checkPaidOnline", e);
+                httpException("checkPaidOnline", e);
             }
         }
     }
@@ -89,7 +84,7 @@ public class AccountingService {
                 accountingHelperService.checkPaid(proformaInvoice);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                mailService.sendError("checkPaidProforma", e);
+                httpException("checkPaidProforma", e);
             }
         }
     }
@@ -146,5 +141,20 @@ public class AccountingService {
         }
     }
 
-
+    private void httpException(String message, Exception e) {
+        mailService.sendError(message, e);
+        long millis = 10 * 60 * 1000;
+        if (e instanceof HttpClientErrorException) {
+            log.error(((HttpClientErrorException) e).getResponseBodyAsString());
+            //kdyz neni zaplaceno tak neposilat  email
+            if (((HttpClientErrorException) e).getStatusCode() == HttpStatus.PAYMENT_REQUIRED) {
+                millis = 30 * 60 * 1000;
+            }
+        }
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e1) {
+            e1.printStackTrace();
+        }
+    }
 }

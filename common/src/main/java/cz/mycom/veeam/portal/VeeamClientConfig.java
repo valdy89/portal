@@ -14,10 +14,9 @@ import org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
+import java.io.FileInputStream;
 import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * @author dursik
@@ -29,8 +28,10 @@ public class VeeamClientConfig {
     public RestTemplate veeamRestTemplate() {
         HttpComponentsClientHttpRequestFactory requestFactory = null;
         try {
+            Properties merchantProperties = new Properties();
+            merchantProperties.load(new FileInputStream("c:/app/conf/merchant.properties"));
             SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(
-                    new SSLContextBuilder().loadTrustMaterial(new File("c:/app/conf/IO160383.jks"), "pWM5W8AQn".toCharArray(),
+                    new SSLContextBuilder().loadTrustMaterial(new File(merchantProperties.getProperty("keystore.file")), merchantProperties.getProperty("keystore.password").toCharArray(),
                             new TrustSelfSignedStrategy()).build(), new NoopHostnameVerifier());
 
             CloseableHttpClient httpClient = HttpClients.custom()
