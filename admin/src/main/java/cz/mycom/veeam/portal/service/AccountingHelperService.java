@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -292,6 +293,7 @@ public class AccountingHelperService {
         return tenant;
     }
 
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void checkPaidOnline(Order order) {
         Tenant tenant = tenantRepository.findByUid(order.getTenantUid());
@@ -335,4 +337,81 @@ public class AccountingHelperService {
             log.error(e.getMessage(), e);
         }
     }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void checkTenant(CloudTenant cloudTenant) {
+        log.info("Check Tenant: {} - {}", cloudTenant.getName(), cloudTenant.getUID());
+        String tenantUid = StringUtils.substringAfterLast(cloudTenant.getUID(), ":");
+        Tenant tenant = tenantRepository.findByUid(tenantUid);
+        if (!tenant.isEnabled() || tenant.getCredit() <= 0) {
+            return;
+        }
+        try {
+            if (tenant.getUsedQuota() > (tenant.getQuota() * 0.9)) {
+                if (!tenant.isQuotaNotif()) {
+                    log.info("Sending zaplneni_mista notification: " + cloudTenant.getName());
+                    tenant.setQuotaNotif(true);
+                    String from = configRepository.getOne("support.email").getValue();
+                    ClassPathResource classPathResource = new ClassPathResource("zaplneni_mista.txt");
+                    String text = IOUtils.toString(classPathResource.getInputStream(), "UTF-8");
+                    mailService.sendMail(from, tenant.getUser().getEmail(), "support@mycom.cz", "MyCom BACKUP Portal: Vaše úložiště je téměř plné", text);
+                }
+            } else {
+                tenant.setQuotaNotif(false);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        try {
+            if (tenant.getServerCount() > 0
+                    || tenant.getVmCount() > 0
+                    || tenant.getWorkstationCount() > 0
+                    || tenant.getQuota() > 0) {
+                int credit = tenant.getCredit();
+                Calendar cal = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);
+                int month = cal.get(Calendar.MONTH);
+                int priceQuota = Integer.parseInt(configRepository.getOne("price.quota").getValue());
+                int priceVm = Integer.parseInt(configRepository.getOne("price.vm").getValue());
+                int priceServer = Integer.parseInt(configRepository.getOne("price.server").getValue());
+                int priceWorkstation = Integer.parseInt(configRepository.getOne("price.workstation").getValue());
+                //aby neposi
+                int days = 0;
+                while (credit > 0) {
+                    int change = credit;
+                    if (month != cal.get(Calendar.MONTH)) {
+                        credit -= tenant.getVmCount() * priceVm;
+                        credit -= tenant.getServerCount() * priceServer;
+                        credit -= tenant.getWorkstationCount() * priceWorkstation;
+                        month = cal.get(Calendar.MONTH);
+                    }
+                    credit -= Math.ceil(((float) tenant.getQuota() / 1024 / 10) * priceQuota);
+                    if (credit <= 0) {
+                        break;
+                    }
+                    change -= credit;
+                    if (change <= 0) {
+                        break;
+                    }
+                    cal.add(Calendar.DAY_OF_YEAR, 1);
+                    days++;
+                }
+                if (days < 7) {
+                    if (!tenant.isCreditNotif()) {
+                        log.info("Sending dochazi_kredity notification: " + cloudTenant.getName());
+                        tenant.setCreditNotif(true);
+                        String from = configRepository.getOne("support.email").getValue();
+                        ClassPathResource classPathResource = new ClassPathResource("dochazi_kredity.txt");
+                        String text = IOUtils.toString(classPathResource.getInputStream(), "UTF-8");
+                        mailService.sendMail(from, tenant.getUser().getEmail(), "support@mycom.cz", "MyCom BACKUP Portal: Blíží se vyčerpání kreditu", text);
+                    }
+                } else {
+                    tenant.setCreditNotif(false);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        tenantRepository.save(tenant);
+    }
+
 }

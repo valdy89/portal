@@ -55,6 +55,12 @@ public class Tenant {
     @Column
     private boolean vip;
 
+    @Column
+    private boolean quotaNotif;
+
+    @Column
+    private boolean creditNotif;
+
     @OneToOne
     @JoinColumn(name = "userId")
     @NotFound(action = NotFoundAction.IGNORE)

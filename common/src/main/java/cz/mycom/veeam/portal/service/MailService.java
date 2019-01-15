@@ -3,6 +3,7 @@ package cz.mycom.veeam.portal.service;
 import cz.mycom.veeam.portal.repository.ConfigRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,11 @@ public class MailService {
     private KeyStoreService keyStoreService;
 
     public void sendMail(String from, String to, String subject, String text) {
-        //final String username = "veeam.portal@gmail.com";
-        //final String password = "jyazonvxaheqgfsb";
+        sendMail(from, to, null, subject, text);
+    }
+
+    public void sendMail(String from, String to, String bcc, String subject, String text) {
+        log.debug("Sending email - from: {}, to: {}, bcc: {}, subject: {}", from, to, bcc, subject);
         String host = configRepository.getOne("mail.smtp.host").getValue();
         String username = configRepository.getOne("mail.smtp.user").getValue();
         String password = keyStoreService.readData("mail.smtp.password");
@@ -46,6 +50,9 @@ public class MailService {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            if (StringUtils.isNotBlank(bcc)) {
+                message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc));
+            }
             message.setSubject(subject);
             message.setText(text);
 
@@ -67,6 +74,7 @@ public class MailService {
     }
 
     public void sendMail(String from, String to, String subject, String text, String filename, ByteArrayOutputStream content) {
+        log.debug("Sending email - from: {}, to: {}, subject: {}, filename: {}", from, to, subject, filename);
         String host = configRepository.getOne("mail.smtp.host").getValue();
         String username = configRepository.getOne("mail.smtp.user").getValue();
         String password = keyStoreService.readData("mail.smtp.password");

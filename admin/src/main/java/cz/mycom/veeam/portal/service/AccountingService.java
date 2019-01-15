@@ -110,6 +110,27 @@ public class AccountingService {
         }
     }
 
+    @Scheduled(cron = "0 0 10 * * ?")
+    public void checkTenants() {
+        LogonSession logonSession = veeamService.logonSystem();
+        try {
+            List<CloudTenant> tenants = veeamService.getTenants();
+            for (CloudTenant cloudTenant : tenants) {
+                try {
+                    accountingHelperService.checkTenant(cloudTenant);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    mailService.sendError("checkTenant", e);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            mailService.sendError("Error notifications: " + e.getMessage(), e);
+        } finally {
+            veeamService.logout(logonSession);
+        }
+    }
+
     @Scheduled(cron = "1 0 0 * * ?")
     public void process() {
         LogonSession logonSession = veeamService.logonSystem();
