@@ -347,7 +347,7 @@ public class AccountingHelperService {
             return;
         }
         try {
-            if (tenant.getUsedQuota() > (tenant.getQuota() * 0.9)) {
+            if (tenant.getUsedQuota() > (tenant.getQuota() * 0.95)) {
                 if (!tenant.isQuotaNotif()) {
                     log.info("Sending zaplneni_mista notification: " + cloudTenant.getName());
                     tenant.setQuotaNotif(true);
