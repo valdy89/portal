@@ -19,7 +19,7 @@
     </appender>
 
     <logger name="cz.mycom">
-        <level value="INFO"/>
+        <level value="DEBUG"/>
     </logger>
 
     <root>
