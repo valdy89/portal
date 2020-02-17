@@ -9,7 +9,7 @@
     "test": "gulp test"
   },
   "devDependencies": {
-    "bower": "~1.7.0",
+    "bower": "~1.8.8",
     "browser-sync": "~2.7.12",
     "browser-sync-spa": "~1.0.2",
     "chalk": "~1.0.0",
