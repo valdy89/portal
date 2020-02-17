@@ -64,7 +64,7 @@ public class AccountingService {
         }
     }
 
-    @Scheduled(cron = "0 0/10 * * * ?")
+    //@Scheduled(cron = "0 0/10 * * * ?")
     public void checkPaidProforma() {
         List<ProformaInvoice> proformaPaid = null;
         try {
@@ -90,6 +90,7 @@ public class AccountingService {
     }
 
     @Scheduled(cron = "0 0 4,8,12,16,20 * * ?")
+    //@Scheduled(cron = "0 0/5 * * * ?")
     public void update() {
         LogonSession logonSession = veeamService.logonSystem();
         try {

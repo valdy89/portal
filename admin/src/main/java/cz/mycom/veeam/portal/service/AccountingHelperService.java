@@ -234,7 +234,10 @@ public class AccountingHelperService {
 
     private Tenant updateTenant(CloudTenant cloudTenant) {
         log.info("Tenant: {} - {}", cloudTenant.getName(), cloudTenant.getUID());
-        log.info("W: {}, VM: {}, S: {}", cloudTenant.getWorkStationBackupCount(), cloudTenant.getBackupCount(), cloudTenant.getServerBackupCount());
+        log.info("CloudTenant W: {}, VM: {}, S: {}", cloudTenant.getWorkStationBackupCount(), cloudTenant.getBackupCount(), cloudTenant.getServerBackupCount());
+        String uid = StringUtils.substringAfterLast(cloudTenant.getUID(),":");
+        CloudTenantFreeLicenseCounters licenseCounters = veeamService.getCloudTenantFreeLicenseCounters(uid);
+        log.info("FreeLicense W: {}, VM: {}, S: {}", licenseCounters.getRentalWorkstationBackupCount(), licenseCounters.getRentalVMBackupCount(), licenseCounters.getRentalServerBackupCount());
         String tenantUid = StringUtils.substringAfterLast(cloudTenant.getUID(), ":");
         Tenant tenant = tenantRepository.findByUid(tenantUid);
         if (tenant == null) {
@@ -287,9 +290,9 @@ public class AccountingHelperService {
                 }
             }
         }
-        tenant.setVmCount(cloudTenant.getBackupCount());
-        tenant.setServerCount(cloudTenant.getServerBackupCount());
-        tenant.setWorkstationCount(cloudTenant.getWorkStationBackupCount());
+        tenant.setVmCount(cloudTenant.getBackupCount() + licenseCounters.getRentalVMBackupCount());
+        tenant.setServerCount(cloudTenant.getServerBackupCount() + licenseCounters.getRentalServerBackupCount());
+        tenant.setWorkstationCount(cloudTenant.getWorkStationBackupCount() + licenseCounters.getRentalWorkstationBackupCount());
         return tenant;
     }
 
