@@ -16,8 +16,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -234,6 +236,9 @@ public class AccountingHelperService {
 
     private Tenant updateTenant(CloudTenant cloudTenant) {
         log.info("Tenant: {} - {}", cloudTenant.getName(), cloudTenant.getUID());
+        StringWriter stringWriter = new StringWriter();
+        JAXB.marshal(cloudTenant, stringWriter);
+        log.info("CloudTenant: {}", stringWriter);
         log.info("CloudTenant W: {}, VM: {}, S: {}", cloudTenant.getWorkStationBackupCount(), cloudTenant.getBackupCount(), cloudTenant.getServerBackupCount());
         String uid = StringUtils.substringAfterLast(cloudTenant.getUID(),":");
         CloudTenantFreeLicenseCounters licenseCounters = veeamService.getCloudTenantFreeLicenseCounters(uid);

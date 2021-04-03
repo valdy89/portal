@@ -111,4 +111,15 @@ public final class KeyStoreService {
             IOUtils.closeQuietly(fis);
         }
     }
+
+    public static void main(String[] args) {
+        KeyStoreService keyStoreService = new KeyStoreService();
+        keyStoreService.keyStoreFile = new File("c:/IdeaProjects/mycom/admin/src/test/resources/passwords.jceks");
+        keyStoreService.check();
+        keyStoreService.storeData("veeam.api.password","nmj456$%mk52K");
+//        System.out.println(keyStoreService.readData("veeam.api.password"));
+//        System.out.println(keyStoreService.readData("idoklad.client.id"));
+//        System.out.println(keyStoreService.readData("idoklad.client.secret"));
+//        System.out.println(keyStoreService.readData("mail.smtp.password"));
+    }
 }

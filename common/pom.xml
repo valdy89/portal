@@ -28,6 +28,7 @@
                             <xjbSources>
                                 <xjbSource>src/RestAPI.xjb</xjbSource>
                             </xjbSources>
+                            <extension>true</extension>
                         </configuration>
                     </execution>
                 </executions>

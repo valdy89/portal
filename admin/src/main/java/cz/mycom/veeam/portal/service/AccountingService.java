@@ -38,7 +38,7 @@ public class AccountingService {
     private MerchantService merchantService;
 
 
-    @Scheduled(cron = "0/5 * * * * ?")
+    //@Scheduled(cron = "0/5 * * * * ?")
     public void checkOrders() {
         List<Order> orders = orderRepository.findByPaymentStatusIsNull();
         for (Order order : orders) {

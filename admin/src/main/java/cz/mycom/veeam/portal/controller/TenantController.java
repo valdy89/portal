@@ -1,9 +1,6 @@
 package cz.mycom.veeam.portal.controller;
 
-import com.veeam.ent.v1.CloudTenant;
-import com.veeam.ent.v1.CloudTenantResource;
-import com.veeam.ent.v1.CloudTenantResources;
-import com.veeam.ent.v1.LogonSession;
+import com.veeam.ent.v1.*;
 import cz.mycom.veeam.portal.model.Subtenant;
 import cz.mycom.veeam.portal.model.Tenant;
 import cz.mycom.veeam.portal.model.TenantHistory;
@@ -14,6 +11,7 @@ import cz.mycom.veeam.portal.repository.TenantRepository;
 import cz.mycom.veeam.portal.repository.UserRepository;
 import cz.mycom.veeam.portal.service.VeeamService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.bind.JAXB;
+import java.io.StringWriter;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +58,31 @@ public class TenantController {
             tenant.setSubtenantsCount(tenant.getSubtenants().size());
         }
         return tenantList;
+    }
+
+    @RequestMapping(path ="/debug", method = RequestMethod.GET)
+    public String debug() {
+        LogonSession logonSession = veeamService.logonSystem();
+        try {
+            StringBuffer stringBuffer = new StringBuffer();
+            for (CloudTenant cloudTenant : veeamService.getTenants()) {
+                StringWriter stringWriter = new StringWriter();
+                JAXB.marshal(cloudTenant, stringWriter);
+                stringBuffer.append(stringWriter);
+                stringBuffer.append(IOUtils.LINE_SEPARATOR_WINDOWS);
+                String uid = org.apache.commons.lang.StringUtils.substringAfterLast(cloudTenant.getUID(),":");
+                CloudTenantFreeLicenseCounters cloudTenantFreeLicenseCounters = veeamService.getCloudTenantFreeLicenseCounters(uid);
+                JAXB.marshal(cloudTenantFreeLicenseCounters, stringWriter);
+                stringBuffer.append(stringWriter);
+                stringBuffer.append(IOUtils.LINE_SEPARATOR_WINDOWS);
+            }
+            return stringBuffer.toString();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        } finally {
+            veeamService.logout(logonSession);
+        }
     }
 
     @RequestMapping(path = "/nocredit", method = RequestMethod.GET)
