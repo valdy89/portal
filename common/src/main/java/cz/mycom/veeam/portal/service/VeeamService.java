@@ -232,7 +232,7 @@ public class VeeamService {
 	private LogonSession logonSession(String token) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Basic " + token);
-		ResponseEntity<LogonSession> responseEntity = veeamRestTemplate.exchange(getUrl("sessionMngr/?v=v1_4"), HttpMethod.POST, new HttpEntity<>(headers), LogonSession.class);
+		ResponseEntity<LogonSession> responseEntity = veeamRestTemplate.exchange(getUrl("sessionMngr/?v=latest"), HttpMethod.POST, new HttpEntity<>(headers), LogonSession.class);
 		LogonSession logonSession = responseEntity.getBody();
 		log.debug("LogonSession: " + logonSession.getSessionId());
 		SessionIdThreadLocal.setSessionId(responseEntity.getHeaders().getFirst("X-RestSvcSessionId"));
